@@ -1,0 +1,17 @@
+{
+    "files.associations": {
+        "bsp_led_driver.h": "c",
+        "sys.h": "c",
+        "stm32f2xx_hal_rcc_ex.h": "c",
+        "bsp_usart_driver.h": "c",
+        "stm32f2xx.h": "c",
+        "bsp_esp8266_driver.h": "c",
+        "stm32f2xx_hal.h": "c",
+        "queue.h": "c",
+        "app_mqtt_task.h": "c",
+        "semphr.h": "c",
+        "app_wifi_task.h": "c",
+        "task.h": "c",
+        "cloud.h": "c"
+    }
+}
