@@ -36,15 +36,15 @@
 /* Private variables ---------------------------------------------------------*/
 extern TIM_HandleTypeDef htim4;
 
+/*串口2句柄 DMA句柄*/
+extern UART_HandleTypeDef huart2;
+extern DMA_HandleTypeDef hdma_usart2_rx;
+extern DMA_HandleTypeDef hdma_usart2_tx;
+
 /*串口1句柄 DMA句柄*/
 extern UART_HandleTypeDef huart1;
 extern DMA_HandleTypeDef hdma_usart1_rx;
 extern DMA_HandleTypeDef hdma_usart1_tx;
-
-/*串口3句柄 DMA句柄*/
-extern UART_HandleTypeDef huart3;
-extern DMA_HandleTypeDef hdma_usart3_rx;
-extern DMA_HandleTypeDef hdma_usart3_tx;
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
@@ -167,64 +167,49 @@ void TIM4_IRQHandler(void)
   * @brief This function handles USART1 global interrupt.
   */
 
+void USART2_IRQHandler(void)
+{
+    HAL_UART_IRQHandler(&huart2);
+}
+/**
+  * @brief This function handles DMA1_Stream5 interrupt.
+  */
+
+void DMA1_Stream5_IRQHandler(void)
+{
+    HAL_DMA_IRQHandler(&hdma_usart2_rx);
+}
+
+/**
+  * @brief This function handles DMA1_Stream6 interrupt.
+  */
+
+void DMA1_Stream6_IRQHandler(void)
+{
+    HAL_DMA_IRQHandler(&hdma_usart2_tx);
+}
+
+/**
+  * @brief This function handles USART1 global interrupt.
+  */
+
 void USART1_IRQHandler(void)
 {
     HAL_UART_IRQHandler(&huart1);
-}
-/**
-  * @brief This function handles DMA2_Stream2 interrupt.
-  */
 
-void DMA2_Stream2_IRQHandler(void)
+}
+
+/**
+ * @brief This function handles DMA2_Stream5 global interrupt.
+ * */
+void DMA2_Stream5_IRQHandler(void)
 {
     HAL_DMA_IRQHandler(&hdma_usart1_rx);
 }
-
 /**
-  * @brief This function handles DMA2_Stream7 interrupt.
-  */
-
+ * @brief This function handles DMA2_Stream7 global interrupt.
+ * */
 void DMA2_Stream7_IRQHandler(void)
 {
     HAL_DMA_IRQHandler(&hdma_usart1_tx);
-}
-
-/**
-  * @brief This function handles USART3 global interrupt.
-  */
-
-void USART3_IRQHandler(void)
-{
-    HAL_UART_IRQHandler(&huart3);
-    
-    /* Check if transmission complete interrupt occurred */
-    if(__HAL_UART_GET_FLAG(&huart3, UART_FLAG_TC) != RESET)
-    {
-        __HAL_UART_CLEAR_FLAG(&huart3, UART_FLAG_TC);
-        HAL_UART_TxCpltCallback(&huart3);
-    }
-}
-
-/* USART3 Transmission Complete Callback */
-void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
-{
-    if(huart->Instance == USART3)
-    {
-        /* Transmission complete handling */
-        huart->gState = HAL_UART_STATE_READY;
-    }
-}
-/**
- * @brief This function handles DMA1 Stream1 global interrupt.
- * */
-void DMA1_Stream1_IRQHandler(void)
-{
-    HAL_DMA_IRQHandler(&hdma_usart3_rx);
-}
-/**
- * @brief This function handles DMA1 Stream3 global interrupt.
- * */
-void DMA1_Stream3_IRQHandler(void)
-{
-    HAL_DMA_IRQHandler(&hdma_usart3_tx);
 }

@@ -52,7 +52,7 @@
           <OutputName>F205RET6</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
-          <CreateHexFile>0</CreateHexFile>
+          <CreateHexFile>1</CreateHexFile>
           <DebugInformation>1</DebugInformation>
           <BrowseInformation>1</BrowseInformation>
           <ListingPath>.\Listings\</ListingPath>
@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F205xx</Define>
               <Undefine></Undefine>
-              <IncludePath>..\Libraries\STM32F2xx_HAL_Driver\Inc;..\Libraries\CMSIS\Device\ST\STM32F2xx\Include;..\Libraries\CMSIS\Include;..\App;..\BSP\LED;..\BSP\sys;..\Middleware\FreeRTOS\include;..\Task\include;..\BSP\USART;..\BSP\NetWork</IncludePath>
+              <IncludePath>..\Libraries\STM32F2xx_HAL_Driver\Inc;..\Libraries\CMSIS\Device\ST\STM32F2xx\Include;..\Libraries\CMSIS\Include;..\App;..\BSP\LED;..\BSP\sys;..\Middleware\FreeRTOS\include;..\Task\include;..\BSP\USART;..\BSP\NetWork;..\BSP\AHT20</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -407,6 +407,11 @@
               <FileType>1</FileType>
               <FilePath>..\Task\app_wifi_task.c</FilePath>
             </File>
+            <File>
+              <FileName>app_aht20_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Task\app_aht20_task.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -446,6 +451,11 @@
               <FileName>cJSON.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\BSP\NetWork\cJSON.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_aht20_driver.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\BSP\AHT20\bsp_aht20_driver.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -94,10 +94,10 @@ ESP8266_StatusTypeDef_t ESP8266_SendCmd(char *cmd,char *res, uint32_t waittime)
     ESP8266_Clear();
     
    
-    wifi_usart1_Send((uint8_t*)cmd, strlen(cmd));
+    wifi_usart2_Send((uint8_t*)cmd, strlen(cmd));
     
     
-    wifi_usart1_Receive(&esp8266_rx_buffer[0], 1);
+    wifi_usart2_Receive(&esp8266_rx_buffer[0], 1);
     
    
     while(waittime--)
@@ -225,7 +225,7 @@ ESP8266_StatusTypeDef_t ESP8266_SendData(char *data,uint16_t len)
 	sprintf(cmdbuf,"AT+CIPSEND=%d\r\n", len);
 	if(ESP8266_SendCmd(cmdbuf,">",1000) == ESP8266_OK)
 	{
-		wifi_usart1_Send((uint8_t*)data,len);
+		wifi_usart2_Send((uint8_t*)data,len);
 		return ESP8266_OK;
 	}
 	return ESP8266_ERROR;
@@ -283,7 +283,7 @@ unsigned char* ESP8266_GetIPD(unsigned short waittime)
 // UART1 wifi 接收完成回调函数
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-    if (USART1 == huart->Instance)
+    if (USART2 == huart->Instance)
     {
         taskENTER_CRITICAL(); // FreeRTOS 临界区保护
         if (esp8266_cnt < ESP8266_RX_BUFFER_SIZE - 1)
@@ -292,7 +292,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
         }
         taskEXIT_CRITICAL();
 
-        wifi_usart1_Receive(&esp8266_rx_buffer[esp8266_cnt], 1);
+        wifi_usart2_Receive(&esp8266_rx_buffer[esp8266_cnt], 1);
     }
 }
 

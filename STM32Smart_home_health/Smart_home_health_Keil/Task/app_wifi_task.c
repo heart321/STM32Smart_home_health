@@ -26,9 +26,6 @@
 #include "Cloud.h"
 
 
-
-
-
 /*
  * @brief   连接wifi mqtt服务器 订阅 发布
  * @param   *pvParameters 任务创建时传递的参数
@@ -36,7 +33,7 @@
  */
 void wifi_connect_task(void *pvParameters)
 {
-    wifi_usart1_Init();
+    wifi_usart2_Init();
 
     HAL_StatusTypeDef wifi_status = HAL_ERROR;
     ESP8266_StatusTypeDef_t esp8266_status = ESP8266_ERROR; // wifi连接状态
@@ -53,9 +50,9 @@ void wifi_connect_task(void *pvParameters)
     while (1)
     {
 		/*连接wifi 服务器 订阅Topic*/
-        if (wifi_status == HAL_ERROR)
+        if (HAL_ERROR == wifi_status)
         {
-            if (esp8266_status == ESP8266_OK)
+            if (ESP8266_OK == esp8266_status)
             {
                 // wifi led 快闪3次
 #if DEBUG
@@ -83,7 +80,6 @@ void wifi_connect_task(void *pvParameters)
 		if(dataPtr != NULL)
 		{
 			Cloud_RevPro(dataPtr);
-		
 		}
 		
         vTaskDelay(1000); 

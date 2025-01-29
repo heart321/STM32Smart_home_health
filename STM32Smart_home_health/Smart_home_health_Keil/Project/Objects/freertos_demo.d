@@ -14,6 +14,7 @@
 .\objects\freertos_demo.o: ..\Middleware\FreeRTOS\include\semphr.h
 .\objects\freertos_demo.o: ..\Middleware\FreeRTOS\include\queue.h
 .\objects\freertos_demo.o: ..\Task\include\app_wifi_task.h
+.\objects\freertos_demo.o: ..\Task\include\app_aht20_task.h
 .\objects\freertos_demo.o: ..\BSP\USART\bsp_usart_driver.h
 .\objects\freertos_demo.o: ..\Libraries\CMSIS\Device\ST\STM32F2xx\Include\stm32f2xx.h
 .\objects\freertos_demo.o: ..\Libraries\CMSIS\Device\ST\STM32F2xx\Include\stm32f205xx.h

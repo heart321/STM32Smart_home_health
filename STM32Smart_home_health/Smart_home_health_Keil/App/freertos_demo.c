@@ -6,7 +6,7 @@
 
 /****************Task_Include***********************/
 #include "app_wifi_task.h"
-
+#include "app_aht20_task.h"
 
 /****************BSP_Include***********************/
 #include "bsp_usart_driver.h"
@@ -26,6 +26,10 @@ TaskHandle_t start_task_handle = NULL;
 #define WIFI_TASK_PRIORITY 2
 TaskHandle_t wifi_task_handle = NULL;
 
+/*aht20_task*/
+#define AHT20_TASK_DEPTH 128
+#define AHT20_TASK_PRIORITY 3
+TaskHandle_t aht20_task_handle = NULL;
 
 
 void start_task(void *pvParameters);
@@ -58,7 +62,7 @@ void freeRTOS_start(void)
 void start_task(void *pvParameters)
 {
 	/*初始化调试串口*/
-	debug_usart3_Init();
+	debug_usart1_Init();
 	
     /*进入临界区*/
     taskENTER_CRITICAL();
@@ -75,6 +79,15 @@ void start_task(void *pvParameters)
         (void *)NULL,
         (UBaseType_t)WIFI_TASK_PRIORITY,
         (TaskHandle_t *)&wifi_task_handle);
+	
+	/*aht20 task*/
+	xTaskCreate(
+        (TaskFunction_t)aht20_task,
+        (char *)"aht20_task",
+        (configSTACK_DEPTH_TYPE)AHT20_TASK_DEPTH,
+        (void *)NULL,
+        (UBaseType_t)AHT20_TASK_PRIORITY,
+        (TaskHandle_t *)&aht20_task_handle);
 	
 	
 
