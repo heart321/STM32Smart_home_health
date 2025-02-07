@@ -110,7 +110,7 @@ ESP8266_StatusTypeDef_t ESP8266_SendCmd(char *cmd,char *res, uint32_t waittime)
                 return ESP8266_OK;
             }
         }
-        vTaskDelay(10);
+        HAL_Delay(10);
     }
     
 #if DEBUG
@@ -140,7 +140,7 @@ ESP8266_StatusTypeDef_t ESP8266_Connect(void)
         DEBUG_LOG("AT ERROR!\n");
 		DEBUG_LOG("rx_buffer:%s \n",esp8266_rx_buffer);
 #endif
-        vTaskDelay(1000);
+        HAL_Delay(1000);
         return ESP8266_ERROR;
     }
     
@@ -155,7 +155,7 @@ ESP8266_StatusTypeDef_t ESP8266_Connect(void)
 //        DEBUG_LOG("AT+RST ERROR\n");
 //		Debug_usart3_Send((uint8_t*)esp8266_rx_buffer,128);
 //#endif
-//        vTaskDelay(1000);
+//        HAL_Delay(1000);
 //        return ESP8266_ERROR;
 //    }
     
@@ -170,7 +170,7 @@ ESP8266_StatusTypeDef_t ESP8266_Connect(void)
         DEBUG_LOG("AT+CWMODE=1 ERROR\n");
 		DEBUG_LOG("rx_buffer:%s \n",esp8266_rx_buffer);
 #endif
-        vTaskDelay(1000);
+        HAL_Delay(1000);
         return ESP8266_ERROR;
     }
     
@@ -186,7 +186,7 @@ ESP8266_StatusTypeDef_t ESP8266_Connect(void)
         DEBUG_LOG("ESP8266_WIFI ERROR\n");
 		DEBUG_LOG("rx_buffer:%s \n",esp8266_rx_buffer);
 #endif
-        vTaskDelay(1000);
+        HAL_Delay(1000);
         return ESP8266_ERROR;
     }
 
@@ -199,7 +199,7 @@ ESP8266_StatusTypeDef_t ESP8266_Connect(void)
 #if DEBUG
         DEBUG_LOG("ESP8266_TCP ERROR\n");
 #endif
-        vTaskDelay(1000);
+        HAL_Delay(1000);
         return ESP8266_ERROR;
     }
 
@@ -272,7 +272,7 @@ unsigned char* ESP8266_GetIPD(unsigned short waittime)
 			}
 		
 		}
-		vTaskDelay(5);
+		HAL_Delay(5);
 		waittime--;
 	}while(waittime > 0);
 	

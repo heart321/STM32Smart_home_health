@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F205xx</Define>
               <Undefine></Undefine>
-              <IncludePath>..\Libraries\STM32F2xx_HAL_Driver\Inc;..\Libraries\CMSIS\Device\ST\STM32F2xx\Include;..\Libraries\CMSIS\Include;..\App;..\BSP\LED;..\BSP\sys;..\Middleware\FreeRTOS\include;..\Task\include;..\BSP\USART;..\BSP\NetWork;..\BSP\AHT20</IncludePath>
+              <IncludePath>..\Libraries\STM32F2xx_HAL_Driver\Inc;..\Libraries\CMSIS\Device\ST\STM32F2xx\Include;..\Libraries\CMSIS\Include;..\App;..\BSP\LED;..\BSP\sys;..\Middleware\FreeRTOS\include;..\Task\include;..\BSP\USART;..\BSP\NetWork;..\BSP\AHT20;..\BSP\Airquality;..\BSP\LM2904;..\BSP\PM2.5</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -412,30 +412,25 @@
               <FileType>1</FileType>
               <FilePath>..\Task\app_aht20_task.c</FilePath>
             </File>
+            <File>
+              <FileName>app_air_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Task\app_air_task.c</FilePath>
+            </File>
+            <File>
+              <FileName>app_lm2904_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Task\app_lm2904_task.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
           <GroupName>BSP</GroupName>
           <Files>
             <File>
-              <FileName>bsp_led_driver.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\BSP\LED\bsp_led_driver.c</FilePath>
-            </File>
-            <File>
               <FileName>sys.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\BSP\sys\sys.c</FilePath>
-            </File>
-            <File>
-              <FileName>bsp_usart_driver.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\BSP\USART\bsp_usart_driver.c</FilePath>
-            </File>
-            <File>
-              <FileName>bsp_esp8266_driver.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\BSP\NetWork\bsp_esp8266_driver.c</FilePath>
             </File>
             <File>
               <FileName>MqttKit.c</FileName>
@@ -453,9 +448,39 @@
               <FilePath>..\BSP\NetWork\cJSON.c</FilePath>
             </File>
             <File>
+              <FileName>bsp_esp8266_driver.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\BSP\NetWork\bsp_esp8266_driver.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_led_driver.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\BSP\LED\bsp_led_driver.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_usart_driver.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\BSP\USART\bsp_usart_driver.c</FilePath>
+            </File>
+            <File>
               <FileName>bsp_aht20_driver.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\BSP\AHT20\bsp_aht20_driver.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_airquality_driver.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\BSP\Airquality\bsp_airquality_driver.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_lm2904_driver.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\BSP\LM2904\bsp_lm2904_driver.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_pm2.5_driver.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\BSP\PM2.5\bsp_pm2.5_driver.c</FilePath>
             </File>
           </Files>
         </Group>

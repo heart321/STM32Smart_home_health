@@ -21,17 +21,28 @@ Target DLL:      STLink\ST-LINKIII-KEIL_SWO.dll V3.0.6.0
 Dialog DLL:      TCM.DLL V1.36.2.0
  
 <h2>Project:</h2>
-C:\Users\15819\Desktop\��ҵ���\STM32Smart_home_health\Smart_home_health_Keil\Project\Smart_home.uvprojx
-Project File Date:  01/27/2025
+D:\All_Project\Graduation_project\STM32Smart_home_health\Smart_home_health_Keil\Project\Smart_home.uvprojx
+Project File Date:  02/07/2025
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 6 (build 750)', folder: 'D:\Keil_ARM\ARM\ARMCC\Bin'
 Build target 'Target 1'
-compiling app_aht20_task.c...
+compiling app_wifi_task.c...
+..\Task\app_wifi_task.c(113): warning:  #870-D: invalid multibyte character sequence
+              DEBUG_LOG("wifi_task 温度�?%.2fC 湿度�?%.2f%%\r\n",
+..\Task\app_wifi_task.c(113): warning:  #870-D: invalid multibyte character sequence
+              DEBUG_LOG("wifi_task 温度�?%.2fC 湿度�?%.2f%%\r\n",
+..\Task\app_wifi_task.c(131): warning:  #870-D: invalid multibyte character sequence
+              DEBUG_LOG("wifi_task 分贝�?:%.2f\r\n",receiveData_db.db_value);
+..\Task\app_wifi_task.c(57): warning:  #177-D: variable "PUB_BUF"  was declared but never referenced
+      char PUB_BUF[256];                       // 要上传的数据
+..\Task\app_wifi_task.c(59): warning:  #177-D: variable "devPubTopic"  was declared but never referenced
+      const char devPubTopic[] = {"cx/123P"};  // 发布的Topic
+..\Task\app_wifi_task.c: 5 warnings, 0 errors
 linking...
-Program Size: Code=31336 RO-data=752 RW-data=164 ZI-data=79476  
+Program Size: Code=36952 RO-data=752 RW-data=200 ZI-data=80328  
 FromELF: creating hex file...
-".\Objects\F205RET6.axf" - 0 Error(s), 0 Warning(s).
+".\Objects\F205RET6.axf" - 0 Error(s), 5 Warning(s).
 
 <h2>Software Packages used:</h2>
 

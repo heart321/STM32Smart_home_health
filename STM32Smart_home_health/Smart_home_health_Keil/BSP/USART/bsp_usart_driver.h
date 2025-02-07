@@ -4,7 +4,7 @@
 #include "stm32f2xx.h"
 #include <stdio.h>
 
-
+#define DEBUG  1 //调试信息
 #define DEBUG_LOG(format, ...) printf(format, ##__VA_ARGS__)
 
 /*UART1 WIFI 通信串口初始化 */

@@ -29,43 +29,243 @@
    <string>Dialog</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">
-background-color: rgb(255, 255, 255);</string>
+   <string notr="true">background-color: rgb(255, 255, 255);
+
+
+
+</string>
   </property>
-  <widget class="QWidget" name="">
+  <widget class="QtMaterialRaisedButton" name="pushButton_login">
    <property name="geometry">
     <rect>
-     <x>610</x>
-     <y>250</y>
-     <width>401</width>
-     <height>161</height>
+     <x>700</x>
+     <y>490</y>
+     <width>91</width>
+     <height>31</height>
     </rect>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="text">
+    <string>登录</string>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>20</width>
+     <height>20</height>
+    </size>
+   </property>
+  </widget>
+  <widget class="QtMaterialRaisedButton" name="pushButton_signin">
+   <property name="geometry">
+    <rect>
+     <x>910</x>
+     <y>490</y>
+     <width>91</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>注册</string>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>20</width>
+     <height>20</height>
+    </size>
+   </property>
+  </widget>
+  <widget class="QtMaterialFlatButton" name="pushButton_password">
+   <property name="geometry">
+    <rect>
+     <x>920</x>
+     <y>550</y>
+     <width>81</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>0</width>
+     <height>4</height>
+    </size>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(85, 255, 255);</string>
+   </property>
+   <property name="text">
+    <string>忘记密码？</string>
+   </property>
+  </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>690</x>
+     <y>10</y>
+     <width>321</width>
+     <height>131</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
-     <widget class="QtMaterialTextField" name="label_password">
+     <widget class="QLabel" name="label_title">
+      <property name="font">
+       <font>
+        <family>华文行楷</family>
+        <pointsize>28</pointsize>
+        <italic>false</italic>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">color: rgb(85, 85, 127);</string>
+      </property>
       <property name="text">
-       <string/>
+       <string>智能家庭</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QtMaterialTextField" name="label_user">
+     <widget class="QLabel" name="label_title2">
+      <property name="font">
+       <font>
+        <family>华文行楷</family>
+        <pointsize>28</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">color: rgb(85, 85, 127);</string>
+      </property>
       <property name="text">
-       <string/>
+       <string>健康监测系统</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_title3">
+      <property name="font">
+       <font>
+        <family>华文行楷</family>
+        <pointsize>28</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">color: rgb(85, 85, 127);</string>
+      </property>
+      <property name="text">
+       <string>登录界面</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
       </property>
      </widget>
     </item>
    </layout>
   </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>670</x>
+     <y>310</y>
+     <width>79</width>
+     <height>67</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap resource="image.qrc">:/icons/login/login_user.png</pixmap>
+   </property>
+   <property name="scaledContents">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>670</x>
+     <y>380</y>
+     <width>79</width>
+     <height>67</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap resource="image.qrc">:/icons/login/login_password.png</pixmap>
+   </property>
+   <property name="scaledContents">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QtMaterialTextField" name="lineEdit_password">
+   <property name="geometry">
+    <rect>
+     <x>750</x>
+     <y>390</y>
+     <width>271</width>
+     <height>51</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QtMaterialTextField" name="lineEdit_user">
+   <property name="geometry">
+    <rect>
+     <x>750</x>
+     <y>320</y>
+     <width>271</width>
+     <height>51</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_log_in">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>681</width>
+     <height>601</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap resource="image.qrc">:/icons/login/login.png</pixmap>
+   </property>
+   <property name="scaledContents">
+    <bool>true</bool>
+   </property>
+  </widget>
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QtMaterialRaisedButton</class>
+   <extends>QPushButton</extends>
+   <header>qtmaterialraisedbutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>QtMaterialTextField</class>
-   <extends>QLabel</extends>
+   <extends>QLineEdit</extends>
    <header>qtmaterialtextfield.h</header>
   </customwidget>
+  <customwidget>
+   <class>QtMaterialFlatButton</class>
+   <extends>QPushButton</extends>
+   <header>qtmaterialflatbutton.h</header>
+  </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="image.qrc"/>
+ </resources>
  <connections/>
 </ui>

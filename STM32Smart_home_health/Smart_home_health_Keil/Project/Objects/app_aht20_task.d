@@ -10,6 +10,8 @@
 .\objects\app_aht20_task.o: ..\Middleware\FreeRTOS\include\mpu_wrappers.h
 .\objects\app_aht20_task.o: ..\Middleware\FreeRTOS\include\task.h
 .\objects\app_aht20_task.o: ..\Middleware\FreeRTOS\include\list.h
+.\objects\app_aht20_task.o: ..\Middleware\FreeRTOS\include\semphr.h
+.\objects\app_aht20_task.o: ..\Middleware\FreeRTOS\include\queue.h
 .\objects\app_aht20_task.o: ..\Task\include\app_aht20_task.h
 .\objects\app_aht20_task.o: ..\BSP\AHT20\bsp_aht20_driver.h
 .\objects\app_aht20_task.o: ..\Libraries\STM32F2xx_HAL_Driver\Inc\stm32f2xx_hal.h

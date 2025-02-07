@@ -45,6 +45,16 @@ extern DMA_HandleTypeDef hdma_usart2_tx;
 extern UART_HandleTypeDef huart1;
 extern DMA_HandleTypeDef hdma_usart1_rx;
 extern DMA_HandleTypeDef hdma_usart1_tx;
+
+/*串口4 句柄*/
+extern UART_HandleTypeDef huart4;
+
+/*串口6 句柄*/
+extern UART_HandleTypeDef huart6;
+
+/*lm2904 adc_dma句柄*/
+extern DMA_HandleTypeDef hdma_adc1;
+
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
@@ -212,4 +222,30 @@ void DMA2_Stream5_IRQHandler(void)
 void DMA2_Stream7_IRQHandler(void)
 {
     HAL_DMA_IRQHandler(&hdma_usart1_tx);
+}
+
+/**
+  * @brief This function handles UART4 global interrupt.
+  */
+
+void UART4_IRQHandler(void)
+{
+    HAL_UART_IRQHandler(&huart4);
+}
+
+/**
+ * @brief This function handles DMA2_Stream0 global interrupt.
+ * */
+void DMA2_Stream0_IRQHandler(void)
+{
+    HAL_DMA_IRQHandler(&hdma_adc1);
+}
+
+/**
+  * @brief This function handles USART6 global interrupt.
+  */
+
+void USART6_IRQHandler(void)
+{
+    HAL_UART_IRQHandler(&huart6);
 }

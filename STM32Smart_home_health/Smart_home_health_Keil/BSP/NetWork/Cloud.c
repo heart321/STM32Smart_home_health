@@ -32,7 +32,7 @@
 	AUTH_INFO 在 mosquitto MQTT Broker   设置 密码
 	*//////////////////////////////////////////////////
 
-#define PROID	   	"chenX"
+#define PROID	   	"xchen"
 #define AUTH_INFO	"3321"
 
 

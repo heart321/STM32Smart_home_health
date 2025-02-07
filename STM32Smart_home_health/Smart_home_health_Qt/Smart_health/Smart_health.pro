@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui network sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -14,14 +14,17 @@ INCLUDEPATH += \
     $$PWD/libs/Include
 
 
+
 SOURCES += \
     log_in.cpp \
     main.cpp \
+    mysql.cpp \
     sign_in.cpp \
     widget.cpp
 
 HEADERS += \
     log_in.h \
+    mysql.h \
     sign_in.h \
     widget.h
 
@@ -39,3 +42,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     image.qrc
+
+DISTFILES +=

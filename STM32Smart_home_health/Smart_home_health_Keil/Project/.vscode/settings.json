@@ -12,6 +12,14 @@
         "semphr.h": "c",
         "app_wifi_task.h": "c",
         "task.h": "c",
-        "cloud.h": "c"
+        "cloud.h": "c",
+        "app_aht20_task.h": "c",
+        "app_air_task.h": "c",
+        "bsp_aht20_driver.h": "c",
+        "freertos.h": "c",
+        "bsp_pm2.5_driver.h": "c",
+        "app_lm2904_task.h": "c",
+        "string.h": "c",
+        "bsp_lm2904_driver.h": "c"
     }
 }

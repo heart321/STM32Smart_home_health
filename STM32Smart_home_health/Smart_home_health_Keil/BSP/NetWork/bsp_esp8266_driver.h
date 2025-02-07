@@ -4,12 +4,12 @@
 #include "stm32f2xx_hal.h"
 
 
-#define DEBUG  1 //调试信息
+
 
 /*WIFI 名称 密码 
 云服务器的IP Port*/
 #define ESP8266_WIFI    "AT+CWJAP=\"HAHA123\",\"cx2002617\"\r\n"
-#define ESP8266_TCP     "AT+CIPSTART=\"TCP\",\"124.221.179.201\",1883\r\n" 
+#define ESP8266_TCP     "AT+CIPSTART=\"TCP\",\"47.108.217.29\",1883\r\n" 
 
 
 

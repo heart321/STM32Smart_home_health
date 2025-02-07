@@ -44,7 +44,7 @@
 #define configUSE_TICK_HOOK			0
 #define configCPU_CLOCK_HZ			( ( unsigned long ) 120000000 )
 #define configTICK_RATE_HZ			( ( TickType_t ) 1000 )
-#define configMAX_PRIORITIES		( 5 )
+#define configMAX_PRIORITIES		( 30 )
 #define configMINIMAL_STACK_SIZE	( ( unsigned short ) 128 )
 #define configTOTAL_HEAP_SIZE		( ( size_t ) ( 75 * 1024 ) )
 #define configMAX_TASK_NAME_LEN		( 16 )
@@ -54,6 +54,7 @@
 
 /* Co-routine definitions. */
 #define configSUPPORT_DYNAMIC_ALLOCATION 1 
+#define configUSE_COUNTING_SEMAPHORES 1
 
 
 /* Set the following definitions to 1 to include the API function, or zero

@@ -79,3 +79,6 @@
 .\objects\app_wifi_task.o: D:\Keil_ARM\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\app_wifi_task.o: ..\Task\include\app_wifi_task.h
 .\objects\app_wifi_task.o: ..\BSP\NetWork\Cloud.h
+.\objects\app_wifi_task.o: ..\Task\include\app_aht20_task.h
+.\objects\app_wifi_task.o: ..\Task\include\app_air_task.h
+.\objects\app_wifi_task.o: ..\Task\include\app_lm2904_task.h

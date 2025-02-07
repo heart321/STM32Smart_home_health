@@ -124,9 +124,6 @@ void debug_usart1_Init(void)
 	__HAL_RCC_DMA2_CLK_ENABLE();
 
 	
-	
-
-	
 	// 2.配置GPIO口
 	GPIO_InitTypeDef GPIO_InitStruct = {0};
 	GPIO_InitStruct.Pin = GPIO_PIN_10 | GPIO_PIN_9;
