@@ -1,11 +1,4 @@
-﻿/**********************************************************
-#Author: Qtjun
-#WeChat Official Accounts: qthub_com
-#QQ Group: 732271126
-#Email: 2088201923@qq.com
-**********************************************************/
-
-#ifndef NUMBERKEYBOARD_H
+﻿#ifndef NUMBERKEYBOARD_H
 #define NUMBERKEYBOARD_H
 
 #include "AbstractKeyboard.h"

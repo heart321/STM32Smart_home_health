@@ -9,8 +9,11 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QPointer>
+#include <QLineEdit>
 
 #include <QCryptographicHash>
+
+#include "Keyboard/Keyboard.h"
 
 
 // #include "qtmaterialtextfield.h"
@@ -38,8 +41,20 @@ private slots:
 
     void on_pushButton_login_clicked();
 
+    //重写事件用来判断 QLineEdit是否被点击
+    bool eventFilter(QObject *watched,QEvent *event);
+    //void keyPressEvent(QKeyEvent * event);
+
+    //调用软键盘
+    void callKeyBoard(void);
+
+
 private:
     Ui::log_in *ui;
+
+    QWidget* keyboardWindow = nullptr;
+    AeaQt::Keyboard* keyboard = nullptr;
+
 
 
 };

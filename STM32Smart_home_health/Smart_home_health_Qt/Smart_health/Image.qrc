@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Resources/Image/backspace.png</file>
+        <file>Resources/Image/caplock.png</file>
+        <file>Resources/Image/enter.png</file>
+        <file>Resources/Image/pack_up.png</file>
+        <file>Resources/Image/space.png</file>
+    </qresource>
+</RCC>

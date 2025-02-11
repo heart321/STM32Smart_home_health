@@ -16,6 +16,10 @@ INCLUDEPATH += \
 
 
 SOURCES += \
+    AI_Chat/ai_chat.cpp \
+    Keyboard/KeyButton.cpp \
+    Keyboard/Keyboard.cpp \
+    Keyboard/NumberKeyboard.cpp \
     health_home.cpp \
     health_record.cpp \
     health_report.cpp \
@@ -24,9 +28,15 @@ SOURCES += \
     main.cpp \
     mysql.cpp \
     sign_in.cpp \
-    widget.cpp
+    widget.cpp \
+
 
 HEADERS += \
+    AI_Chat/ai_chat.h \
+    Keyboard/AbstractKeyboard.h \
+    Keyboard/KeyButton.h \
+    Keyboard/Keyboard.h \
+    Keyboard/NumberKeyboard.h \
     health_home.h \
     health_record.h \
     health_report.h \
@@ -53,6 +63,22 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 RESOURCES += \
-    image.qrc
+    Image.qrc \
+    icon.qrc
 
 DISTFILES +=
+
+
+# 启用谷歌汉字库(推荐使用)
+ENABLED_GOOGLE_CHINESE_LIB
+
+
+DEFINES += ENABLED_GOOGLE_CHINESE_LIB
+
+
+contains(DEFINES, ENABLED_GOOGLE_CHINESE_LIB) {
+    RESOURCES += Resources/GoogleChineseLib.qrc
+}
+
+
+

@@ -25,10 +25,10 @@ typedef QList<Modes> ModesList;
 const int NORMAL_BUTTON_WIDTH  = 55;
 const int NORMAL_BUTTON_HEIGHT = 45;
 
-const QString BACKSPACE_ICON = ":/Image/backspace.png";
-const QString ENTER_ICON     = ":/Image/enter.png";
-const QString SPACE_ICON     = ":/Image/space.png";
-const QString CAPLOCK_ICON   = ":/Image/caplock.png";
+const QString BACKSPACE_ICON = ":/Resources/Image/backspace.png";
+const QString ENTER_ICON     = ":/Resources/Image/enter.png";
+const QString SPACE_ICON     = ":/Resources/Image/space.png";
+const QString CAPLOCK_ICON   = ":/Resources/Image/caplock.png";
 
 const double BUTTON_SPACING_RATIO = 0.030;
 const double BUTTON_WIDTH_RATIO   = 0.09;

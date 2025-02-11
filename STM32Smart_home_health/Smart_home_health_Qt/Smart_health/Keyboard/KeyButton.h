@@ -1,11 +1,4 @@
-﻿/**********************************************************
-#Author: Qtjun
-#WeChat Official Accounts: qthub_com
-#QQ Group: 732271126
-#Email: 2088201923@qq.com
-**********************************************************/
-
-#ifndef AEA_KEY_BUTTON_H
+﻿#ifndef AEA_KEY_BUTTON_H
 #define AEA_KEY_BUTTON_H
 
 #include <QPushButton>

@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
 
 
     log_in login;
-    login.show();
+    login.showFullScreen();
 
     // sign_in signin;
     // signin.show();
