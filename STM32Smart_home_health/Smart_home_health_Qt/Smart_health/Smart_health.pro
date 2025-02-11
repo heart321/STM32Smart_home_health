@@ -1,4 +1,4 @@
-QT       += core gui network sql
+QT       += core gui network sql multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -16,7 +16,6 @@ INCLUDEPATH += \
 
 
 SOURCES += \
-    AI_Chat/ai_chat.cpp \
     Keyboard/KeyButton.cpp \
     Keyboard/Keyboard.cpp \
     Keyboard/NumberKeyboard.cpp \
@@ -32,7 +31,6 @@ SOURCES += \
 
 
 HEADERS += \
-    AI_Chat/ai_chat.h \
     Keyboard/AbstractKeyboard.h \
     Keyboard/KeyButton.h \
     Keyboard/Keyboard.h \

@@ -3,6 +3,8 @@
 #include "sign_in.h"
 #include "widget.h"
 
+QString g_username; // **全局变量 用户名 username
+
 log_in::log_in(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::log_in)
@@ -58,8 +60,8 @@ log_in::~log_in()
 void log_in::on_pushButton_login_clicked()
 {
     // 得到输入的账户名和密码
-     QString username = ui->lineEdit_user->text();
-     QString password = ui->lineEdit_password->text();
+    QString username = ui->lineEdit_user->text();
+    QString password = ui->lineEdit_password->text();
 
     // 判断用户名或密码是否为空
     if(username.isEmpty() || password.isEmpty())
@@ -108,6 +110,7 @@ void log_in::on_pushButton_login_clicked()
             if(inputHash == storedHash) //直接对比字符串
             {
                 qDebug() << "登录成功！" <<Qt::endl;
+                g_username = username;
                 static QPointer<Widget> w;
                 if (w.isNull()) {
                     w = new Widget;
@@ -209,19 +212,15 @@ void log_in::callKeyBoard()
         keyboardWindow = new QWidget(this);
         keyboardWindow->resize(680, 350);
 
-
         QVBoxLayout* v = new QVBoxLayout;
         v->addWidget(keyboard, 5);
         keyboardWindow->setLayout(v);
-
     }
 
     if (!keyboardWindow->isVisible()) {
         keyboardWindow->move(0, 250);
         keyboardWindow->show();
     }
-
-
 }
 
 

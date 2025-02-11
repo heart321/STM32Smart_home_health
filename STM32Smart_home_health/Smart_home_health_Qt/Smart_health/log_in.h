@@ -22,6 +22,8 @@
 // #include "qtmaterialraisedbutton.h"
 //#include "qtmaterialdialog.h"
 
+extern QString g_username;
+
 namespace Ui {
 class log_in;
 }
@@ -54,6 +56,7 @@ private:
 
     QWidget* keyboardWindow = nullptr;
     AeaQt::Keyboard* keyboard = nullptr;
+
 
 
 

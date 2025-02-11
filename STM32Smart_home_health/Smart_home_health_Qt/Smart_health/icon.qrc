@@ -46,5 +46,6 @@
         <file>icons/widgets/TVOC.png</file>
         <file>icons/widgets/env.png</file>
         <file>icons/widgets/temp.png</file>
+        <file>icons/widgets/fox.png</file>
     </qresource>
 </RCC>

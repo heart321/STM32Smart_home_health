@@ -59,6 +59,8 @@ sign_in::sign_in(QWidget *parent)
     this->setWindowFlags(Qt::FramelessWindowHint);
 
 
+
+
 }
 
 sign_in::~sign_in()

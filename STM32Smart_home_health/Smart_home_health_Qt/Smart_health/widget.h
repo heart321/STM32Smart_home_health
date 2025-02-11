@@ -28,6 +28,9 @@ public:
     Widget(QWidget *parent = nullptr);
     ~Widget();
 
+private slots:
+    void on_toolButton_logout_clicked();
+
 private:
     Ui::Widget *ui;
     /*创建各界面的窗口*/

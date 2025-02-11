@@ -1,5 +1,6 @@
 #include "widget.h"
 #include "ui_widget.h"
+#include "log_in.h"
 
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
@@ -31,8 +32,29 @@ Widget::Widget(QWidget *parent)
     this->setWindowFlags(Qt::FramelessWindowHint);
 
 
+
+
 }
 Widget::~Widget()
 {
     delete ui;
 }
+
+/*退出登录按钮*/
+void Widget::on_toolButton_logout_clicked()
+{
+    static QPointer<log_in> w; // 使用 QPointer 自动管理
+    if (w.isNull()) {
+        w = new log_in;
+        w->setAttribute(Qt::WA_DeleteOnClose);
+        w->showFullScreen();
+        this->close();
+    } else {
+        if (!w->isVisible()) {
+            w->showFullScreen(); // 如果窗口被关闭但未销毁，重新显示
+        }
+        w->activateWindow();
+        qDebug() << "窗口已经存在！" << Qt::endl;
+    }
+}
+
