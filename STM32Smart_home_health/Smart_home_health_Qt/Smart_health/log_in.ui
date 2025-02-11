@@ -216,6 +216,9 @@
      <height>51</height>
     </rect>
    </property>
+   <property name="text">
+    <string>123456</string>
+   </property>
   </widget>
   <widget class="QtMaterialTextField" name="lineEdit_user">
    <property name="geometry">
@@ -225,6 +228,9 @@
      <width>271</width>
      <height>51</height>
     </rect>
+   </property>
+   <property name="text">
+    <string>21213020490120</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_log_in">

@@ -29,5 +29,22 @@
         <file>icons/sigin/sigin_weight.png</file>
         <file>icons/sigin/sign_in.png</file>
         <file>icons/sigin/sigin_down.png</file>
+        <file>icons/widgets/home.png</file>
+        <file>icons/widgets/records.png</file>
+        <file>icons/widgets/report.png</file>
+        <file>icons/widgets/user.png</file>
+        <file>icons/widgets/exit2.png</file>
+        <file>icons/widgets/db.png</file>
+        <file>icons/widgets/humi.png</file>
+        <file>icons/widgets/PM25.png</file>
+        <file>icons/widgets/bllod.png</file>
+        <file>icons/widgets/heart_rate.png</file>
+        <file>icons/widgets/people_temp.png</file>
+        <file>icons/widgets/body.png</file>
+        <file>icons/widgets/CO2.png</file>
+        <file>icons/widgets/HCHO.png</file>
+        <file>icons/widgets/TVOC.png</file>
+        <file>icons/widgets/env.png</file>
+        <file>icons/widgets/temp.png</file>
     </qresource>
 </RCC>

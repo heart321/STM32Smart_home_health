@@ -13,9 +13,11 @@ sign_in::sign_in(QWidget *parent)
 
     /*设置password*/
     ui->lineEdit_password->setLabel("密码:");
+    ui->lineEdit_password->setEchoMode(QLineEdit::Password);
 
     /*设置确认密码*/
     ui->lineEdit_entPsd->setLabel("确认密码:");
+    ui->lineEdit_entPsd->setEchoMode(QLineEdit::Password);
 
     /*设置姓名*/
     ui->lineEdit_name->setLabel("姓名:");
@@ -107,6 +109,11 @@ void sign_in::on_pushButton_signin_clicked()
     {
         qDebug() << "有空!!" << Qt::endl;
         QMessageBox::warning(this, tr("错误"), tr("有选项没有填写！"), QMessageBox::Ok);
+    }
+    else if(password != confirm_password)
+    {
+        qDebug() << "密码不一致!!" << Qt::endl;
+        QMessageBox::warning(this, tr("错误"), tr("密码不一致！"), QMessageBox::Ok);
     }
     else
     {

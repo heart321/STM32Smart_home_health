@@ -16,6 +16,10 @@ INCLUDEPATH += \
 
 
 SOURCES += \
+    health_home.cpp \
+    health_record.cpp \
+    health_report.cpp \
+    health_user.cpp \
     log_in.cpp \
     main.cpp \
     mysql.cpp \
@@ -23,12 +27,20 @@ SOURCES += \
     widget.cpp
 
 HEADERS += \
+    health_home.h \
+    health_record.h \
+    health_report.h \
+    health_user.h \
     log_in.h \
     mysql.h \
     sign_in.h \
     widget.h
 
 FORMS += \
+    health_home.ui \
+    health_record.ui \
+    health_report.ui \
+    health_user.ui \
     log_in.ui \
     sign_in.ui \
     widget.ui
