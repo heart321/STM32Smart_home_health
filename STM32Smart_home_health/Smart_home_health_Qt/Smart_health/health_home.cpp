@@ -46,6 +46,10 @@ health_home::health_home(QWidget *parent)
     }
 
 
+    QTimer *getSysTime = new QTimer(this);//时间
+    connect(getSysTime,SIGNAL(timeout()),this,SLOT(time_reflash()));
+    getSysTime->start(1000);//定时器启动
+
 }
 
 health_home::~health_home()
@@ -76,5 +80,36 @@ double health_home::computeBMI(double height, double weight, QString* BMI_R)
         *BMI_R = "肥胖";
 
     return bmi;
+}
+
+/*获取系统时间*/
+void health_home::getSysTime()
+{
+    QDateTime currentTime = QDateTime::currentDateTime();
+
+    QDate date = currentTime.date();
+    int year = date.year();
+    int month = date.month();
+    int day = date.day();
+
+    QTime time = currentTime.time();
+    int hour = time.hour();
+    int minute = time.minute();
+    int second = time.second();
+
+    myData =  QString("%1-%2-%3").arg(year).arg(month).arg(day);
+    myTime = QString("%1:%2:%3")
+                    .arg(hour, 2, 10, QChar('0'))  // 保证小时为 2 位数
+                    .arg(minute, 2, 10, QChar('0')) // 保证分钟为 2 位数
+                    .arg(second, 2, 10, QChar('0')); // 保证秒钟为 2 位数
+}
+
+/*时间刷新函数*/
+void health_home::time_reflash()
+{
+    getSysTime();
+    ui->label_myData->setText(myData);
+    ui->label_myTime->setText(myTime);
+
 }
 

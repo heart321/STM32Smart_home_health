@@ -23,14 +23,15 @@
 #include <QAudioOutput>
 
 #include <QJsonDocument>
-#include <QJsonArray>
 #include <QJsonObject>
+#include <QJsonArray>
 
 #include <QFile>
 
 #include <QUrl>
 #include <QUrlQuery>
 #include <QBuffer>
+#include <QTimer>
 
 
 //百度语音获取token_url psot_url AppID APIkey Secret_Key
@@ -47,6 +48,9 @@
 #define Chat_API_Key "SJmTWOwHO9iFS17FnLz91knb"
 #define Chat_Secret_key "UWaaYoPx8RvUovhaENZWB0Y7fbZ76nYh"
 
+/*录音文件地址*/
+#define File_PATH "D:\\All_Project\\Graduation_project\\STM32Smart_home_health\\Smart_home_health_Qt\\Smart_health\\Audio\\audio_file.pcm"
+
 namespace Ui {
 class health_report;
 }
@@ -62,8 +66,47 @@ public:
     /*获取百度chat 和 语音识别的 token*/
     void baidu_http_get_token(void);
 
+public slots:
+    /*请求结束 返回结果解析*/
+    void http_finished(QNetworkReply *Reply);
+
+    /*将音频上传到百度云识别*/
+    void baidu_Audio_Send(void);
+
+    /*将语音识别完成的文字发送给Chat*/
+    void baidu_Chat_Send(QString result);
+
+    /*将百度Chat的回答上传 进行语音合成*/
+    void baidu_AudioOut_Send(QString text);
+
+    /*暂停录音*/
+    void on_autoStopAudio(void);
+
+private slots:
+    void on_pushButton_AiChat_clicked();
+
+    void on_pushButton_stopChat_clicked();
+
 private:
     Ui::health_report *ui;
+
+    // get请求返回的token
+    QString Audio_access_token = "";
+    QString Chat_access_token = "";
+
+    QNetworkAccessManager* baidu_Audio = nullptr;
+    QNetworkAccessManager* baidu_Chat = nullptr;
+
+    // 音频格式
+    QAudioFormat Audio_Format;
+    QAudioInput *Audio_in = nullptr;
+
+    // 音频文件处理
+    QFile destinationFile;
+    QFile *sendFile;
+
+    // 结束聊天的标志变量
+    bool shouldStopChat = false;
 };
 
 #endif // HEALTH_REPORT_H

@@ -6,13 +6,69 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>934</width>
-    <height>575</height>
+    <width>940</width>
+    <height>599</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>940</width>
+    <height>599</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>940</width>
+    <height>599</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
+  <widget class="QTableView" name="tableView_user">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>921</width>
+     <height>581</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QTableView {
+    background-color: white; /* 设置背景颜色为白色 */
+    border-radius: 15px; /* 设置圆角 */
+    border: 2px solid #64B5F6; /* 添加边框 */
+    font-size: 14px;
+	gridline-color: transparent; /* 隐藏网格线 */
+}
+
+QHeaderView::section {
+    background-color: #42A5F5; /* 设置表头背景颜色 */
+    color: white; /* 文字颜色 */
+    padding: 8px;
+    border: 1px solid #1E88E5;
+    font-weight: bold;
+}
+
+QTableView::item {
+    padding: 5px;
+    border: none; /* 移除单元格边框 */
+}
+ QTableView::item:selected {
+        background: #0078D7; /* 深蓝色选中背景 */
+        color: #FFFFFF; /* 选中时的字体颜色*/
+}
+
+QTableCornerButton::section {
+    background-color: #42A5F5; /* 角落按钮颜色 */
+    border: 1px solid #1E88E5;
+}
+
+
+</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

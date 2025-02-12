@@ -18,6 +18,7 @@ log_in::log_in(QWidget *parent)
     ui->lineEdit_user->setLabel("账号:");
     ui->lineEdit_user->installEventFilter(this);
 
+
     /*设置password样式*/
     ui->lineEdit_password->setLabel("密码:");
     ui->lineEdit_password->installEventFilter(this);

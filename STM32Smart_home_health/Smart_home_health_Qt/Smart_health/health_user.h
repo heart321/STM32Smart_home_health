@@ -2,6 +2,10 @@
 #define HEALTH_USER_H
 
 #include <QWidget>
+#include <QSqlTableModel>
+#include <QSqlQuery>
+#include <QStyledItemDelegate>
+
 
 namespace Ui {
 class health_user;

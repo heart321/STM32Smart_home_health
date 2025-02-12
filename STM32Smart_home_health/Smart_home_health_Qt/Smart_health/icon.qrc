@@ -47,5 +47,6 @@
         <file>icons/widgets/env.png</file>
         <file>icons/widgets/temp.png</file>
         <file>icons/widgets/fox.png</file>
+        <file>icons/widgets/baiduAI.png</file>
     </qresource>
 </RCC>

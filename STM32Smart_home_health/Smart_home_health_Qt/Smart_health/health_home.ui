@@ -10,6 +10,18 @@
     <height>599</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>940</width>
+    <height>599</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>940</width>
+    <height>599</height>
+   </size>
+  </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
@@ -19,9 +31,9 @@
   <widget class="QFrame" name="frame_body">
    <property name="geometry">
     <rect>
-     <x>0</x>
+     <x>10</x>
      <y>110</y>
-     <width>381</width>
+     <width>371</width>
      <height>261</height>
     </rect>
    </property>
@@ -750,9 +762,9 @@ QLabel {
   <widget class="QFrame" name="frame_3">
    <property name="geometry">
     <rect>
-     <x>1</x>
+     <x>11</x>
      <y>1</y>
-     <width>921</width>
+     <width>911</width>
      <height>101</height>
     </rect>
    </property>
@@ -1211,13 +1223,65 @@ background-color: rgb(255, 255, 255);
      <string/>
     </property>
    </widget>
+   <widget class="QLabel" name="label_myData">
+    <property name="geometry">
+     <rect>
+      <x>720</x>
+      <y>10</y>
+      <width>191</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>阿里妈妈东方大楷</family>
+      <pointsize>15</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLabel{
+	background-color: rgb(255, 255, 255);
+    color: rgb(72,61,139);  /* 字体颜色 */
+    
+}</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_myTime">
+    <property name="geometry">
+     <rect>
+      <x>730</x>
+      <y>50</y>
+      <width>161</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>阿里妈妈东方大楷</family>
+      <pointsize>15</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLabel{
+	background-color: rgb(255, 255, 255);
+    color: rgb(72,61,139);  /* 字体颜色 */
+    
+}</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
   </widget>
   <widget class="QFrame" name="frame_4">
    <property name="geometry">
     <rect>
-     <x>1</x>
+     <x>11</x>
      <y>379</y>
-     <width>381</width>
+     <width>371</width>
      <height>211</height>
     </rect>
    </property>

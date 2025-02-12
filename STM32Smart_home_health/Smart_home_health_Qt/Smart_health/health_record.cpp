@@ -6,6 +6,7 @@ health_record::health_record(QWidget *parent)
     , ui(new Ui::health_record)
 {
     ui->setupUi(this);
+
 }
 
 health_record::~health_record()

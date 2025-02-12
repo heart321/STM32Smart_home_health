@@ -10,6 +10,12 @@
     <height>599</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>940</width>
+    <height>599</height>
+   </size>
+  </property>
   <property name="maximumSize">
    <size>
     <width>940</width>
@@ -19,7 +25,196 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(255, 255, 255);</string>
+  </property>
+  <widget class="QFrame" name="frame">
+   <property name="geometry">
+    <rect>
+     <x>450</x>
+     <y>10</y>
+     <width>471</width>
+     <height>571</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#frame {
+    background-color: rgb(255, 255, 255); /* 设置背景颜色为白色 */
+    border: 1px solid rgb(200, 200, 200); /* 设置边框颜色 */
+    border-radius: 10px;                  /* 设置圆角半径 */
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Raised</enum>
+   </property>
+   <widget class="QTextBrowser" name="textBrowser_AiChat">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>50</y>
+      <width>451</width>
+      <height>441</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QTextBrowser {
+    border: 2px solid #000000;   /* 设置边框颜色和宽度 */
+    border-radius: 10px;          /* 设置圆角半径 */
+}
+</string>
+    </property>
+   </widget>
+   <widget class="QtMaterialRaisedButton" name="pushButton_AiChat">
+    <property name="geometry">
+     <rect>
+      <x>70</x>
+      <y>520</y>
+      <width>81</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>开始聊天</string>
+    </property>
+   </widget>
+   <widget class="QtMaterialRaisedButton" name="pushButton_stopChat">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>520</y>
+      <width>81</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>停止聊天</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QFrame" name="frame_2">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>130</y>
+     <width>421</width>
+     <height>451</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#frame_2 {
+    background-color: rgb(255, 255, 255); /* 设置背景颜色为白色 */
+    border: 1px solid rgb(200, 200, 200); /* 设置边框颜色 */
+    border-radius: 10px;                  /* 设置圆角半径 */
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Raised</enum>
+   </property>
+   <widget class="QtMaterialRaisedButton" name="pushButton_AiReport">
+    <property name="geometry">
+     <rect>
+      <x>150</x>
+      <y>390</y>
+      <width>91</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>生成AI报告</string>
+    </property>
+   </widget>
+   <widget class="QTextBrowser" name="textBrowser_AiReport">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>50</y>
+      <width>401</width>
+      <height>321</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QTextBrowser {
+    border: 2px solid #000000;   /* 设置边框颜色和宽度 */
+    border-radius: 10px;          /* 设置圆角半径 */
+}
+</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QFrame" name="frame_3">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>421</width>
+     <height>111</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#frame_3{
+    background-color: rgb(255, 255, 255); /* 设置背景颜色为白色 */
+    border: 1px solid rgb(200, 200, 200); /* 设置边框颜色 */
+    border-radius: 10px;                  /* 设置圆角半径 */
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Raised</enum>
+   </property>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>5</y>
+      <width>111</width>
+      <height>91</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap resource="icon.qrc">:/icons/widgets/baiduAI.png</pixmap>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="comboBox_input">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>30</y>
+      <width>251</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>阿里妈妈东方大楷</family>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+   </widget>
+  </widget>
  </widget>
- <resources/>
+ <customwidgets>
+  <customwidget>
+   <class>QtMaterialRaisedButton</class>
+   <extends>QPushButton</extends>
+   <header>qtmaterialraisedbutton.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="icon.qrc"/>
+ </resources>
  <connections/>
 </ui>

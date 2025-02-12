@@ -2,6 +2,7 @@
 #define HEALTH_RECORD_H
 
 #include <QWidget>
+#include <QDebug>
 
 namespace Ui {
 class health_record;

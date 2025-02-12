@@ -28,7 +28,7 @@
   <property name="styleSheet">
    <string notr="true">background-color: rgb(255, 255, 255);</string>
   </property>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>0</x>
@@ -92,7 +92,7 @@ QPushButton:default {
           <string>健康记录</string>
          </property>
          <property name="icon">
-          <iconset resource="image.qrc">
+          <iconset resource="icon.qrc">
            <normaloff>:/icons/widgets/records.png</normaloff>:/icons/widgets/records.png</iconset>
          </property>
          <property name="iconSize">
@@ -145,7 +145,7 @@ QPushButton:default {
           <string>退出登录</string>
          </property>
          <property name="icon">
-          <iconset resource="image.qrc">
+          <iconset resource="icon.qrc">
            <normaloff>:/icons/widgets/exit2.png</normaloff>:/icons/widgets/exit2.png</iconset>
          </property>
          <property name="iconSize">
@@ -198,7 +198,7 @@ QPushButton:default {
           <string>主页</string>
          </property>
          <property name="icon">
-          <iconset resource="image.qrc">
+          <iconset resource="icon.qrc">
            <normaloff>:/icons/widgets/home.png</normaloff>:/icons/widgets/home.png</iconset>
          </property>
          <property name="iconSize">
@@ -251,7 +251,7 @@ QPushButton:default {
           <string>用户信息</string>
          </property>
          <property name="icon">
-          <iconset resource="image.qrc">
+          <iconset resource="icon.qrc">
            <normaloff>:/icons/widgets/user.png</normaloff>:/icons/widgets/user.png</iconset>
          </property>
          <property name="iconSize">
@@ -304,7 +304,7 @@ QPushButton:default {
           <string>健康报告</string>
          </property>
          <property name="icon">
-          <iconset resource="image.qrc">
+          <iconset resource="icon.qrc">
            <normaloff>:/icons/widgets/report.png</normaloff>:/icons/widgets/report.png</iconset>
          </property>
          <property name="iconSize">
@@ -346,7 +346,14 @@ QPushButton:default {
     <item row="0" column="1">
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="styleSheet">
-       <string notr="true">background-color: rgb(135,206,250);</string>
+       <string notr="true">/*background-color: rgb(135,206,250);*/
+QWidget {
+        background: qlineargradient(
+            spread:pad, x1:0, y1:0, x2:1, y2:1,
+            stop:0 #3498db,  /* 左上角 - 蓝色 */
+            stop:1 #ffffff   /* 右下角 - 白色 */
+        );
+}</string>
       </property>
       <widget class="QWidget" name="page"/>
      </widget>
@@ -355,7 +362,7 @@ QPushButton:default {
   </widget>
  </widget>
  <resources>
-  <include location="image.qrc"/>
+  <include location="icon.qrc"/>
  </resources>
  <connections/>
 </ui>
