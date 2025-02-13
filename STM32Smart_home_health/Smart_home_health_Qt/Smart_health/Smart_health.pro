@@ -18,7 +18,6 @@ INCLUDEPATH += \
 SOURCES += \
     Keyboard/KeyButton.cpp \
     Keyboard/Keyboard.cpp \
-    Keyboard/NumberKeyboard.cpp \
     health_home.cpp \
     health_record.cpp \
     health_report.cpp \
@@ -34,7 +33,6 @@ HEADERS += \
     Keyboard/AbstractKeyboard.h \
     Keyboard/KeyButton.h \
     Keyboard/Keyboard.h \
-    Keyboard/NumberKeyboard.h \
     health_home.h \
     health_record.h \
     health_report.h \

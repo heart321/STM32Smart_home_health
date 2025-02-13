@@ -19,6 +19,11 @@ health_report::health_report(QWidget *parent)
 {
     ui->setupUi(this);
 
+
+    ui->pushButton_AiChat->setBackgroundColor("#55557f");
+    ui->pushButton_stopChat->setBackgroundColor("#55557f");
+    ui->pushButton_AiReport->setBackgroundColor("#55557f");
+
     /*获取可用的音频输入设备*/
     QList<QAudioDeviceInfo> inputDevices = QAudioDeviceInfo::availableDevices(QAudio::AudioInput);
     /*将获取到的麦克风添加到comboBox_input*/
@@ -115,7 +120,7 @@ void health_report::http_finished(QNetworkReply *Reply)
 
                     qDebug() << "reslut_chat" << result_Chat << Qt::endl;
                     //ui->textEdit_Chat->append(result_Chat);
-                    ui->textBrowser_AiChat->setText(result_Chat);
+                    ui->textBrowser_AiReport->setText(result_Chat);
                     // 将Chat得到的文本进行语音合成
                     baidu_AudioOut_Send(result_Chat);
 

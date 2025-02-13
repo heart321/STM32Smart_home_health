@@ -7,8 +7,6 @@ health_user::health_user(QWidget *parent)
 {
     ui->setupUi(this);
 
-
-
     QSqlTableModel *model = new QSqlTableModel();
     model->setTable("user");
     model->select(); //加载数据

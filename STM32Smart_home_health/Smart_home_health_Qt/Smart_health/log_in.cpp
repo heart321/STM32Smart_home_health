@@ -17,11 +17,13 @@ log_in::log_in(QWidget *parent)
     /*设置user样式*/
     ui->lineEdit_user->setLabel("账号:");
     ui->lineEdit_user->installEventFilter(this);
+    ui->lineEdit_user->setInkColor("#55557f");
 
 
     /*设置password样式*/
     ui->lineEdit_password->setLabel("密码:");
     ui->lineEdit_password->installEventFilter(this);
+    ui->lineEdit_password->setInkColor("#55557f");
     ui->lineEdit_password->setEchoMode(QLineEdit::Password);
 
     /*设置登录按钮*/
