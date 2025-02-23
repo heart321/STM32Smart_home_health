@@ -65,7 +65,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="image.qrc">:/icons/sigin/sigin_user.png</pixmap>
+     <pixmap resource="icon.qrc">:/icons/sigin/sigin_user.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -84,7 +84,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="image.qrc">:/icons/sigin/sigin_entpasd.png</pixmap>
+     <pixmap resource="icon.qrc">:/icons/sigin/sigin_entpasd.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -103,7 +103,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="image.qrc">:/icons/sigin/sigin_password.png</pixmap>
+     <pixmap resource="icon.qrc">:/icons/sigin/sigin_password.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -172,7 +172,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="image.qrc">:/icons/sigin/sigin_name.png</pixmap>
+     <pixmap resource="icon.qrc">:/icons/sigin/sigin_name.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -191,7 +191,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="image.qrc">:/icons/sigin/sigin_age2.png</pixmap>
+     <pixmap resource="icon.qrc">:/icons/sigin/sigin_age2.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -210,7 +210,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="image.qrc">:/icons/sigin/sigin_sex.png</pixmap>
+     <pixmap resource="icon.qrc">:/icons/sigin/sigin_sex.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -286,7 +286,7 @@ QComboBox QAbstractItemView {
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="image.qrc">:/icons/sigin/sigin_height.png</pixmap>
+     <pixmap resource="icon.qrc">:/icons/sigin/sigin_height.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -305,7 +305,7 @@ QComboBox QAbstractItemView {
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="image.qrc">:/icons/sigin/sigin_weight.png</pixmap>
+     <pixmap resource="icon.qrc">:/icons/sigin/sigin_weight.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -391,7 +391,7 @@ QComboBox QAbstractItemView {
     <string/>
    </property>
    <property name="pixmap">
-    <pixmap resource="image.qrc">:/icons/sigin/sign_in.png</pixmap>
+    <pixmap resource="icon.qrc">:/icons/sigin/sign_in.png</pixmap>
    </property>
    <property name="scaledContents">
     <bool>true</bool>
@@ -434,7 +434,7 @@ QComboBox QAbstractItemView {
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="image.qrc"/>
+  <include location="icon.qrc"/>
  </resources>
  <connections/>
 </ui>

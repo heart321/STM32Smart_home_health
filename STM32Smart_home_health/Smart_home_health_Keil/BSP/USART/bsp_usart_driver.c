@@ -118,7 +118,7 @@ void wifi_usart2_Receive(uint8_t *data,uint16_t len)
  */
 void debug_usart1_Init(void)
 {
-        // 1.开启UART3时钟 GPIOB时钟 PA9->TX3 PA10->RX3
+        // 1.开启UART3时钟 GPIOB时钟
 	__HAL_RCC_USART1_CLK_ENABLE();
 	__HAL_RCC_GPIOA_CLK_ENABLE();
 	__HAL_RCC_DMA2_CLK_ENABLE();

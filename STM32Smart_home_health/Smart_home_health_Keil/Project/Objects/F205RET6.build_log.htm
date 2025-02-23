@@ -27,6 +27,8 @@ Project File Date:  02/07/2025
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 6 (build 750)', folder: 'D:\Keil_ARM\ARM\ARMCC\Bin'
 Build target 'Target 1'
+compiling app_air_task.c...
+compiling app_aht20_task.c...
 compiling app_wifi_task.c...
 ..\Task\app_wifi_task.c(113): warning:  #870-D: invalid multibyte character sequence
               DEBUG_LOG("wifi_task 温度�?%.2fC 湿度�?%.2f%%\r\n",
@@ -38,11 +40,13 @@ compiling app_wifi_task.c...
       char PUB_BUF[256];                       // 要上传的数据
 ..\Task\app_wifi_task.c(59): warning:  #177-D: variable "devPubTopic"  was declared but never referenced
       const char devPubTopic[] = {"cx/123P"};  // 发布的Topic
-..\Task\app_wifi_task.c: 5 warnings, 0 errors
+..\Task\app_wifi_task.c(60): warning:  #177-D: variable "dataPtr"  was declared but never referenced
+  	unsigned char *dataPtr = NULL;
+..\Task\app_wifi_task.c: 6 warnings, 0 errors
 linking...
-Program Size: Code=36952 RO-data=752 RW-data=200 ZI-data=80328  
+Program Size: Code=29496 RO-data=464 RW-data=184 ZI-data=80328  
 FromELF: creating hex file...
-".\Objects\F205RET6.axf" - 0 Error(s), 5 Warning(s).
+".\Objects\F205RET6.axf" - 0 Error(s), 6 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -56,7 +60,7 @@ Package Vendor: Keil
   D:\Keil_ARM\Keil\STM32F2xx_DFP\2.10.0\Drivers\CMSIS\Device\ST\STM32F2xx\Include
 
 <h2>Collection of Component Files used:</h2>
-Build Time Elapsed:  00:00:03
+Build Time Elapsed:  00:00:04
 </pre>
 </body>
 </html>

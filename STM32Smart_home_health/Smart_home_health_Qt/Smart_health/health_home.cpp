@@ -9,6 +9,21 @@ health_home::health_home(QWidget *parent)
     ui->setupUi(this);
 
 
+
+    /*查询身高 体重等身体信息*/
+    sql_body_information();
+
+
+}
+
+health_home::~health_home()
+{
+    delete ui;
+}
+
+/*查询数据库中的信息*/
+void health_home::sql_body_information()
+{
     // 1. 初始化SQL语句
     QSqlQuery query;
     QString sql = "SELECT name, age, sex, height, weight FROM user WHERE username = :username";
@@ -31,11 +46,11 @@ health_home::health_home(QWidget *parent)
         double height = query.value(3).toDouble();    // 获取 height
         double weight = query.value(4).toDouble();    // 获取 weight
 
-    // 4.计算BMI
+        // 4.计算BMI
         QString BMI_r;
         double BMI = computeBMI(height,weight,&BMI_r);
 
-    // 5.显示数据
+        // 5.显示数据
         ui->label_name->setText(name);
         ui->label_age->setText(QString::number(age));
         ui->label_sex->setText(sex);
@@ -49,12 +64,6 @@ health_home::health_home(QWidget *parent)
     QTimer *getSysTime = new QTimer(this);//时间
     connect(getSysTime,SIGNAL(timeout()),this,SLOT(time_reflash()));
     getSysTime->start(1000);//定时器启动
-
-}
-
-health_home::~health_home()
-{
-    delete ui;
 }
 
 /* 计算 BMI 值  和 范围*/
@@ -103,6 +112,8 @@ void health_home::getSysTime()
                     .arg(minute, 2, 10, QChar('0')) // 保证分钟为 2 位数
                     .arg(second, 2, 10, QChar('0')); // 保证秒钟为 2 位数
 }
+
+
 
 /*时间刷新函数*/
 void health_home::time_reflash()

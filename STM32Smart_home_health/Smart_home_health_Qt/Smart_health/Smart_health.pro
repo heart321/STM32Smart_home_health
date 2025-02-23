@@ -1,4 +1,4 @@
-QT       += core gui network sql multimedia
+QT       += core gui network sql multimedia mqtt
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -24,6 +24,7 @@ SOURCES += \
     health_user.cpp \
     log_in.cpp \
     main.cpp \
+    mqtt.cpp \
     mysql.cpp \
     sign_in.cpp \
     widget.cpp \
@@ -38,6 +39,7 @@ HEADERS += \
     health_report.h \
     health_user.h \
     log_in.h \
+    mqtt.h \
     mysql.h \
     sign_in.h \
     widget.h

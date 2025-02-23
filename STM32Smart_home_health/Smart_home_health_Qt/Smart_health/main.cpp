@@ -2,7 +2,7 @@
 #include <QThread>
 #include "log_in.h"
 #include "mysql.h"
-
+#include "mqtt.h"
 
 
 
@@ -19,6 +19,9 @@ int main(int argc, char *argv[])
         QMessageBox::critical(nullptr, "错误", "无法连接数据库，程序将退出！");
         return -1;
     }
+
+    mqtt Mqtt; //mqtt客户端对象
+    Mqtt.mqtt_connect();
 
 
     log_in login;
