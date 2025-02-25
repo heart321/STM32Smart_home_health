@@ -24,13 +24,6 @@ health_report::health_report(QWidget *parent)
     ui->pushButton_stopChat->setBackgroundColor("#55557f");
     ui->pushButton_AiReport->setBackgroundColor("#55557f");
 
-    /*获取可用的音频输入设备*/
-    QList<QAudioDeviceInfo> inputDevices = QAudioDeviceInfo::availableDevices(QAudio::AudioInput);
-    /*将获取到的麦克风添加到comboBox_input*/
-    foreach (const QAudioDeviceInfo &deviceInfo, inputDevices) {
-        ui->comboBox_input->addItem(deviceInfo.deviceName(),QVariant::fromValue(deviceInfo));
-    }
-
     /*获取token*/
     baidu_http_get_token();
 }
@@ -147,24 +140,21 @@ void health_report::on_pushButton_AiChat_clicked()
         Audio_Format.setSampleRate(16000);
         Audio_Format.setChannelCount(1);
         Audio_Format.setSampleSize(16);
-        Audio_Format.setCodec("audio/pcm");
+        Audio_Format.setCodec("audio/wav");
         Audio_Format.setByteOrder(QAudioFormat::LittleEndian);
         Audio_Format.setSampleType(QAudioFormat::UnSignedInt);
 
-        // **获取选中的设备**
-        QVariant selectedDevice = ui->comboBox_input->currentData();
-        if (!selectedDevice.isValid()) {
-            qWarning() << "No input device selected!";
-            return;
-        }
 
-        QAudioDeviceInfo info = selectedDevice.value<QAudioDeviceInfo>();
 
-        // **检查格式支持**
-        if (!info.isFormatSupported(Audio_Format)) {
-            qWarning() << "Default format not supported, trying to use nearest...";
+        //选择默认设备为输入源
+        QAudioDeviceInfo info = QAudioDeviceInfo::defaultInputDevice();
+
+        //判断输入的格式是否支持，如果不支持就使用系统支持的默认格式
+        if(!info.isFormatSupported(Audio_Format))
+        {
             Audio_Format = info.nearestFormat(Audio_Format);
         }
+
 
         // **释放旧的 QAudioInput**
         if (Audio_in) {
@@ -190,6 +180,9 @@ void health_report::on_pushButton_AiChat_clicked()
         QTimer::singleShot(5000, this, &health_report::on_autoStopAudio);
     }
 }
+
+
+
 
 /* 停止录音 */
 void health_report::on_autoStopAudio()
@@ -236,7 +229,7 @@ void health_report::baidu_Audio_Send()
 
     // 组装JSON数据
     QJsonObject jsonObject;
-    jsonObject["format"] = "pcm";
+    jsonObject["format"] = "wav";
     jsonObject["rate"] = 16000;
     jsonObject["dev_pid"] = 1537;
     jsonObject["channel"] = 1;

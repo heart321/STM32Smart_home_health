@@ -49,7 +49,7 @@
 #define Chat_Secret_key "UWaaYoPx8RvUovhaENZWB0Y7fbZ76nYh"
 
 /*录音文件地址*/
-#define File_PATH "D:\\All_Project\\Graduation_project\\STM32Smart_home_health\\Smart_home_health_Qt\\Smart_health\\Audio\\audio_file.pcm"
+#define File_PATH "D:\\All_Project\\Graduation_project\\STM32Smart_home_health\\Smart_home_health_Qt\\Smart_health\\Audio\\audio_file.wav"
 
 namespace Ui {
 class health_report;

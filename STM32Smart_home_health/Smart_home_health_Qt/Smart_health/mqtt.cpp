@@ -10,7 +10,12 @@ mqtt::mqtt(QWidget *parent)
 
 mqtt::~mqtt()
 {
+    if(Client.state() == QMqttClient::Connected)
+    {
+        Client.disconnectFromHost();//断开连接
+        qDebug() << "mqtt服务器已断开！！！" << Qt::endl;
 
+    }
 }
 
 /*连接mqtt服务器*/
