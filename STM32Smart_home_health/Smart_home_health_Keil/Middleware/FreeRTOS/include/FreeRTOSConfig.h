@@ -44,7 +44,7 @@
 #define configUSE_TICK_HOOK			0
 #define configCPU_CLOCK_HZ			( ( unsigned long ) 120000000 )
 #define configTICK_RATE_HZ			( ( TickType_t ) 1000 )
-#define configMAX_PRIORITIES		( 30 )
+#define configMAX_PRIORITIES		( 32 )
 #define configMINIMAL_STACK_SIZE	( ( unsigned short ) 128 )
 #define configTOTAL_HEAP_SIZE		( ( size_t ) ( 75 * 1024 ) )
 #define configMAX_TASK_NAME_LEN		( 16 )
@@ -56,6 +56,10 @@
 #define configSUPPORT_DYNAMIC_ALLOCATION 1 
 #define configUSE_COUNTING_SEMAPHORES 1
 
+#define configCHECK_FOR_STACK_OVERFLOW 2 // 启用堆栈溢出检测（方法 2）
+#define configUSE_MALLOC_FAILED_HOOK 1   // 启用内存分配失败钩子
+#define configUSE_STATS_FORMATTING_FUNCTIONS 1 // 启用任务状态格式化函数（如 vTaskList）
+#define INCLUDE_uxTaskGetStackHighWaterMark 1
 
 /* Set the following definitions to 1 to include the API function, or zero
 to exclude the API function. */
@@ -80,7 +84,7 @@ See http://www.FreeRTOS.org/RTOS-Cortex-M3-M4.html. */
 priority values, 0 to 15.  This must correspond to the
 configKERNEL_INTERRUPT_PRIORITY setting.  Here 15 corresponds to the lowest
 NVIC value of 255. */
-#define configLIBRARY_KERNEL_INTERRUPT_PRIORITY	15
+#define configLIBRARY_KERNEL_INTERRUPT_PRIORITY	5
 
 #define xPortPendSVHandler              PendSV_Handler 
 #define vPortSVCHandler                 SVC_Handler

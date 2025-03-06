@@ -9,8 +9,8 @@
 #include <QMessageBox>
 #include <QTimer>
 #include <QDateTime>
-
-
+#include <QtMqtt/qmqttclient.h>
+#include "mqtt.h"
 
 namespace Ui {
 class health_home;
@@ -32,15 +32,26 @@ public:
 
 
 
-
 private slots:
     void time_reflash(void);//时间刷新
+
+    /*接收消息*/
+    void MQTT_RevData_Success(const QByteArray &message);
+
+
+    void on_checkBox_wuhua_toggled(bool checked);
+
+    void on_checkBox_door_toggled(bool checked);
+
+    void on_checkBox_window_toggled(bool checked);
+
+    void on_checkBox_fenshang_toggled(bool checked);
 
 private:
     Ui::health_home *ui;
 
-
-
+    /*创建mqtt类*/
+    mqtt my_mqtt;
 
     // 获取时间
     QString myData;

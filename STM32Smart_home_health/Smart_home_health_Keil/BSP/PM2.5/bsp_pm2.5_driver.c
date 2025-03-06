@@ -12,8 +12,10 @@
  * @tips     1tab = 4spaces
  */
 #include "bsp_pm2.5_driver.h"
+#include "bsp_usart_driver.h"
 
 UART_HandleTypeDef huart6;
+
 
 /**
  * @brief  	pm2.5串口初始化
@@ -22,36 +24,34 @@ UART_HandleTypeDef huart6;
  */
 void pm25_usart6_init(void)
 {
-	// 1.初始时钟 GPIOC USART6
-	__HAL_RCC_GPIOC_CLK_ENABLE();
-	__HAL_RCC_USART6_CLK_ENABLE();
 	
-	// 2.初始化GPIO
-	GPIO_InitTypeDef GPIO_InitStruct = {0};
-	GPIO_InitStruct.Pin = GPIO_PIN_6 | GPIO_PIN_7;
-	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-	GPIO_InitStruct.Alternate = GPIO_AF8_USART6;
-	HAL_GPIO_Init(GPIOC,&GPIO_InitStruct);
-	
-	
-	// 3.配置串口6
-	huart6.Instance = USART6;
-	huart6.Init.BaudRate = 9600;
-	huart6.Init.WordLength = UART_WORDLENGTH_8B;
-	huart6.Init.StopBits = UART_STOPBITS_1;
-	huart6.Init.Parity = UART_PARITY_NONE;               				/*不启用奇偶校验*/
-	huart6.Init.Mode = UART_MODE_TX_RX;									/*设置 USART6的模式为收发（TX 和 RX）*/
-	huart6.Init.HwFlowCtl = UART_HWCONTROL_NONE;						/*不启用硬件流控*/
-	huart6.Init.OverSampling = UART_OVERSAMPLING_16;					/*设置过采样比为16*/
-	HAL_UART_Init(&huart6);
-	
-	
-	// 4.打开串口6中断
-	HAL_NVIC_SetPriority(USART6_IRQn,10,0);
-	HAL_NVIC_EnableIRQ(USART6_IRQn);
+	if (__HAL_RCC_GPIOC_IS_CLK_DISABLED()) { __HAL_RCC_GPIOC_CLK_ENABLE(); }
+    __HAL_RCC_USART6_CLK_ENABLE();
 
+    GPIO_InitTypeDef GPIO_InitStruct = {0};
+    GPIO_InitStruct.Pin = GPIO_PIN_6 | GPIO_PIN_7;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    GPIO_InitStruct.Alternate = GPIO_AF8_USART6;
+    HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+    huart6.Instance = USART6;
+    huart6.Init.BaudRate = 9600;
+    huart6.Init.WordLength = UART_WORDLENGTH_8B;
+    huart6.Init.StopBits = UART_STOPBITS_1;
+    huart6.Init.Parity = UART_PARITY_NONE;
+    huart6.Init.Mode = UART_MODE_TX_RX;
+    huart6.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+    huart6.Init.OverSampling = UART_OVERSAMPLING_16;
+    if (HAL_UART_Init(&huart6) != HAL_OK)
+    {
+        DEBUG_LOG("USART6 初始化失败\n");
+        while (1);
+    }
+
+    HAL_NVIC_SetPriority(USART6_IRQn, 5, 1);
+    HAL_NVIC_EnableIRQ(USART6_IRQn);
 }
 
 /**
@@ -59,11 +59,14 @@ void pm25_usart6_init(void)
  * @param   None
  * @retval  None
  */
-void pm25_rev_data(uint8_t* data,uint16_t len)
+void pm25_rev_data(uint8_t* data, uint16_t len)
 {
-	//HAL_UART_Receive(&huart6,data,len,100);
-	HAL_UARTEx_ReceiveToIdle_IT(&huart6,data,len);
+    if (HAL_UARTEx_ReceiveToIdle_IT(&huart6, data, len) != HAL_OK)
+    {
+        DEBUG_LOG("USART6 接收启动失败, 错误码: %d\n", huart6.ErrorCode);
+    }
 }
+
 
 
 

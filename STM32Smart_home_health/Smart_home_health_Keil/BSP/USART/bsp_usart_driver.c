@@ -34,9 +34,17 @@ DMA_HandleTypeDef hdma_usart1_tx;
 void wifi_usart2_Init(void)
 {
     //1.打开UART1时钟 GPIOA时钟 DMA2时钟
+	if(__HAL_RCC_GPIOA_IS_CLK_DISABLED())
+	{
+		__HAL_RCC_GPIOA_CLK_ENABLE();
+	}
     __HAL_RCC_USART2_CLK_ENABLE();
-    __HAL_RCC_GPIOA_CLK_ENABLE();
-    __HAL_RCC_DMA1_CLK_ENABLE();
+	
+	if(__HAL_RCC_DMA1_IS_CLK_DISABLED())
+	{
+		__HAL_RCC_DMA1_CLK_ENABLE();
+	}
+    
     
     //2.配置GPIO
     GPIO_InitTypeDef GPIO_InitStruct = {0};
@@ -56,7 +64,11 @@ void wifi_usart2_Init(void)
     huart2.Init.Mode = UART_MODE_TX_RX;									/*设置 USART1 的模式为收发（TX 和 RX）*/
     huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;						/*不启用硬件流控*/
     huart2.Init.OverSampling = UART_OVERSAMPLING_16;					/*设置过采样比为16*/
-    HAL_UART_Init(&huart2);
+    if (HAL_UART_Init(&huart2) != HAL_OK)
+    {
+        while (1);
+    }
+   
 
 
     //4.配置DMA搬运器 USART2_RX DMA1_Stream5  USART2_TX DMA1_Stream6
@@ -83,7 +95,8 @@ void wifi_usart2_Init(void)
     __HAL_LINKDMA(&huart2,hdmatx,hdma_usart2_tx);						/*将DMA句柄与串口句柄关联起来*/
 
     //5.设置中断优先级和分组
-    HAL_NVIC_SetPriority(USART2_IRQn,0,0);
+
+    HAL_NVIC_SetPriority(USART2_IRQn, 4, 0);
     HAL_NVIC_EnableIRQ(USART2_IRQn);
 
     HAL_NVIC_SetPriority(DMA1_Stream5_IRQn,0,0);
@@ -108,6 +121,7 @@ void wifi_usart2_Send(uint8_t *data,uint16_t len)
 void wifi_usart2_Receive(uint8_t *data,uint16_t len)
 {
     HAL_UART_Receive_DMA(&huart2,data,len);
+	
 }
 
 
@@ -118,11 +132,18 @@ void wifi_usart2_Receive(uint8_t *data,uint16_t len)
  */
 void debug_usart1_Init(void)
 {
-        // 1.开启UART3时钟 GPIOB时钟
+        // 1.开启UART1时钟 GPIOB时钟
 	__HAL_RCC_USART1_CLK_ENABLE();
-	__HAL_RCC_GPIOA_CLK_ENABLE();
-	__HAL_RCC_DMA2_CLK_ENABLE();
-
+	
+	if(__HAL_RCC_GPIOA_IS_CLK_DISABLED())
+	{	
+		__HAL_RCC_GPIOA_CLK_ENABLE();
+	}
+	
+	if(__HAL_RCC_DMA2_IS_CLK_DISABLED())
+	{
+		__HAL_RCC_DMA2_CLK_ENABLE();
+	}
 	
 	// 2.配置GPIO口
 	GPIO_InitTypeDef GPIO_InitStruct = {0};
@@ -146,9 +167,9 @@ void debug_usart1_Init(void)
 	huart1.Init.OverSampling = UART_OVERSAMPLING_16;					/*设置过采样比为16*/
 	HAL_UART_Init(&huart1);
 	
-	//4.配置DMA搬运器 需要查看引脚映射表 USART3_RX DMA1_Stream1  USART3_TX DMA1_Stream3
+	//4.配置DMA搬运器 需要查看引脚映射表 
 	/*DMA1_rx DMA接收*/
-	hdma_usart1_rx.Instance = DMA1_Stream5;
+	hdma_usart1_rx.Instance = DMA2_Stream5;
 	hdma_usart1_rx.Init.Channel = DMA_CHANNEL_4;
 	hdma_usart1_rx.Init.Direction = DMA_PERIPH_TO_MEMORY;				/*配置数据传输方向为从外设到内存*/
 	hdma_usart1_rx.Init.PeriphInc = DMA_PINC_DISABLE;					/*设置外设地址递增模式为禁用*/
@@ -171,7 +192,7 @@ void debug_usart1_Init(void)
 	__HAL_LINKDMA(&huart1,hdmarx,hdma_usart1_rx);
 	
 	/*DMA1_tx DMA发送*/
-	hdma_usart1_tx.Instance = DMA1_Stream7;
+	hdma_usart1_tx.Instance = DMA2_Stream7;
 	hdma_usart1_tx.Init.Channel = DMA_CHANNEL_4;
 	hdma_usart1_tx.Init.Direction = DMA_MEMORY_TO_PERIPH;				/*配置数据传输方向为从内存到外设*/
 	hdma_usart1_tx.Init.PeriphInc = DMA_PINC_DISABLE;					/*设置外设地址递增模式为禁用*/

@@ -11,6 +11,7 @@
  */
 
 #include "bsp_aht20_driver.h"
+#include "bsp_usart_driver.h"
 
 
 #define AHT20_ADDRESS 0x70
@@ -27,7 +28,10 @@ void aht20_init(void)
 {
 
 	// 1.开启时钟
-	__HAL_RCC_GPIOB_CLK_ENABLE();
+	if(__HAL_RCC_GPIOB_IS_CLK_DISABLED())
+	{
+		__HAL_RCC_GPIOB_CLK_ENABLE();
+	}
 	__HAL_RCC_I2C1_CLK_ENABLE();
 	
 	
@@ -51,21 +55,24 @@ void aht20_init(void)
 	hi2c1.Init.OwnAddress2 = 0;
 	hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
 	hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
-	if(HAL_I2C_Init(&hi2c1) != HAL_OK)
-	{
-		while(1);
-	
-	}
-	
-	// 4.初始化AHT20
-	uint8_t readBuffer;
-	HAL_Delay(40);
-	HAL_I2C_Master_Receive(&hi2c1,AHT20_ADDRESS,&readBuffer,1,HAL_MAX_DELAY);
-	if((readBuffer & 0x08) == 0x00)
-	{
-		uint8_t sendBuffer[3] = {0xBE , 0x08 , 0x00};
-		HAL_I2C_Master_Transmit(&hi2c1,AHT20_ADDRESS,sendBuffer,3,HAL_MAX_DELAY);
-	}
+	if (HAL_I2C_Init(&hi2c1) != HAL_OK) {
+        while (1);
+    }
+
+    // 测试AHT20是否响应
+    HAL_Delay(100); // 上电等待
+    if (HAL_I2C_IsDeviceReady(&hi2c1, AHT20_ADDRESS, 1, HAL_MAX_DELAY) != HAL_OK) {
+        while (1);
+    }
+
+    // 初始化AHT20
+    uint8_t readBuffer;
+    HAL_I2C_Master_Receive(&hi2c1, AHT20_ADDRESS, &readBuffer, 1, HAL_MAX_DELAY);
+
+    if ((readBuffer & 0x08) == 0x00) {
+        uint8_t sendBuffer[3] = {0xBE, 0x08, 0x00};
+        HAL_I2C_Master_Transmit(&hi2c1, AHT20_ADDRESS, sendBuffer, 3, HAL_MAX_DELAY);
+    }
 }
 
 
@@ -75,30 +82,41 @@ void aht20_init(void)
  * @retval  None
  */
 
-void aht20_read(float* temp,float* humi)
-{
-	uint8_t sendBuffer[3] = {0xAC, 0x33, 0x00};
-	uint8_t readBuffer[6];
-	
-	HAL_I2C_Master_Transmit(&hi2c1,AHT20_ADDRESS,sendBuffer,3,HAL_MAX_DELAY);
-	HAL_Delay(75);
-	
-	HAL_I2C_Master_Receive(&hi2c1,AHT20_ADDRESS,readBuffer,6,HAL_MAX_DELAY);
-	
-	if((readBuffer[0] & 0x80) == 0x00)
-	{
-		uint32_t humi_data = ((uint32_t)readBuffer[1] << 12) | 
-                     ((uint32_t)readBuffer[2] << 4) | 
-                     ((readBuffer[3] >> 4) & 0x0F);
-		*humi = (humi_data * 100.0f) / (1 << 20);
+void aht20_read(float* temp, float* humi) {
+    uint8_t sendBuffer[3] = {0xAC, 0x33, 0x00};
+    uint8_t readBuffer[6];
+    uint8_t status;
 
-		uint32_t temp_data = ((uint32_t)(readBuffer[3] & 0x0F) << 16) | 
-                     ((uint32_t)readBuffer[4] << 8) | 
-                     readBuffer[5];
-		*temp = (temp_data * 200.0f) / (1 << 20) - 50;	
-	
-	
-	}
+    // 发送测量命令
+    HAL_I2C_Master_Transmit(&hi2c1, AHT20_ADDRESS, sendBuffer, 3, HAL_MAX_DELAY);
+
+    // 等待测量完成
+    uint32_t timeout = 100; // 超时100ms
+    do {
+        HAL_I2C_Master_Receive(&hi2c1, AHT20_ADDRESS, &status, 1, HAL_MAX_DELAY);
+        HAL_Delay(10);
+        timeout -= 10;
+    } while ((status & 0x80) && timeout > 0);
+
+    if (timeout == 0) {
+        *temp = 0;
+        *humi = 0;
+        return;
+    }
+
+    // 读取数据
+    HAL_I2C_Master_Receive(&hi2c1, AHT20_ADDRESS, readBuffer, 6, HAL_MAX_DELAY);
+
+    // 解析数据
+    uint32_t humi_data = ((uint32_t)readBuffer[1] << 12) | 
+                         ((uint32_t)readBuffer[2] << 4) | 
+                         ((readBuffer[3] >> 4) & 0x0F);
+    *humi = (humi_data * 100.0f) / (1 << 20);
+
+    uint32_t temp_data = ((uint32_t)(readBuffer[3] & 0x0F) << 16) | 
+                         ((uint32_t)readBuffer[4] << 8) | 
+                         readBuffer[5];
+    *temp = (temp_data * 200.0f) / (1 << 20) - 50;
 }
 
 

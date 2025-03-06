@@ -50,5 +50,9 @@
         <file>icons/widgets/baiduAI.png</file>
         <file>icons/widgets/AI_rpport.png</file>
         <file>icons/widgets/robot.png</file>
+        <file>icons/widgets/door.png</file>
+        <file>icons/widgets/fenshang.png</file>
+        <file>icons/widgets/window.png</file>
+        <file>icons/widgets/wuhua.png</file>
     </qresource>
 </RCC>

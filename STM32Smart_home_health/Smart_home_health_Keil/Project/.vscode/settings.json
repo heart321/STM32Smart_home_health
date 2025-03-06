@@ -20,6 +20,12 @@
         "bsp_pm2.5_driver.h": "c",
         "app_lm2904_task.h": "c",
         "string.h": "c",
-        "bsp_lm2904_driver.h": "c"
+        "bsp_lm2904_driver.h": "c",
+        "bsp_gy906_driver.h": "c",
+        "app_gy906_task.h": "c",
+        "bsp_relay_driver.h": "c",
+        "bsp_buzzer_driver.h": "c",
+        "bsp_wuhua_driver.h": "c",
+        "app_revdata_task.h": "c"
     }
 }

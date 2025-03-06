@@ -27,7 +27,6 @@
 /****************Semaphore Init*************************/
 extern SemaphoreHandle_t xAht20ReadySemaphore;
 
-
 /****************Queue Init*************************/
 extern QueueHandle_t xWeatherDataQueue;
 
@@ -39,29 +38,23 @@ extern QueueHandle_t xWeatherDataQueue;
 void aht20_task(void *pvParameters)
 {
 	weatherData_t weatherData;
-	
-	aht20_init();
-	
+
 	/*等待wifi准备就绪*/
-	if(pdTRUE == xSemaphoreTake(xAht20ReadySemaphore,portMAX_DELAY))
+
+	while (1)
 	{
-
-		while(1)
+		if (pdTRUE == xSemaphoreTake(xAht20ReadySemaphore, portMAX_DELAY))
 		{
-			aht20_read(&weatherData.temperature,&weatherData.humidity);
-			if(NULL != xWeatherDataQueue)
+			aht20_read(&weatherData.temperature, &weatherData.humidity);
+
+			if (NULL != xWeatherDataQueue)
 			{
-				xQueueSend(xWeatherDataQueue,&weatherData,pdMS_TO_TICKS(10));
-
+				xQueueSend(xWeatherDataQueue, &weatherData, pdMS_TO_TICKS(100));
 			}
-			// printf("温度：%.2fC 湿度：%.2f%%\r\n",
-			// 	weatherData.temperature,weatherData.humidity);
-			
-//			vTaskDelay(5 * 60 * 1000);
-			vTaskDelay(5000);
+			//			 printf("温度：%.2fC 湿度：%.2f%%\r\n",
+			//			 	weatherData.temperature,weatherData.humidity);
 		}
+
+		vTaskDelay(pdMS_TO_TICKS(3000));
 	}
-
-
 }
-

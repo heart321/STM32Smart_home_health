@@ -53,29 +53,17 @@ void ESP8266_Clear(void)
  */
 ESP8266_StatusTypeDef_t ESP8266_WaitReceive(void)
 {
-    static uint32_t lastTick = 0;
-
-    if (esp8266_cnt == 0)
+    uint32_t timeout = xTaskGetTickCount() + pdMS_TO_TICKS(500); // 500ms 超时
+    while (esp8266_cnt == esp8266_cntPre)
     {
-        return ESP8266_ERROR;
+        if (xTaskGetTickCount() > timeout)
+        {
+            return ESP8266_TIMEOUT;
+        }
+        vTaskDelay(pdMS_TO_TICKS(10)); // 短暂延时，避免忙等待
     }
-	
-	/*数据不在发生变化 说明已经接收完成*/
-    uint32_t currentTick = xTaskGetTickCount();
-    if (currentTick - lastTick > 100)
-    {
-        esp8266_cntPre = esp8266_cnt;
-        lastTick = currentTick; // 重置 lastTick
-        return ESP8266_OK;
-    }
-	
-    if (esp8266_cnt != esp8266_cntPre)
-    {
-        lastTick = currentTick; // 更新 lastTick
-        esp8266_cntPre = esp8266_cnt;
-    }
-
-    return ESP8266_ERROR;
+    esp8266_cntPre = esp8266_cnt;
+    return ESP8266_OK;
 }
 
 
@@ -87,18 +75,13 @@ ESP8266_StatusTypeDef_t ESP8266_WaitReceive(void)
  *			waittime 发送事件
  * @retval  ESP8266状态
  */
-ESP8266_StatusTypeDef_t ESP8266_SendCmd(char *cmd,char *res, uint32_t waittime)
+ESP8266_StatusTypeDef_t ESP8266_SendCmd(char *cmd, char *res, uint32_t waittime)
 {
-
-    
     ESP8266_Clear();
-    
    
     wifi_usart2_Send((uint8_t*)cmd, strlen(cmd));
     
-    
     wifi_usart2_Receive(&esp8266_rx_buffer[0], 1);
-    
    
     while(waittime--)
     {
@@ -128,7 +111,8 @@ ESP8266_StatusTypeDef_t ESP8266_SendCmd(char *cmd,char *res, uint32_t waittime)
 ESP8266_StatusTypeDef_t ESP8266_Connect(void)
 {
     ESP8266_Clear();
-    
+   
+	
     
     // 发送AT指令，等待返回OK，如果返回错误，则发送AT failed，并返回ESP8266_ERROR
 #if DEBUG
@@ -140,26 +124,10 @@ ESP8266_StatusTypeDef_t ESP8266_Connect(void)
         DEBUG_LOG("AT ERROR!\n");
 		DEBUG_LOG("rx_buffer:%s \n",esp8266_rx_buffer);
 #endif
-        HAL_Delay(1000);
+        vTaskDelay(pdMS_TO_TICKS(1000));
         return ESP8266_ERROR;
-    }
-    
-	/*AT+RST发送出去导致连接不上wifi ?? 不清楚原因*/
-    // 发送AT+RST指令，等待返回OK，如果返回错误，则发送AT+RST failed，并返回ESP8266_ERROR
-//#if DEBUG
-//    DEBUG_LOG("AT+RST\n");
-//#endif
-//    while(ESP8266_SendCmd("AT+RST\r\n", "OK", 1000) != ESP8266_OK)
-//    {
-//#if DEBUG
-//        DEBUG_LOG("AT+RST ERROR\n");
-//		Debug_usart3_Send((uint8_t*)esp8266_rx_buffer,128);
-//#endif
-//        HAL_Delay(1000);
-//        return ESP8266_ERROR;
-//    }
-    
-    
+    }  
+    DEBUG_LOG("AT OK\n");
     // 发送AT+CWMODE=1指令，等待返回OK，如果返回错误，则发送AT+CWMODE=1 failed，并返回ESP8266_ERROR
 #if DEBUG
     DEBUG_LOG("AT+CWMODE=1\n");
@@ -170,7 +138,7 @@ ESP8266_StatusTypeDef_t ESP8266_Connect(void)
         DEBUG_LOG("AT+CWMODE=1 ERROR\n");
 		DEBUG_LOG("rx_buffer:%s \n",esp8266_rx_buffer);
 #endif
-        HAL_Delay(1000);
+        vTaskDelay(pdMS_TO_TICKS(1000));
         return ESP8266_ERROR;
     }
     
@@ -186,7 +154,7 @@ ESP8266_StatusTypeDef_t ESP8266_Connect(void)
         DEBUG_LOG("ESP8266_WIFI ERROR\n");
 		DEBUG_LOG("rx_buffer:%s \n",esp8266_rx_buffer);
 #endif
-        HAL_Delay(1000);
+        vTaskDelay(pdMS_TO_TICKS(1000));
         return ESP8266_ERROR;
     }
 
@@ -199,7 +167,7 @@ ESP8266_StatusTypeDef_t ESP8266_Connect(void)
 #if DEBUG
         DEBUG_LOG("ESP8266_TCP ERROR\n");
 #endif
-        HAL_Delay(1000);
+        vTaskDelay(pdMS_TO_TICKS(1000));
         return ESP8266_ERROR;
     }
 
@@ -218,17 +186,36 @@ ESP8266_StatusTypeDef_t ESP8266_Connect(void)
  * 			len 数据长度
  * @retval  ESP8266状态
  */
-ESP8266_StatusTypeDef_t ESP8266_SendData(char *data,uint16_t len)
+ESP8266_StatusTypeDef_t ESP8266_SendData(char *data, uint16_t len)
 {
-	char cmdbuf[32] = {0};
-	ESP8266_Clear();
-	sprintf(cmdbuf,"AT+CIPSEND=%d\r\n", len);
-	if(ESP8266_SendCmd(cmdbuf,">",1000) == ESP8266_OK)
-	{
-		wifi_usart2_Send((uint8_t*)data,len);
-		return ESP8266_OK;
-	}
-	return ESP8266_ERROR;
+    char cmdbuf[32] = {0};
+    ESP8266_Clear();
+    sprintf(cmdbuf, "AT+CIPSEND=%d\r\n", len);
+    //DEBUG_LOG("发送 AT+CIPSEND: %s\n", cmdbuf);
+    TickType_t timeout = xTaskGetTickCount() + pdMS_TO_TICKS(1000);
+    ESP8266_StatusTypeDef_t status = ESP8266_ERROR;
+    while (xTaskGetTickCount() < timeout)
+    {
+        if (ESP8266_SendCmd(cmdbuf, ">", 100) == ESP8266_OK)
+        {
+            //DEBUG_LOG("收到 >，发送数据: %s\n", data);
+            wifi_usart2_Send((uint8_t*)data, len);
+            vTaskDelay(pdMS_TO_TICKS(100));
+            status = ESP8266_OK;
+            break;
+        }
+        vTaskDelay(pdMS_TO_TICKS(10));
+    }
+    ESP8266_Clear(); // 确保每次发送后清理缓冲区
+    if (status == ESP8266_OK)
+    {
+        return ESP8266_OK;
+    }
+    else
+    {
+        DEBUG_LOG("AT+CIPSEND 超时或失败，缓冲区: %s\n", esp8266_rx_buffer);
+        return ESP8266_ERROR;
+    }
 }
 
 /*
@@ -238,60 +225,43 @@ ESP8266_StatusTypeDef_t ESP8266_SendData(char *data,uint16_t len)
  * @param   waittime 等待时间
  * @retval  ESP8266状态
  */
-unsigned char* ESP8266_GetIPD(unsigned short waittime)
-{
-	char *ptrIPD = NULL;
-	do
-	{
-		/*接收完成*/
-		if(ESP8266_WaitReceive() == ESP8266_OK)
-		{
-			/*搜索IPD头*/
-#if DEBUG
-			//DEBUG_LOG("rx_buffer:%s\n",esp8266_rx_buffer);
-#endif
-			ptrIPD = strstr((char *)esp8266_rx_buffer,"IPD,");
-			if(ptrIPD == NULL)
-			{
-#if DEBUG
-				DEBUG_LOG("IPD not found!\n");
-				
-#endif
-			}
-			else
-			{
-				ptrIPD = strchr(ptrIPD,':');
-				if(ptrIPD != NULL)
-				{
-					ptrIPD++;
-					
-					return (unsigned char*)(ptrIPD);
-				}
-				else return NULL;
-			
-			}
-		
-		}
-		HAL_Delay(5);
-		waittime--;
-	}while(waittime > 0);
-	
-	return NULL;
+unsigned char* ESP8266_GetIPD(unsigned short waittime) {
+    char *ptrIPD = NULL;
+    do {
+        if (ESP8266_WaitReceive() == ESP8266_OK) {
+            ptrIPD = strstr((char *)esp8266_rx_buffer, "IPD,");
+            if (ptrIPD == NULL) {
+                DEBUG_LOG("IPD not found!\n");
+            } else {
+                ptrIPD = strchr(ptrIPD, ':');
+                if (ptrIPD != NULL) {
+                    ptrIPD++;
+                    DEBUG_LOG("IPD data found: %s\n", ptrIPD);
+                    return (unsigned char*)ptrIPD;
+                }
+            }
+        } else {
+            DEBUG_LOG("WaitReceive timeout\n");
+        }
+        vTaskDelay(pdMS_TO_TICKS(10)); // 使用 FreeRTOS 延时
+        waittime--;
+    } while (waittime > 0);
+    DEBUG_LOG("Timeout! No valid IPD data received.\n");
+    return NULL;
 }
 
 
 // UART1 wifi 接收完成回调函数
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-    if (USART2 == huart->Instance)
+    if (huart->Instance == USART2)
     {
-        taskENTER_CRITICAL(); // FreeRTOS 临界区保护
+        taskENTER_CRITICAL();
         if (esp8266_cnt < ESP8266_RX_BUFFER_SIZE - 1)
         {
             esp8266_rx_buffer[esp8266_cnt++] = huart->Instance->DR;
         }
         taskEXIT_CRITICAL();
-
         wifi_usart2_Receive(&esp8266_rx_buffer[esp8266_cnt], 1);
     }
 }

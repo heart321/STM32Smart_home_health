@@ -28,9 +28,19 @@ DMA_HandleTypeDef hdma_adc1;
 void lm2904_init(void)
 {
 	// 1.开启时钟 ADC1 GPIOA7 DMA2-0
-	__HAL_RCC_ADC1_CLK_ENABLE();
-	__HAL_RCC_GPIOA_CLK_ENABLE();
-	__HAL_RCC_DMA2_CLK_ENABLE();
+	if(__HAL_RCC_ADC1_IS_CLK_DISABLED())
+	{
+		__HAL_RCC_ADC1_CLK_ENABLE();
+	}
+	if(__HAL_RCC_GPIOA_IS_CLK_DISABLED())
+	{
+		__HAL_RCC_GPIOA_CLK_ENABLE();
+	}
+	if(__HAL_RCC_DMA2_IS_CLK_DISABLED())
+	{
+		__HAL_RCC_DMA2_CLK_ENABLE();
+	}
+	
 	
 	GPIO_InitTypeDef GPIO_InitStruct = {0};
 	ADC_ChannelConfTypeDef sConfig = {0};

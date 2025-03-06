@@ -34,7 +34,7 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-extern TIM_HandleTypeDef htim4;
+extern TIM_HandleTypeDef htim5;
 
 /*串口2句柄 DMA句柄*/
 extern UART_HandleTypeDef huart2;
@@ -51,6 +51,7 @@ extern UART_HandleTypeDef huart4;
 
 /*串口6 句柄*/
 extern UART_HandleTypeDef huart6;
+
 
 /*lm2904 adc_dma句柄*/
 extern DMA_HandleTypeDef hdma_adc1;
@@ -158,19 +159,19 @@ void DebugMon_Handler(void)
 void SysTick_Handler(void)
 {
 	//HAL_IncTick();
-	/*使用TIM4作为HAL的时基
+	/*使用TIM5作为HAL的时基
 	因为FreeRTOS默认以systick为时基*/
 	extern void xPortSysTickHandler(void);
 	xPortSysTickHandler();
 }
 
 /**
-  * @brief This function handles TIM4 global interrupt.
+  * @brief This function handles TIM5 global interrupt.
   */
-void TIM4_IRQHandler(void)
+void TIM5_IRQHandler(void)
 {
 	/*回调函数放在了sys.c中*/
-	HAL_TIM_IRQHandler(&htim4);
+	HAL_TIM_IRQHandler(&htim5);
 }
 
 /**
@@ -249,3 +250,4 @@ void USART6_IRQHandler(void)
 {
     HAL_UART_IRQHandler(&huart6);
 }
+

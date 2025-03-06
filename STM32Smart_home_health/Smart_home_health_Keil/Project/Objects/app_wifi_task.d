@@ -1,4 +1,5 @@
 .\objects\app_wifi_task.o: ..\Task\app_wifi_task.c
+.\objects\app_wifi_task.o: D:\Keil_ARM\ARM\ARMCC\Bin\..\include\string.h
 .\objects\app_wifi_task.o: ..\Middleware\FreeRTOS\include\FreeRTOS.h
 .\objects\app_wifi_task.o: D:\Keil_ARM\ARM\ARMCC\Bin\..\include\stddef.h
 .\objects\app_wifi_task.o: D:\Keil_ARM\ARM\ARMCC\Bin\..\include\stdint.h
@@ -77,8 +78,14 @@
 .\objects\app_wifi_task.o: ..\BSP\LED\bsp_led_driver.h
 .\objects\app_wifi_task.o: ..\BSP\USART\bsp_usart_driver.h
 .\objects\app_wifi_task.o: D:\Keil_ARM\ARM\ARMCC\Bin\..\include\stdio.h
-.\objects\app_wifi_task.o: ..\Task\include\app_wifi_task.h
+.\objects\app_wifi_task.o: ..\BSP\OLED\bsp_oled_driver.h
+.\objects\app_wifi_task.o: ..\BSP\OLED\oledfont.h
 .\objects\app_wifi_task.o: ..\BSP\NetWork\Cloud.h
+.\objects\app_wifi_task.o: ..\BSP\NetWork\Mqttkit.h
+.\objects\app_wifi_task.o: ..\BSP\NetWork\Common.h
+.\objects\app_wifi_task.o: D:\Keil_ARM\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\app_wifi_task.o: ..\Task\include\app_wifi_task.h
 .\objects\app_wifi_task.o: ..\Task\include\app_aht20_task.h
 .\objects\app_wifi_task.o: ..\Task\include\app_air_task.h
 .\objects\app_wifi_task.o: ..\Task\include\app_lm2904_task.h
+.\objects\app_wifi_task.o: ..\Task\include\app_gy906_task.h

@@ -63,7 +63,7 @@ void sys_clock_init(void)
 
 /**
   * @brief  周期完成回调函数（非阻塞模式）
-  * @note   当 TIM4 中断发生时会调用此函数，调用位置在 HAL_TIM_IRQHandler() 内。
+  * @note   当 TIM5 中断发生时会调用此函数，调用位置在 HAL_TIM_IRQHandler() 内。
   *         它直接调用 HAL_IncTick() 来增加全局变量 "uwTick"，
   *         该变量用作应用程序的时间基准。
   * @param  htim : 定时器句柄
@@ -72,7 +72,7 @@ void sys_clock_init(void)
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-	if(htim->Instance == TIM4)
+	if(htim->Instance == TIM5)
 	{
 		HAL_IncTick();
 	}

@@ -14,3 +14,4 @@
 .\objects\tasks.o: ..\Middleware\FreeRTOS\include\list.h
 .\objects\tasks.o: ..\Middleware\FreeRTOS\include\timers.h
 .\objects\tasks.o: ..\Middleware\FreeRTOS\include\stack_macros.h
+.\objects\tasks.o: D:\Keil_ARM\ARM\ARMCC\Bin\..\include\stdio.h

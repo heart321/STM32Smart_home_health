@@ -10,12 +10,11 @@ mqtt::mqtt(QWidget *parent)
 
 mqtt::~mqtt()
 {
-    if(Client.state() == QMqttClient::Connected)
-    {
-        Client.disconnectFromHost();//断开连接
-        qDebug() << "mqtt服务器已断开！！！" << Qt::endl;
-
-    }
+    // if(Client.state() == QMqttClient::Connected)
+    // {
+    //     Client.disconnectFromHost();//断开连接
+    //     qDebug() << "mqtt服务器已断开！！！" << Qt::endl;
+    // }
 }
 
 /*连接mqtt服务器*/
@@ -38,8 +37,8 @@ void mqtt::mqtt_connect()
         //当"Clean Session"设置为false时，表示客户端与代理断开连接后，会话状态会被保留，包括之前的订阅和发布消息。
         Client.setCleanSession(false);
 
-        //设置心跳时间间隔120S
-        Client.setKeepAlive(120);
+        //设置心跳时间间隔60S
+        Client.setKeepAlive(60);
         //设置mqtt版本
         Client.setProtocolVersion(QMqttClient::ProtocolVersion::MQTT_3_1_1);
         //连接mqtt服务器
@@ -49,6 +48,56 @@ void mqtt::mqtt_connect()
         //loop.exec();
     }
 }
+
+/*订阅消息*/
+void mqtt::Subscribe(const QString &topic, int qos)
+{
+    QMqttSubscription *substate = Client.subscribe(QMqttTopicFilter(topic),qos);
+    QTimer time;
+    int timerout = 50;
+    connect(&time,&QTimer::timeout,&loop,&QEventLoop::quit);
+    time.start(timerout);
+    loop.exec();
+
+    if(substate->state() == QMqttSubscription::Subscribed)
+    {
+        qDebug () << "订阅成功！" << Qt::endl;
+    }
+}
+
+/*发布消息*/
+int mqtt::Publish(const QString &topic, const QString &message, int qos)
+{
+    auto result = Client.publish(QMqttTopicName(topic),message.toUtf8(),qos,true);
+    return result;
+}
+
+/*分离json数据*/
+QString mqtt::get_mqttValue(QJsonDocument JsonDocument, QString Key)
+{
+    if(JsonDocument.isObject())
+    {
+        QJsonObject jsonObj = JsonDocument.object();//将Doucoument转换为json对象
+        if(jsonObj.contains(Key))
+        {
+            QJsonValue jsonVal = jsonObj.value(Key);
+            if(jsonVal.isString())
+            {
+                if(jsonVal.isNull())
+                {
+                    return QString("");
+                }
+                else
+                {
+                    return jsonVal.toString();
+                }
+            }
+        }
+    }
+    return QString("");
+}
+
+
 
 /*mqtt 连接成功*/
 void mqtt::mqtt_connect_success()

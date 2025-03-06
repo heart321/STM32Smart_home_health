@@ -22,29 +22,27 @@ Dialog DLL:      TCM.DLL V1.36.2.0
  
 <h2>Project:</h2>
 D:\All_Project\Graduation_project\STM32Smart_home_health\Smart_home_health_Keil\Project\Smart_home.uvprojx
-Project File Date:  02/07/2025
+Project File Date:  03/06/2025
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 6 (build 750)', folder: 'D:\Keil_ARM\ARM\ARMCC\Bin'
 Build target 'Target 1'
-compiling app_air_task.c...
-compiling app_aht20_task.c...
 compiling app_wifi_task.c...
-..\Task\app_wifi_task.c(113): warning:  #870-D: invalid multibyte character sequence
-              DEBUG_LOG("wifi_task 温度�?%.2fC 湿度�?%.2f%%\r\n",
-..\Task\app_wifi_task.c(113): warning:  #870-D: invalid multibyte character sequence
-              DEBUG_LOG("wifi_task 温度�?%.2fC 湿度�?%.2f%%\r\n",
-..\Task\app_wifi_task.c(131): warning:  #870-D: invalid multibyte character sequence
-              DEBUG_LOG("wifi_task 分贝�?:%.2f\r\n",receiveData_db.db_value);
-..\Task\app_wifi_task.c(57): warning:  #177-D: variable "PUB_BUF"  was declared but never referenced
-      char PUB_BUF[256];                       // 要上传的数据
-..\Task\app_wifi_task.c(59): warning:  #177-D: variable "devPubTopic"  was declared but never referenced
-      const char devPubTopic[] = {"cx/123P"};  // 发布的Topic
-..\Task\app_wifi_task.c(60): warning:  #177-D: variable "dataPtr"  was declared but never referenced
-  	unsigned char *dataPtr = NULL;
+..\Task\app_wifi_task.c(83): warning:  #870-D: invalid multibyte character sequence
+              DEBUG_LOG("Wifi连接/订阅成功,释放信号�? \n");
+..\Task\app_wifi_task.c(167): warning:  #870-D: invalid multibyte character sequence
+              DEBUG_LOG("wifi_task 温度�?%.2fC 湿度�?%.2f%%\n",
+..\Task\app_wifi_task.c(167): warning:  #870-D: invalid multibyte character sequence
+              DEBUG_LOG("wifi_task 温度�?%.2fC 湿度�?%.2f%%\n",
+..\Task\app_wifi_task.c(183): warning:  #870-D: invalid multibyte character sequence
+              DEBUG_LOG("wifi_task 分贝�?:%.2f\n", receiveData_db.db_value);
+..\Task\app_wifi_task.c(247): warning:  #870-D: invalid multibyte character sequence
+                      DEBUG_LOG("重连失败�?1秒后重试...\n");
+..\Task\app_wifi_task.c(265): warning:  #111-D: statement is unreachable
+  	DEBUG_LOG("wifi_connect_task 意外退出\n");
 ..\Task\app_wifi_task.c: 6 warnings, 0 errors
 linking...
-Program Size: Code=29496 RO-data=464 RW-data=184 ZI-data=80328  
+Program Size: Code=37564 RO-data=3996 RW-data=224 ZI-data=80512  
 FromELF: creating hex file...
 ".\Objects\F205RET6.axf" - 0 Error(s), 6 Warning(s).
 
@@ -60,7 +58,7 @@ Package Vendor: Keil
   D:\Keil_ARM\Keil\STM32F2xx_DFP\2.10.0\Drivers\CMSIS\Device\ST\STM32F2xx\Include
 
 <h2>Collection of Component Files used:</h2>
-Build Time Elapsed:  00:00:04
+Build Time Elapsed:  00:00:03
 </pre>
 </body>
 </html>

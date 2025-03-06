@@ -32,9 +32,9 @@ extern SemaphoreHandle_t xAirReadySemaphore;
 /****************Queue Init*************************/
 extern QueueHandle_t xAirDataQueue;
 
-char rx_buffer_air[20]; 	//接收缓冲区 TVCO CO2 HCHO
-char rx_buffer_pm25[5]; 	//接收缓冲区 PM2.5
-airData_t airData; 			//空气质量数据
+char rx_buffer_air[20]; // 接收缓冲区 TVCO CO2 HCHO
+char rx_buffer_pm25[5]; // 接收缓冲区 PM2.5
+airData_t airData;      // 空气质量数据
 
 /*
  * @brief   将从串口接收到的数据发送给 wifi_task
@@ -43,54 +43,61 @@ airData_t airData; 			//空气质量数据
  */
 void air_task(void *pvParameters)
 {
-	Airquality_usart4_init();
-	pm25_usart6_init();
-	
-	memset(rx_buffer_air,0,sizeof(rx_buffer_air));
-	memset(rx_buffer_pm25,0,sizeof(rx_buffer_pm25));
-	
+    memset(rx_buffer_air, 0, sizeof(rx_buffer_air));
+    memset(rx_buffer_pm25, 0, sizeof(rx_buffer_pm25));
+	Airquality_rev_data((uint8_t *)rx_buffer_air, sizeof(rx_buffer_air));
+	pm25_rev_data((uint8_t *)rx_buffer_pm25, sizeof(rx_buffer_pm25));
 
-	Airquality_rev_data((uint8_t*)rx_buffer_air,sizeof(rx_buffer_air));
-	pm25_rev_data((uint8_t*)rx_buffer_pm25,sizeof(rx_buffer_pm25));
+    /* 等待 WiFi 准备就绪 */
+    while (1)
+    {
 
-	
+        if (pdTRUE == xSemaphoreTake(xAirReadySemaphore, portMAX_DELAY))
+        {	
+            if (NULL != xAirDataQueue)
+            {
+                xQueueSend(xAirDataQueue, &airData, pdMS_TO_TICKS(100));
+                //                DEBUG_LOG("Air 发送数据: TVOC=%.2f, CO2=%.2f, HCHO=%.2f, PM25=%d\n",
+                //                          airData.TVOC, airData.CO2, airData.HCHO, airData.PM25);
+                memset(rx_buffer_air, 0, sizeof(rx_buffer_air));
+                memset(rx_buffer_pm25, 0, sizeof(rx_buffer_pm25));
+            }
+        }
 
-	/*等待wifi准备就绪*/
-	if(pdTRUE == xSemaphoreTake(xAirReadySemaphore,portMAX_DELAY))
-	{
-		while(1)
-		{
-			if(NULL != xAirDataQueue)
-			{
-				// 将空气数据发送给wifi task 传感器损坏 TODO
-				xQueueSend(xAirDataQueue,&airData,pdMS_TO_TICKS(10));
-				//DEBUG_LOG("Air发送数据成功！\n");
-			}
-			vTaskDelay(pdMS_TO_TICKS(2000));
-		}
-	}
-
-
+        vTaskDelay(pdMS_TO_TICKS(3000));
+    }
 }
 
+/*串口空闲中断回调函数*/
 void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
-	if(huart->Instance == UART4)
-	{
-		// 空气质量传感器的数据
-		airData.TVOC = ((float)rx_buffer_air[2]*256+(float)rx_buffer_air[3])*0.01;
-		airData.HCHO = ((float)rx_buffer_air[4]*256+(float)rx_buffer_air[5])*0.01;
-		airData.CO2 = (float)rx_buffer_air[6]*256+(float)rx_buffer_air[7];
-		Airquality_rev_data((uint8_t*)rx_buffer_air, sizeof(rx_buffer_air)); 
-	}
-	if(huart->Instance == USART6)
-	{
-		// PM2.5数据
-		airData.PM25 = (int)rx_buffer_pm25[1] * 128 + (int)rx_buffer_pm25[2];
-		pm25_rev_data((uint8_t*)rx_buffer_pm25,sizeof(rx_buffer_pm25));
-		
-	}
-	//DEBUG_LOG("TVOC:%.2f HCHO:%.2f CO2:%.2f PM25:%d\n",airData.TVOC,airData.HCHO,airData.CO2,airData.PM25);
+    taskENTER_CRITICAL();
+    if (huart->Instance == UART4)
+    {
+        airData.TVOC = ((float)rx_buffer_air[2] * 256 + (float)rx_buffer_air[3]) * 0.01;
+        airData.HCHO = ((float)rx_buffer_air[4] * 256 + (float)rx_buffer_air[5]) * 0.01;
+        airData.CO2 = (float)rx_buffer_air[6] * 256 + (float)rx_buffer_air[7];
+        Airquality_rev_data((uint8_t *)rx_buffer_air, sizeof(rx_buffer_air)); // 再次启动接收
+    }
+    if (huart->Instance == USART6)
+    {
+        airData.PM25 = (int)rx_buffer_pm25[1] * 128 + (int)rx_buffer_pm25[2];
 
+        pm25_rev_data((uint8_t *)rx_buffer_pm25, sizeof(rx_buffer_pm25)); // 再次启动接收
+    }
+    taskEXIT_CRITICAL();
 }
 
+/*串口错误回调函数*/
+void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart) {
+    if (huart->Instance == UART4) {
+        DEBUG_LOG("UART4 错误: %d\n", huart->ErrorCode);
+        HAL_UART_Abort(huart);
+        Airquality_rev_data((uint8_t *)rx_buffer_air, sizeof(rx_buffer_air));
+    }
+    if (huart->Instance == USART6) {
+        DEBUG_LOG("USART6 错误: %d\n", huart->ErrorCode);
+        HAL_UART_Abort(huart);
+        pm25_rev_data((uint8_t *)rx_buffer_pm25, sizeof(rx_buffer_pm25));
+    }
+}

@@ -17,6 +17,10 @@
 .\objects\freertos_demo.o: ..\Task\include\app_aht20_task.h
 .\objects\freertos_demo.o: ..\Task\include\app_air_task.h
 .\objects\freertos_demo.o: ..\Task\include\app_lm2904_task.h
+.\objects\freertos_demo.o: ..\Task\include\app_gy906_task.h
+.\objects\freertos_demo.o: ..\Task\include\app_revData_task.h
+.\objects\freertos_demo.o: ..\BSP\NetWork\Cloud.h
+.\objects\freertos_demo.o: ..\BSP\NetWork\cJSON.h
 .\objects\freertos_demo.o: ..\BSP\USART\bsp_usart_driver.h
 .\objects\freertos_demo.o: ..\Libraries\CMSIS\Device\ST\STM32F2xx\Include\stm32f2xx.h
 .\objects\freertos_demo.o: ..\Libraries\CMSIS\Device\ST\STM32F2xx\Include\stm32f205xx.h
@@ -80,3 +84,15 @@
 .\objects\freertos_demo.o: ..\Libraries\STM32F2xx_HAL_Driver\Inc\stm32f2xx_hal_hcd.h
 .\objects\freertos_demo.o: ..\Libraries\STM32F2xx_HAL_Driver\Inc\stm32f2xx_hal_mmc.h
 .\objects\freertos_demo.o: D:\Keil_ARM\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\freertos_demo.o: ..\BSP\AHT20\bsp_aht20_driver.h
+.\objects\freertos_demo.o: ..\BSP\LM2904\bsp_lm2904_driver.h
+.\objects\freertos_demo.o: ..\BSP\Airquality\bsp_airquality_driver.h
+.\objects\freertos_demo.o: ..\BSP\OLED\bsp_oled_driver.h
+.\objects\freertos_demo.o: ..\BSP\OLED\oledfont.h
+.\objects\freertos_demo.o: ..\BSP\LED\bsp_led_driver.h
+.\objects\freertos_demo.o: ..\BSP\PM2.5\bsp_pm2.5_driver.h
+.\objects\freertos_demo.o: ..\BSP\Motor\bsp_motor_driver.h
+.\objects\freertos_demo.o: ..\BSP\SG90\bsp_sg90_driver.h
+.\objects\freertos_demo.o: ..\BSP\Relay\bsp_relay_driver.h
+.\objects\freertos_demo.o: ..\BSP\Buzzer\bsp_buzzer_driver.h
+.\objects\freertos_demo.o: ..\BSP\WUHUA\bsp_wuhua_driver.h

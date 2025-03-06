@@ -11,8 +11,11 @@
  */
 
 #include "bsp_airquality_driver.h"
+#include "bsp_usart_driver.h"
 
 UART_HandleTypeDef huart4;
+
+
 
 /**
   * @brief  空气质量数据
@@ -21,10 +24,12 @@ UART_HandleTypeDef huart4;
 void Airquality_usart4_init(void)
 {
     // 1.开启UART4时钟 GPIOA时钟 
+	if(__HAL_RCC_GPIOA_IS_CLK_DISABLED())
+	{
+		__HAL_RCC_GPIOA_CLK_ENABLE();
+	}
+
 	__HAL_RCC_UART4_CLK_ENABLE();
-	__HAL_RCC_GPIOA_CLK_ENABLE();
-  
-	
 	
 	// 2.配置GPIO口
 	GPIO_InitTypeDef GPIO_InitStruct = {0};
@@ -45,13 +50,17 @@ void Airquality_usart4_init(void)
 	huart4.Init.Mode = UART_MODE_TX_RX;									/*设置 UART4 的模式为收发（TX 和 RX）*/
 	huart4.Init.HwFlowCtl = UART_HWCONTROL_NONE;						/*不启用硬件流控*/
 	huart4.Init.OverSampling = UART_OVERSAMPLING_16;					/*设置过采样比为16*/
-	HAL_UART_Init(&huart4);
-	
+    if (HAL_UART_Init(&huart4) != HAL_OK)
+    {
+        DEBUG_LOG("UART4 初始化失败\n");
+        while (1);
+    }
 	
 
 	//开启串口4中断
-	HAL_NVIC_SetPriority(UART4_IRQn,10,0);
+	HAL_NVIC_SetPriority(UART4_IRQn,5,0);
 	HAL_NVIC_EnableIRQ(UART4_IRQn);
+	
 }
 
 /**
@@ -79,13 +88,14 @@ void Airquality_send_data(uint8_t* data,uint16_t len)
 void Airquality_rev_data(uint8_t* data,uint16_t len)
 {
 	/*普通接收*/
-	//HAL_UART_Receive(&huart4,data,len,100);
+	//HAL_UART_Receive(&huart4,data,len,HAL_MAX_DELAY);
 	/*中断发送 只能接收定长数据*/  
 	//HAL_UART_Receive_IT(&huart4,data,len);
-	/*配合DMA发送*/
+	/*配合DMA接收*/
 	//HAL_UART_Receive_DMA(&huart4, data, len);
 	// 接收不定长字节
-	HAL_UARTEx_ReceiveToIdle_IT(&huart4,data,len);
-	
+	if (HAL_UARTEx_ReceiveToIdle_IT(&huart4, data, len) != HAL_OK) {
+        DEBUG_LOG("UART4 接收启动失败 错误码%d\n",huart4.ErrorCode);
+    } 
 }
 

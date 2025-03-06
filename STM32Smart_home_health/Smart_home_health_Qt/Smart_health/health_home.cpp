@@ -2,16 +2,22 @@
 #include "ui_health_home.h"
 #include "log_in.h"
 
+
 health_home::health_home(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::health_home)
 {
     ui->setupUi(this);
 
-
-
     /*查询身高 体重等身体信息*/
     sql_body_information();
+
+    /*订阅消息*/
+    my_mqtt.Subscribe(my_mqtt.Sub_Topic,0);
+
+    connect(&Client,SIGNAL(messageReceived(const QByteArray,const QMqttTopicName)),this,
+            SLOT(MQTT_RevData_Success(const QByteArray)));//接收消息成功
+
 
 
 }
@@ -115,6 +121,8 @@ void health_home::getSysTime()
 
 
 
+
+
 /*时间刷新函数*/
 void health_home::time_reflash()
 {
@@ -122,5 +130,117 @@ void health_home::time_reflash()
     ui->label_myData->setText(myData);
     ui->label_myTime->setText(myTime);
 
+}
+
+/*接收消息*/
+void health_home::MQTT_RevData_Success(const QByteArray &message)
+{
+    QString rec;
+    QJsonParseError parseError;
+    QJsonDocument jsonDocument = QJsonDocument::fromJson(message,&parseError);
+
+    if(parseError.error == QJsonParseError::NoError)
+    {
+        if((rec = my_mqtt.get_mqttValue(jsonDocument,"Temp")) != "")
+        {
+            ui->label_temp->setText(rec);
+        }
+        if((rec = my_mqtt.get_mqttValue(jsonDocument,"Humi")) != "")
+        {
+            ui->label_humi->setText(rec);
+        }
+        if((rec = my_mqtt.get_mqttValue(jsonDocument,"TVOC")) != "")
+        {
+            ui->label_TVOC->setText(rec);
+        }
+        if((rec = my_mqtt.get_mqttValue(jsonDocument,"CO2")) != "")
+        {
+            ui->label_CO2->setText(rec);
+        }
+        if((rec = my_mqtt.get_mqttValue(jsonDocument,"HCHO")) != "")
+        {
+            ui->label_HCHO->setText(rec);
+        }
+        if((rec = my_mqtt.get_mqttValue(jsonDocument,"PM25")) != "")
+        {
+            ui->label_PM25->setText(rec);
+        }
+        if((rec = my_mqtt.get_mqttValue(jsonDocument,"DB")) != "")
+        {
+            ui->label_db->setText(rec);
+        }
+        if((rec = my_mqtt.get_mqttValue(jsonDocument,"people_temp")) != "")
+        {
+            ui->label_peopleTemp->setText(rec);
+        }
+    }
+    qDebug() << "message:" << message << Qt::endl;
+
+}
+
+
+/*打开关闭雾化器*/
+void health_home::on_checkBox_wuhua_toggled(bool checked)
+{
+    QJsonObject jsonObj;
+    jsonObj["Wuhua"] = checked ? 1 : 0;
+
+    QJsonDocument doc(jsonObj);
+    QString str = doc.toJson(QJsonDocument::Compact);
+
+    if(Client.state() == QMqttClient::Connected)
+    {
+        my_mqtt.Publish(my_mqtt.Pub_Topic,str.toLocal8Bit(),my_mqtt.m_MessageQos);
+        qDebug() << "消息发送成功:" << str << Qt::endl;
+    }
+}
+
+/*打开关闭门*/
+void health_home::on_checkBox_door_toggled(bool checked)
+{
+    QJsonObject jsonObj;
+    jsonObj["Door"] = checked ? 1 : 0;
+
+    QJsonDocument doc(jsonObj);
+    QString str = doc.toJson(QJsonDocument::Compact);
+
+    if(Client.state() == QMqttClient::Connected)
+    {
+        my_mqtt.Publish(my_mqtt.Pub_Topic,str.toLocal8Bit(),my_mqtt.m_MessageQos);
+        qDebug() << "消息发送成功:" << str << Qt::endl;
+    }
+}
+
+/*打开关闭窗户*/
+void health_home::on_checkBox_window_toggled(bool checked)
+{
+    QJsonObject jsonObj;
+    jsonObj["Window"] = checked ? 1 : 0;
+
+    QJsonDocument doc(jsonObj);
+    QString str = doc.toJson(QJsonDocument::Compact);
+
+    if(Client.state() == QMqttClient::Connected)
+    {
+        my_mqtt.Publish(my_mqtt.Pub_Topic,str.toLocal8Bit(),my_mqtt.m_MessageQos);
+        qDebug() << "消息发送成功:" << str << Qt::endl;
+    }
+}
+
+
+/*打开关闭风扇*/
+void health_home::on_checkBox_fenshang_toggled(bool checked)
+{
+    QJsonObject jsonObj;
+    jsonObj["Fenshang"] = checked ? 1 : 0;
+
+    QJsonDocument doc(jsonObj);
+    QString str = doc.toJson(QJsonDocument::Compact);
+
+    if(Client.state() == QMqttClient::Connected)
+    {
+        my_mqtt.Publish(my_mqtt.Pub_Topic,str.toLocal8Bit(),my_mqtt.m_MessageQos);
+        qDebug() << "消息发送成功:" << str << Qt::endl;
+    }
 }
 

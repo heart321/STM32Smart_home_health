@@ -57,7 +57,7 @@
 
 STM32F205RET6: 
 
-FLASH:512K    移植FreeRTOS  LVGL应该够了
+FLASH:512K    移植FreeRTOS  
 
 ADC:3组12位逐次逼近型
 

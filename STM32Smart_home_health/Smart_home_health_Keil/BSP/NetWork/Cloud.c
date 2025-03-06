@@ -20,26 +20,19 @@
 
 //硬件驱动
 #include "bsp_usart_driver.h"
+#include "bsp_sg90_driver.h"
+
+//用户文件
+#include "app_revData_task.h"
 
 //C库
 #include <string.h>
 #include <stdio.h>
 #include "cJSON.h"
 
-
-	/**************************************************
-	PROID  :在  mosquitto MQTT Broker 设置 用户名    
-	AUTH_INFO 在 mosquitto MQTT Broker   设置 密码
-	*//////////////////////////////////////////////////
-
 #define PROID	   	"xchen"
 #define AUTH_INFO	"3321"
-
-
-//#define PROID		"8888"
-//#define AUTH_INFO	"fhgfh"
-
-#define DEVID		"6666"
+#define DEVID		"Smart_home"
 
 extern unsigned char esp8266_buf[128];
 extern uint8_t alarmFlag;
@@ -56,53 +49,34 @@ extern uint8_t alarmFlag;
 //
 //	说明：		与Cloud平台建立连接
 //==========================================================
-_Bool Cloud_DevLink(void)
-{
-	
-	MQTT_PACKET_STRUCTURE mqttPacket = {NULL, 0, 0, 0};					//协议包
-
-	unsigned char *dataPtr;
-	
-	_Bool status = 1;
-	
+_Bool Cloud_DevLink(void) {
+    MQTT_PACKET_STRUCTURE mqttPacket = {NULL, 0, 0, 0};
+    unsigned char *dataPtr;
+    _Bool status = 1;
 #if DEBUG
-	DEBUG_LOG("Cloud_DevLink\r\n"
-					"PROID: %s,	AUIF: %s,	DEVID:%s\r\n",
-					PROID,AUTH_INFO,DEVID);
+    DEBUG_LOG("Cloud_DevLink\nPROID: %s, AUIF: %s, DEVID:%s\n", PROID, AUTH_INFO, DEVID);
 #endif
-	if(MQTT_PacketConnect(PROID, AUTH_INFO, DEVID, 256, 0, MQTT_QOS_LEVEL0, NULL, NULL, 0, &mqttPacket) == 0)
-	{
-		ESP8266_SendData((char*)mqttPacket._data, mqttPacket._len);			//上传平台
-		
-		dataPtr = ESP8266_GetIPD(250);									//等待平台响应
-		if(dataPtr != NULL)
-		{
-			if(MQTT_UnPacketRecv(dataPtr) == MQTT_PKT_CONNACK)
-			{
-				switch(MQTT_UnPacketConnectAck(dataPtr))
-				{
-#if DEBUG
-					case 0:DEBUG_LOG("MQTT Broker 连接成功!\n");status = 0;break;
-					case 1:DEBUG_LOG("MQTT连接失败：协议错误\r\n");break;
-					case 2:DEBUG_LOG("MQTT连接失败：非法的clientid\r\n");break;
-					case 3:DEBUG_LOG("MQTT连接失败：服务器失败\r\n");break;
-					case 4:DEBUG_LOG("MQTT连接失败：用户名或密码错误\r\n");break;
-					case 5:DEBUG_LOG("MQTT连接失败：比如非法的token!\r\n");break;					
-					default:DEBUG_LOG("MQTT连接失败：未知错误\r\n");break;
-#endif
-				}
-			}
-		}
-		
-		MQTT_DeleteBuffer(&mqttPacket);								//删包
-	}
-	else
-#if DEBUG
-		DEBUG_LOG("MQTT_PacketConnect Failed\r\n");
-#endif
-	
-	return status;
-	
+    if (MQTT_PacketConnect(PROID, AUTH_INFO, DEVID, 60, 1, MQTT_QOS_LEVEL0, NULL, NULL, 0, &mqttPacket) == 0) { // Keepalive 60秒
+//#if DEBUG
+//        DEBUG_LOG("CONNECT 数据包: ");
+//        for (uint32_t i = 0; i < mqttPacket._len; i++) {
+//            DEBUG_LOG("%02X ", mqttPacket._data[i]);
+//        }
+//        DEBUG_LOG("\n");
+//#endif
+        ESP8266_SendData((char*)mqttPacket._data, mqttPacket._len);
+        dataPtr = ESP8266_GetIPD(100);
+        if (dataPtr != NULL) {
+            if (MQTT_UnPacketRecv(dataPtr) == MQTT_PKT_CONNACK) {
+                switch (MQTT_UnPacketConnectAck(dataPtr)) {
+                    case 0: DEBUG_LOG("MQTT Broker 连接成功!\n"); status = 0; break;
+                    default: DEBUG_LOG("MQTT连接失败：未知错误\n"); break;
+                }
+            }
+        }
+        MQTT_DeleteBuffer(&mqttPacket);
+    }
+    return status;
 }
 
 //==========================================================
@@ -117,25 +91,21 @@ _Bool Cloud_DevLink(void)
 //
 //	说明：		
 //==========================================================
-Cloud_Status_t Cloud_Subscribe(const char *topics[], unsigned char topic_cnt)
-{
-	
-	unsigned char i = 0;
-	
-	MQTT_PACKET_STRUCTURE mqttPacket = {NULL, 0, 0, 0};							//协议包
-	
-	for(; i < topic_cnt; i++)
+Cloud_Status_t Cloud_Subscribe(const char *topics[], unsigned char topic_cnt) {
+    MQTT_PACKET_STRUCTURE mqttPacket = {NULL, 0, 0, 0};
+    if (MQTT_PacketSubscribe(MQTT_SUBSCRIBE_ID, MQTT_QOS_LEVEL0, topics, topic_cnt, &mqttPacket) == 0) { // QoS 1
 #if DEBUG
-		DEBUG_LOG("Subscribe Topic: %s\r\n", topics[i]);
+        DEBUG_LOG("SUBSCRIBE 数据包: ");
+        for (uint32_t i = 0; i < mqttPacket._len; i++) {
+            DEBUG_LOG("%02X ", mqttPacket._data[i]);
+        }
+        DEBUG_LOG("\n");
 #endif
-	if(MQTT_PacketSubscribe(MQTT_SUBSCRIBE_ID, MQTT_QOS_LEVEL0, topics, topic_cnt, &mqttPacket) == 0)
-	{
-		ESP8266_SendData((char*)mqttPacket._data, mqttPacket._len);					//向平台发送订阅请求
-		
-		MQTT_DeleteBuffer(&mqttPacket);											//删包
-		return Cloud_Ok;
-	}
-	return Cloud_ERROR;
+        ESP8266_SendData((char*)mqttPacket._data, mqttPacket._len);
+        MQTT_DeleteBuffer(&mqttPacket);
+        return Cloud_Ok;
+    }
+    return Cloud_ERROR;
 }
 
 //==========================================================
@@ -199,7 +169,7 @@ void Cloud_RevPro(unsigned char *cmd)
 	char numBuf[10];
 	int num = 0;
 	
-	cJSON *json , *json_value;
+	cJSON *json;
 	
 	type = MQTT_UnPacketRecv(cmd);
 	switch(type)
@@ -231,70 +201,8 @@ void Cloud_RevPro(unsigned char *cmd)
 				if (!json)printf("Error before: [%s]\n",cJSON_GetErrorPtr());
 				else
 				{
-//					//LED 6.14
-//					json_value = cJSON_GetObjectItem(json , "Led");
-//	
-//					if(json_value->valueint == 1){ 
-//						LED1_ON();		//打开LED
-//					}else{ 
-//						LED1_OFF();							//关闭LED 
-//					}
-//					//Beep 6.14
-//					json_value = cJSON_GetObjectItem(json , "Beep");
-//	
-//					if(json_value->valueint == 1){ 
-//						BEEP_ON();		//打开蜂鸣器
-//					}else{ 
-//						BEEP_OFF();							//关闭蜂鸣器
-//					}
-//					
-//					//Fengshan 6,18
-//					json_value = cJSON_GetObjectItem(json , "Fengshan");
-//	
-//					if(json_value->valueint == 1){ 
-//						Fengshan_ON();		//打开风扇
-//					}else{ 
-//						Fengshan_OFF();							//关闭风扇
-//					}
-//					//Door 6,18
-//					json_value = cJSON_GetObjectItem(json , "Door");
-//	
-//					if(json_value->valueint == 1){ 
-//								Servo_SetAngle(180);//开门
-//								Door = 1;
-//								Delay_s(2);
-//					}else{ 
-//								Servo_SetAngle(0);	//关门
-//								Door = 0;
-//								Delay_s(2);
-//					}
-					
-					
-//  				json_value = cJSON_GetObjectItem(json , "LED");
-//					UsartPrintf(USART_DEBUG,"json_value: [%s]\n",json_value->string);//键
-//  				UsartPrintf(USART_DEBUG,"json_value: [%s]\n",json_value->valuestring);//键值
-//						
-//				
-//					if(strstr(json_value->valuestring,"LED") != NULL)			//控制DS0
-//					{
-//						
-//						json_value = cJSON_GetObjectItem(json , "LED");
-//						UsartPrintf(USART_DEBUG,"json_value: [%s]\n",json_value->string);//键
-//						UsartPrintf(USART_DEBUG,"led: [%s]\n",json_value->valuestring);//键值
-//						if(json_value->valueint) LED2 = 0;//点亮DS0;
-//						else LED2 = 1;							//关闭DS0
-//					}
-//					
-//					json_value = cJSON_GetObjectItem(json , "ALARM");
-//					UsartPrintf(USART_DEBUG,"json_value: [%s]\n",json_value->string);//键
-//  				UsartPrintf(USART_DEBUG,"json_value: [%s]\n",json_value->valuestring);//键值
-//					
-//				  if(strstr(json_value->valuestring,"ALARM") != NULL)		//控制警报
-//					{
-//						json_value = cJSON_GetObjectItem(json , "ALARM");
-//						if(json_value->valueint) alarmFlag = 1;		//打开报警
-//						else alarmFlag = 0;							//关闭报警
-//					}
+					/*处理json数据*/
+					revData_Json(json);
 				}
 				cJSON_Delete(json);
 			}
@@ -364,9 +272,9 @@ void Cloud_RevPro(unsigned char *cmd)
 			if(MQTT_UnPacketSubscribe(cmd) == 0)
 #if DEBUG
 				DEBUG_LOG("Tips:	MQTT Subscribe OK\r\n");
-#endif			
+		
 			else
-#if DEBUG				
+				
 				DEBUG_LOG("Tips:	MQTT Subscribe Err\r\n");
 #endif
 		
@@ -377,9 +285,9 @@ void Cloud_RevPro(unsigned char *cmd)
 			if(MQTT_UnPacketUnSubscribe(cmd) == 0)
 #if DEBUG
 				DEBUG_LOG("Tips:	MQTT UnSubscribe OK\r\n");
-#endif
+
 			else
-#if DEBUG
+
 				DEBUG_LOG("Tips:	MQTT UnSubscribe Err\r\n");
 #endif
 		
