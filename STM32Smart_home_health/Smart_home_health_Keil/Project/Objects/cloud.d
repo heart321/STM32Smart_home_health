@@ -70,6 +70,6 @@
 .\objects\cloud.o: ..\BSP\USART\bsp_usart_driver.h
 .\objects\cloud.o: D:\Keil_ARM\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\cloud.o: ..\BSP\SG90\bsp_sg90_driver.h
-.\objects\cloud.o: ..\Task\include\app_revData_task.h
+.\objects\cloud.o: ..\Task\include\app_mqttRev_task.h
 .\objects\cloud.o: ..\BSP\NetWork\cJSON.h
 .\objects\cloud.o: D:\Keil_ARM\ARM\ARMCC\Bin\..\include\string.h

@@ -44,15 +44,13 @@ void gy906_task(void *pvParameters)
 
     while (1)
     {
-        if (xSemaphoreTake(xGy906ReadySemaphore, portMAX_DELAY) == pdTRUE)
-        {
-            temperatureData.people_temp = readObjectTemp();
-            temperatureData.room_temp = 0.0;
 
-            if (NULL != xTemperatureDataQueue)
-            {
-                xQueueSend(xTemperatureDataQueue, &temperatureData.people_temp, pdMS_TO_TICKS(100));
-            }
+        temperatureData.people_temp = readObjectTemp();
+        temperatureData.room_temp = 0.0;
+
+        if (NULL != xTemperatureDataQueue)
+        {
+            xQueueSend(xTemperatureDataQueue, &temperatureData.people_temp, pdMS_TO_TICKS(100));
         }
 
         vTaskDelay(pdMS_TO_TICKS(3000));

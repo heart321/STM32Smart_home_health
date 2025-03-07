@@ -403,11 +403,6 @@
           <GroupName>Task</GroupName>
           <Files>
             <File>
-              <FileName>app_wifi_task.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Task\app_wifi_task.c</FilePath>
-            </File>
-            <File>
               <FileName>app_aht20_task.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Task\app_aht20_task.c</FilePath>
@@ -428,9 +423,14 @@
               <FilePath>..\Task\app_gy906_task.c</FilePath>
             </File>
             <File>
-              <FileName>app_revData_task.c</FileName>
+              <FileName>app_mqttRev_task.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Task\app_revData_task.c</FilePath>
+              <FilePath>..\Task\app_mqttRev_task.c</FilePath>
+            </File>
+            <File>
+              <FileName>app_mqttSend_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Task\app_mqttSend_task.c</FilePath>
             </File>
           </Files>
         </Group>

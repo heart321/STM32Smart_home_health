@@ -18,8 +18,7 @@
 
 /*串口2句柄 wifi DMA句柄*/
 UART_HandleTypeDef huart2;
-DMA_HandleTypeDef hdma_usart2_rx;
-DMA_HandleTypeDef hdma_usart2_tx;
+
 
 /*串口1句柄 DMA句柄  Debuge口*/
 UART_HandleTypeDef huart1;
@@ -70,57 +69,25 @@ void wifi_usart2_Init(void)
     }
    
 
-
-    //4.配置DMA搬运器 USART2_RX DMA1_Stream5  USART2_TX DMA1_Stream6
-    /*DMA2_rx DMA接收*/
-    hdma_usart2_rx.Instance = DMA1_Stream5;
-    hdma_usart2_rx.Init.Channel = DMA_CHANNEL_4;
-    hdma_usart2_rx.Init.Direction = DMA_PERIPH_TO_MEMORY;				/*配置数据传输方向为从外设到内存*/
-    hdma_usart2_rx.Init.PeriphInc = DMA_PINC_DISABLE;					/*设置外设地址递增模式为禁用*/
-    hdma_usart2_rx.Init.MemInc = DMA_MINC_ENABLE;						/*设置内存地址递增模式为启用*/
-    hdma_usart2_rx.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;		/*配置外设数据对齐方式为字节*/
-    hdma_usart2_rx.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;			/*配置内存数据对齐方式为字节*/
-    HAL_DMA_Init(&hdma_usart2_rx);
-    __HAL_LINKDMA(&huart2,hdmarx,hdma_usart2_rx);						/*将DMA句柄与串口句柄关联起来*/
-
-    /*DMA2_tx DMA发送*/
-    hdma_usart2_tx.Instance = DMA1_Stream6;
-    hdma_usart2_tx.Init.Channel = DMA_CHANNEL_4;
-    hdma_usart2_tx.Init.Direction = DMA_MEMORY_TO_PERIPH;				/*配置数据传输方向为从内存到外设*/
-    hdma_usart2_tx.Init.PeriphInc = DMA_PINC_DISABLE;					/*设置外设地址递增模式为禁用*/
-    hdma_usart2_tx.Init.MemInc = DMA_MINC_ENABLE;						/*设置内存地址递增模式为启用*/
-    hdma_usart2_tx.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;		/*配置外设数据对齐方式为字节*/
-    hdma_usart2_tx.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;			/*配置内存数据对齐方式为字节*/
-    HAL_DMA_Init(&hdma_usart2_tx);
-    __HAL_LINKDMA(&huart2,hdmatx,hdma_usart2_tx);						/*将DMA句柄与串口句柄关联起来*/
-
     //5.设置中断优先级和分组
-
     HAL_NVIC_SetPriority(USART2_IRQn, 4, 0);
     HAL_NVIC_EnableIRQ(USART2_IRQn);
-
-    HAL_NVIC_SetPriority(DMA1_Stream5_IRQn,0,0);
-    HAL_NVIC_EnableIRQ(DMA1_Stream5_IRQn);
-    HAL_NVIC_SetPriority(DMA1_Stream6_IRQn,0,0);
-    HAL_NVIC_EnableIRQ(DMA1_Stream6_IRQn);
-
-
 }
 
 /*
- * @brief  串口2 DMA 发送数据
+ * @brief  串口2  发送数据
  */
 void wifi_usart2_Send(uint8_t *data,uint16_t len)
 {
-    HAL_UART_Transmit_DMA(&huart2,data,len);
+    HAL_UART_Transmit(&huart2,data,len,HAL_MAX_DELAY);
 }
 
 /*
- * @brief  串口2 DMA 接收数据
+ * @brief  串口2 接收数据
  */
 void wifi_usart2_Receive(uint8_t *data,uint16_t len)
 {
-    HAL_UART_Receive_DMA(&huart2,data,len);
+    HAL_UART_Receive_IT(&huart2,data,len);
 	
 }
 
@@ -226,7 +193,8 @@ void debug_usart1_Init(void)
 	/*DMA1 数据流7中断*/
 	HAL_NVIC_SetPriority(DMA2_Stream7_IRQn,0,0);
 	HAL_NVIC_EnableIRQ(DMA2_Stream7_IRQn);
-
+	
+	
 
 }
 /*

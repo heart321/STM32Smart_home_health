@@ -61,6 +61,10 @@
 #define configUSE_STATS_FORMATTING_FUNCTIONS 1 // 启用任务状态格式化函数（如 vTaskList）
 #define INCLUDE_uxTaskGetStackHighWaterMark 1
 
+#define configPRIO_BITS          4
+#define configLIBRARY_LOWEST_INTERRUPT_PRIORITY   15
+#define configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY 5
+
 /* Set the following definitions to 1 to include the API function, or zero
 to exclude the API function. */
 

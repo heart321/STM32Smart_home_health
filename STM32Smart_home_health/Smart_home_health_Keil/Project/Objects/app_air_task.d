@@ -79,3 +79,4 @@
 .\objects\app_air_task.o: ..\BSP\PM2.5\bsp_pm2.5_driver.h
 .\objects\app_air_task.o: ..\BSP\USART\bsp_usart_driver.h
 .\objects\app_air_task.o: D:\Keil_ARM\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\app_air_task.o: ..\BSP\NetWork\bsp_esp8266_driver.h

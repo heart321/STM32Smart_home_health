@@ -25,7 +25,6 @@
 #include "bsp_usart_driver.h"
 
 /****************Semaphore Init*************************/
-extern SemaphoreHandle_t xAht20ReadySemaphore;
 
 /****************Queue Init*************************/
 extern QueueHandle_t xWeatherDataQueue;
@@ -43,17 +42,14 @@ void aht20_task(void *pvParameters)
 
 	while (1)
 	{
-		if (pdTRUE == xSemaphoreTake(xAht20ReadySemaphore, portMAX_DELAY))
-		{
-			aht20_read(&weatherData.temperature, &weatherData.humidity);
+		aht20_read(&weatherData.temperature, &weatherData.humidity);
 
-			if (NULL != xWeatherDataQueue)
-			{
-				xQueueSend(xWeatherDataQueue, &weatherData, pdMS_TO_TICKS(100));
-			}
-			//			 printf("温度：%.2fC 湿度：%.2f%%\r\n",
-			//			 	weatherData.temperature,weatherData.humidity);
+		if (NULL != xWeatherDataQueue)
+		{
+			xQueueSend(xWeatherDataQueue, &weatherData, pdMS_TO_TICKS(100));
 		}
+		//			 printf("温度：%.2fC 湿度：%.2f%%\r\n",
+		//			 	weatherData.temperature,weatherData.humidity);
 
 		vTaskDelay(pdMS_TO_TICKS(3000));
 	}

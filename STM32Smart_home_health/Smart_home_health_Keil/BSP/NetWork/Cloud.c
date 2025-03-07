@@ -23,7 +23,7 @@
 #include "bsp_sg90_driver.h"
 
 //用户文件
-#include "app_revData_task.h"
+#include "app_mqttRev_task.h"
 
 //C库
 #include <string.h>
@@ -64,8 +64,12 @@ _Bool Cloud_DevLink(void) {
 //        }
 //        DEBUG_LOG("\n");
 //#endif
-        ESP8266_SendData((char*)mqttPacket._data, mqttPacket._len);
-        dataPtr = ESP8266_GetIPD(100);
+        if(ESP8266_SendData((char*)mqttPacket._data, mqttPacket._len) == ESP8266_OK)
+		{
+			//DEBUG_LOG("发送连接数据成功！ \n");
+		}
+		
+        dataPtr = ESP8266_GetIPD(200);
         if (dataPtr != NULL) {
             if (MQTT_UnPacketRecv(dataPtr) == MQTT_PKT_CONNACK) {
                 switch (MQTT_UnPacketConnectAck(dataPtr)) {
@@ -94,13 +98,13 @@ _Bool Cloud_DevLink(void) {
 Cloud_Status_t Cloud_Subscribe(const char *topics[], unsigned char topic_cnt) {
     MQTT_PACKET_STRUCTURE mqttPacket = {NULL, 0, 0, 0};
     if (MQTT_PacketSubscribe(MQTT_SUBSCRIBE_ID, MQTT_QOS_LEVEL0, topics, topic_cnt, &mqttPacket) == 0) { // QoS 1
-#if DEBUG
-        DEBUG_LOG("SUBSCRIBE 数据包: ");
-        for (uint32_t i = 0; i < mqttPacket._len; i++) {
-            DEBUG_LOG("%02X ", mqttPacket._data[i]);
-        }
-        DEBUG_LOG("\n");
-#endif
+//#if DEBUG
+//        DEBUG_LOG("SUBSCRIBE 数据包: ");
+//        for (uint32_t i = 0; i < mqttPacket._len; i++) {
+//            DEBUG_LOG("%02X ", mqttPacket._data[i]);
+//        }
+//        DEBUG_LOG("\n");
+//#endif
         ESP8266_SendData((char*)mqttPacket._data, mqttPacket._len);
         MQTT_DeleteBuffer(&mqttPacket);
         return Cloud_Ok;
@@ -120,21 +124,20 @@ Cloud_Status_t Cloud_Subscribe(const char *topics[], unsigned char topic_cnt) {
 //
 //	说明：		
 //==========================================================
-Cloud_Status_t Cloud_Publish(const char *topic, const char *msg)
-{
-
-	MQTT_PACKET_STRUCTURE mqttPacket = {NULL, 0, 0, 0};							//协议包
-#if DEBUG	
-	DEBUG_LOG("Publish Topic: %s, Msg: %s\r\n", topic, msg);
-#endif	
-	if(MQTT_PacketPublish(MQTT_PUBLISH_ID, topic, msg, strlen(msg), MQTT_QOS_LEVEL0, 0, 1, &mqttPacket) == 0)
-	{
-		ESP8266_SendData((char*)mqttPacket._data, mqttPacket._len);					//向平台发送订阅请求
-		
-		MQTT_DeleteBuffer(&mqttPacket);											//删包
-		return Cloud_Ok;
-	}
-	return Cloud_ERROR;
+Cloud_Status_t Cloud_Publish(const char *topic, const char *msg) {
+    MQTT_PACKET_STRUCTURE mqttPacket = {NULL, 0, 0, 0};
+    DEBUG_LOG("Publish Topic: %s, Msg: %s\r\n", topic, msg);
+    if (MQTT_PacketPublish(MQTT_PUBLISH_ID, topic, msg, strlen(msg), MQTT_QOS_LEVEL0, 0, 1, &mqttPacket) == 0) {
+        if (ESP8266_SendData((char*)mqttPacket._data, mqttPacket._len) == ESP8266_OK) {
+            MQTT_DeleteBuffer(&mqttPacket);
+            return Cloud_Ok;
+        } else {
+            DEBUG_LOG("ESP8266 发送失败\n");
+            MQTT_DeleteBuffer(&mqttPacket);
+            return Cloud_ERROR;
+        }
+    }
+    return Cloud_ERROR;
 }
 
 //==========================================================

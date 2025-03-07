@@ -44,25 +44,23 @@ void lm2904_task(void *pvParameters)
 
     while (1)
     {
-        if (pdTRUE == xSemaphoreTake(xLm2904ReadySemaphore, portMAX_DELAY))
+
+        // 开启 ADC 转换，采集单个样本
+        lm2904_start(&db_value.adc_value, 1); // 只采集 1 个样本
+        vTaskDelay(pdMS_TO_TICKS(10));        // 等待 DMA 传输完成
+        lm2904_stop();
+
+        // 将 ADC 值转换为分贝值
+        db_value.db_value = adc_to_db(db_value.adc_value);
+
+        // 发送完整结构体到队列，延长超时时间
+        if (NULL != xDbDataQueue)
         {
-            // 开启 ADC 转换，采集单个样本
-            lm2904_start(&db_value.adc_value, 1); // 只采集 1 个样本
-            vTaskDelay(pdMS_TO_TICKS(10));        // 等待 DMA 传输完成
-            lm2904_stop();
-
-            // 将 ADC 值转换为分贝值
-            db_value.db_value = adc_to_db(db_value.adc_value);
-
-            // 发送完整结构体到队列，延长超时时间
-            if (NULL != xDbDataQueue)
+            if (xQueueSend(xDbDataQueue, &db_value, pdMS_TO_TICKS(100)) != pdTRUE)
             {
-                if (xQueueSend(xDbDataQueue, &db_value, pdMS_TO_TICKS(100)) != pdTRUE)
-                {
 #if DEBUG
-                    // DEBUG_LOG("发送分贝数据到队列失败\n");
+                // DEBUG_LOG("发送分贝数据到队列失败\n");
 #endif
-                }
             }
         }
 

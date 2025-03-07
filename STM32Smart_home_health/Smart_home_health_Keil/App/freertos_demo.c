@@ -7,12 +7,12 @@
 #include "list.h"
 
 /****************Task_Include***********************/
-#include "app_wifi_task.h"
+#include "app_mqttSend_task.h"
 #include "app_aht20_task.h"
 #include "app_air_task.h"
 #include "app_lm2904_task.h"
 #include "app_gy906_task.h"
-#include "app_revData_task.h"
+#include "app_mqttRev_task.h"
 
 /****************BSP_Include***********************/
 #include "bsp_usart_driver.h"
@@ -28,20 +28,12 @@
 #include "bsp_relay_driver.h"
 #include "bsp_buzzer_driver.h"
 #include "bsp_wuhua_driver.h"
+#include "bsp_esp8266_driver.h"
 
 
 
 /****************Semaphore_Init*********************/
-/*aht20准备发送数据的的信号量*/
-SemaphoreHandle_t xAht20ReadySemaphore = NULL;
-/*Air准备发送数据的的信号量*/
-SemaphoreHandle_t xAirReadySemaphore = NULL;
-/*lm2904准备发送数据的的信号量*/
-SemaphoreHandle_t xLm2904ReadySemaphore = NULL;
-/*gy906准备发送数据的信号量*/
-SemaphoreHandle_t xGy906ReadySemaphore = NULL;
-/*开始接收数据的信号量*/
-SemaphoreHandle_t xRevDataReadySemaphore = NULL;
+
 
 /****************Queue_Init*********************/
 /*aht20 发送数据队列*/
@@ -63,10 +55,10 @@ QueueHandle_t xTemperatureDataQueue = NULL;
 #define START_TASK_PRIORITY 1
 TaskHandle_t start_task_handle = NULL;
 
-/*wifi_task*/
-#define WIFI_TASK_DEPTH 512
-#define WIFI_TASK_PRIORITY 23
-TaskHandle_t wifi_task_handle = NULL;
+/*mqtt_send_task*/
+#define MQTT_SEND_TASK_DEPTH 512
+#define MQTT_SEND_TASK_PRIORITY 23
+TaskHandle_t mqtt_send_handle = NULL;
 
 /*aht20_task*/
 #define AHT20_TASK_DEPTH 256
@@ -85,14 +77,13 @@ TaskHandle_t lm2904_task_handle = NULL;
 
 /*gy906 体温 task*/
 #define GY906_TASK_DEPTH 256
-#define GY906_TASK_PRIORITY 25
+#define GY906_TASK_PRIORITY 24
 TaskHandle_t gy906_task_handle = NULL;
 
 /*接收数据 task*/
-#define REVDATA_TASK_DEPTH 256
-#define REVDATA_TASK_PRIORITY 24
-TaskHandle_t revData_task_handle = NULL;
-
+#define MQTT_REV_TASK_DEPTH 256
+#define MQTT_REV_TASK_PRIORITY 26
+TaskHandle_t mqtt_rev_task_handle = NULL;
 
 void start_task(void *pvParameters);
 
@@ -139,9 +130,6 @@ void start_task(void *pvParameters)
 	buzzer_init();
 	atomizer_init();
 	
-	
-
-	
 	OLED_Clear();
 	/*OLED显示初始化*/
 	/*硬件初始化完成*/
@@ -158,25 +146,10 @@ void start_task(void *pvParameters)
 	OLED_ShowCHinese(96,0,19,1);
 	OLED_ShowCHinese(112,0,20,1);
 	
+	/*连接wifi */
+    wifi_mqtt_init();
 
-	
-
-    /*创建信号量*/
-    /*1. aht20准备发送数据的的信号量*/
-	xAht20ReadySemaphore = xSemaphoreCreateBinary();
-	
-	/*2. air准备发送数据的的信号量*/
-	xAirReadySemaphore = xSemaphoreCreateBinary();
- 
-    /*3. lm2904准备发送数据的的信号量*/
-	xLm2904ReadySemaphore = xSemaphoreCreateBinary();
-
-    /*4. gy906准备发送数据的的信号量 */
-	xGy906ReadySemaphore = xSemaphoreCreateBinary();
-	
-    /*5. 准备接收数据的信号量*/
-    xRevDataReadySemaphore = xSemaphoreCreateBinary();
-	
+	taskENTER_CRITICAL();
 	/*创建消息队列*/
 	/*1. ath20发送数据消息队列*/
 	xWeatherDataQueue = xQueueCreate(10,sizeof(weatherData_t));
@@ -193,12 +166,12 @@ void start_task(void *pvParameters)
     /*创建其他任务*/
     /*1. wifi connectt*/
     xTaskCreate(
-        (TaskFunction_t)wifi_connect_task,
+        (TaskFunction_t)mqtt_send_task,
         (char *)"wifi_connect",
-        (configSTACK_DEPTH_TYPE)WIFI_TASK_DEPTH,
+        (configSTACK_DEPTH_TYPE)MQTT_SEND_TASK_DEPTH,
         (void *)NULL,
-        (UBaseType_t)WIFI_TASK_PRIORITY,
-        (TaskHandle_t *)&wifi_task_handle);
+        (UBaseType_t)MQTT_SEND_TASK_PRIORITY,
+        (TaskHandle_t *)&mqtt_send_handle);
 	
 	/*2. aht20 task*/
 	xTaskCreate(
@@ -237,16 +210,20 @@ void start_task(void *pvParameters)
         (TaskHandle_t *)gy906_task_handle);
 
     /*6. revData task*/
-//	xTaskCreate(
-//        (TaskFunction_t)rev_data_task,
-//        (char *)"revData_task",
-//        (configSTACK_DEPTH_TYPE)REVDATA_TASK_DEPTH,
-//        (void *)NULL,
-//        (UBaseType_t)REVDATA_TASK_PRIORITY,
-//        (TaskHandle_t *)revData_task_handle);
+	xTaskCreate(
+        (TaskFunction_t)mqtt_rev_task,
+        (char *)"revData_task",
+        (configSTACK_DEPTH_TYPE)MQTT_REV_TASK_DEPTH,
+        (void *)NULL,
+        (UBaseType_t)MQTT_REV_TASK_PRIORITY,
+        (TaskHandle_t *)mqtt_rev_task_handle);
 
+	taskEXIT_CRITICAL();
+		
 
-	vTaskDelay(pdMS_TO_TICKS(500));
+	 	
+	
+	vTaskDelay(pdMS_TO_TICKS(100));
 //    char task_buffer[256];
 //    vTaskList(task_buffer);
 //    DEBUG_LOG("任务状态:\n%s\n", task_buffer);
@@ -279,3 +256,4 @@ void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName)
     taskDISABLE_INTERRUPTS();
     while (1);
 }
+

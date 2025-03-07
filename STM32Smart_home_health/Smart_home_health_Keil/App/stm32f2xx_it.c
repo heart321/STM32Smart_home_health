@@ -22,6 +22,7 @@
 #include "stm32f2xx_hal.h"
 #include "stm32f2xx_it.h"
 
+
 /** @addtogroup STM32F2xx_HAL_Examples
   * @{
   */
@@ -38,8 +39,6 @@ extern TIM_HandleTypeDef htim5;
 
 /*串口2句柄 DMA句柄*/
 extern UART_HandleTypeDef huart2;
-extern DMA_HandleTypeDef hdma_usart2_rx;
-extern DMA_HandleTypeDef hdma_usart2_tx;
 
 /*串口1句柄 DMA句柄*/
 extern UART_HandleTypeDef huart1;
@@ -55,6 +54,8 @@ extern UART_HandleTypeDef huart6;
 
 /*lm2904 adc_dma句柄*/
 extern DMA_HandleTypeDef hdma_adc1;
+
+
 
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
@@ -182,23 +183,7 @@ void USART2_IRQHandler(void)
 {
     HAL_UART_IRQHandler(&huart2);
 }
-/**
-  * @brief This function handles DMA1_Stream5 interrupt.
-  */
 
-void DMA1_Stream5_IRQHandler(void)
-{
-    HAL_DMA_IRQHandler(&hdma_usart2_rx);
-}
-
-/**
-  * @brief This function handles DMA1_Stream6 interrupt.
-  */
-
-void DMA1_Stream6_IRQHandler(void)
-{
-    HAL_DMA_IRQHandler(&hdma_usart2_tx);
-}
 
 /**
   * @brief This function handles USART1 global interrupt.

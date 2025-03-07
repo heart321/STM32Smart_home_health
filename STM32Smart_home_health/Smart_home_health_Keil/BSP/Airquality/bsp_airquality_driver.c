@@ -58,7 +58,7 @@ void Airquality_usart4_init(void)
 	
 
 	//开启串口4中断
-	HAL_NVIC_SetPriority(UART4_IRQn,5,0);
+	HAL_NVIC_SetPriority(UART4_IRQn,6,0);
 	HAL_NVIC_EnableIRQ(UART4_IRQn);
 	
 }

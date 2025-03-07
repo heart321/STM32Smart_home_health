@@ -18,14 +18,13 @@
 #include "queue.h"
 
 /****************Task Include*************************/
-#include "app_revData_task.h"
+#include "app_mqttRev_task.h"
 
 /****************BSP Include*************************/
 #include "bsp_esp8266_driver.h"
 #include "bsp_sg90_driver.h"
 
 /****************Semaphore Init*************************/
-extern SemaphoreHandle_t xRevDataReadySemaphore;
 
 /****************Queue Init*************************/
 
@@ -34,24 +33,22 @@ extern SemaphoreHandle_t xRevDataReadySemaphore;
  * @param   *pvParameters 任务创建时传递的参数
  * @retval  None
  */
-void rev_data_task(void *pvParameters)
+void mqtt_rev_task(void *pvParameters)
 {
-    /*服务器返回的数据 */
     unsigned char *ptrIPD = NULL;
 
     while (1)
     {
-        if (xSemaphoreTake(xRevDataReadySemaphore, portMAX_DELAY) == pdTRUE)
+        ptrIPD = ESP8266_GetIPD(1000); // 增加超时到1000ms
+        if (ptrIPD != NULL)
         {
-            ptrIPD = ESP8266_GetIPD(200);
-            if (ptrIPD != NULL)
-            {
-                /*处理数据 */
-                Cloud_RevPro(ptrIPD);
-            }
+            taskENTER_CRITICAL();
+            Cloud_RevPro(ptrIPD);
+            taskEXIT_CRITICAL();
+            ESP8266_Clear(); // 处理完后清空缓冲区
         }
-
-        vTaskDelay(pdMS_TO_TICKS(10));
+        // 无数据时安静等待，避免频繁轮询
+        vTaskDelay(pdMS_TO_TICKS(500)); // 每500ms检查一次
     }
 }
 

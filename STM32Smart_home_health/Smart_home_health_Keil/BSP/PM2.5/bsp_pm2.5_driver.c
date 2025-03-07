@@ -50,7 +50,7 @@ void pm25_usart6_init(void)
         while (1);
     }
 
-    HAL_NVIC_SetPriority(USART6_IRQn, 5, 1);
+    HAL_NVIC_SetPriority(USART6_IRQn, 5, 0);
     HAL_NVIC_EnableIRQ(USART6_IRQn);
 }
 
