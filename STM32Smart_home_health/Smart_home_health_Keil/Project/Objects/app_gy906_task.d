@@ -12,8 +12,11 @@
 .\objects\app_gy906_task.o: ..\Middleware\FreeRTOS\include\list.h
 .\objects\app_gy906_task.o: ..\Middleware\FreeRTOS\include\semphr.h
 .\objects\app_gy906_task.o: ..\Middleware\FreeRTOS\include\queue.h
-.\objects\app_gy906_task.o: ..\Task\include\app_gy906_task.h
-.\objects\app_gy906_task.o: ..\BSP\GY906\bsp_gy906_driver.h
+.\objects\app_gy906_task.o: ..\App\freertos_demo.h
+.\objects\app_gy906_task.o: ..\Libraries\STM32F2xx_HAL_Driver\Inc\stm32f2xx_hal.h
+.\objects\app_gy906_task.o: ..\App\stm32f2xx_hal_conf.h
+.\objects\app_gy906_task.o: ..\Libraries\STM32F2xx_HAL_Driver\Inc\stm32f2xx_hal_rcc.h
+.\objects\app_gy906_task.o: ..\Libraries\STM32F2xx_HAL_Driver\Inc\stm32f2xx_hal_def.h
 .\objects\app_gy906_task.o: ..\Libraries\CMSIS\Device\ST\STM32F2xx\Include\stm32f2xx.h
 .\objects\app_gy906_task.o: ..\Libraries\CMSIS\Device\ST\STM32F2xx\Include\stm32f205xx.h
 .\objects\app_gy906_task.o: ..\Libraries\CMSIS\Include\core_cm3.h
@@ -23,10 +26,6 @@
 .\objects\app_gy906_task.o: ..\Libraries\CMSIS\Include\mpu_armv7.h
 .\objects\app_gy906_task.o: ..\Libraries\CMSIS\Device\ST\STM32F2xx\Include\system_stm32f2xx.h
 .\objects\app_gy906_task.o: ..\Libraries\STM32F2xx_HAL_Driver\Inc\stm32f2xx_hal.h
-.\objects\app_gy906_task.o: ..\App\stm32f2xx_hal_conf.h
-.\objects\app_gy906_task.o: ..\Libraries\STM32F2xx_HAL_Driver\Inc\stm32f2xx_hal_rcc.h
-.\objects\app_gy906_task.o: ..\Libraries\STM32F2xx_HAL_Driver\Inc\stm32f2xx_hal_def.h
-.\objects\app_gy906_task.o: ..\Libraries\CMSIS\Device\ST\STM32F2xx\Include\stm32f2xx.h
 .\objects\app_gy906_task.o: ..\Libraries\STM32F2xx_HAL_Driver\Inc\Legacy/stm32_hal_legacy.h
 .\objects\app_gy906_task.o: ..\Libraries\STM32F2xx_HAL_Driver\Inc\stm32f2xx_hal_rcc_ex.h
 .\objects\app_gy906_task.o: ..\Libraries\STM32F2xx_HAL_Driver\Inc\stm32f2xx_hal_gpio.h
@@ -75,5 +74,7 @@
 .\objects\app_gy906_task.o: ..\Libraries\STM32F2xx_HAL_Driver\Inc\stm32f2xx_hal_pcd_ex.h
 .\objects\app_gy906_task.o: ..\Libraries\STM32F2xx_HAL_Driver\Inc\stm32f2xx_hal_hcd.h
 .\objects\app_gy906_task.o: ..\Libraries\STM32F2xx_HAL_Driver\Inc\stm32f2xx_hal_mmc.h
+.\objects\app_gy906_task.o: ..\Task\include\app_gy906_task.h
+.\objects\app_gy906_task.o: ..\BSP\GY906\bsp_gy906_driver.h
 .\objects\app_gy906_task.o: ..\BSP\USART\bsp_usart_driver.h
 .\objects\app_gy906_task.o: D:\Keil_ARM\ARM\ARMCC\Bin\..\include\stdio.h

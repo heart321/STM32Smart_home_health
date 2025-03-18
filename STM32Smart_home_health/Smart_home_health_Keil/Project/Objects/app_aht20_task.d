@@ -13,7 +13,7 @@
 .\objects\app_aht20_task.o: ..\Middleware\FreeRTOS\include\semphr.h
 .\objects\app_aht20_task.o: ..\Middleware\FreeRTOS\include\queue.h
 .\objects\app_aht20_task.o: ..\Task\include\app_aht20_task.h
-.\objects\app_aht20_task.o: ..\BSP\AHT20\bsp_aht20_driver.h
+.\objects\app_aht20_task.o: ..\App\freertos_demo.h
 .\objects\app_aht20_task.o: ..\Libraries\STM32F2xx_HAL_Driver\Inc\stm32f2xx_hal.h
 .\objects\app_aht20_task.o: ..\App\stm32f2xx_hal_conf.h
 .\objects\app_aht20_task.o: ..\Libraries\STM32F2xx_HAL_Driver\Inc\stm32f2xx_hal_rcc.h
@@ -75,5 +75,6 @@
 .\objects\app_aht20_task.o: ..\Libraries\STM32F2xx_HAL_Driver\Inc\stm32f2xx_hal_pcd_ex.h
 .\objects\app_aht20_task.o: ..\Libraries\STM32F2xx_HAL_Driver\Inc\stm32f2xx_hal_hcd.h
 .\objects\app_aht20_task.o: ..\Libraries\STM32F2xx_HAL_Driver\Inc\stm32f2xx_hal_mmc.h
+.\objects\app_aht20_task.o: ..\BSP\AHT20\bsp_aht20_driver.h
 .\objects\app_aht20_task.o: ..\BSP\USART\bsp_usart_driver.h
 .\objects\app_aht20_task.o: D:\Keil_ARM\ARM\ARMCC\Bin\..\include\stdio.h

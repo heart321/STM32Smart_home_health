@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F205xx</Define>
               <Undefine></Undefine>
-              <IncludePath>..\Libraries\STM32F2xx_HAL_Driver\Inc;..\Libraries\CMSIS\Device\ST\STM32F2xx\Include;..\Libraries\CMSIS\Include;..\App;..\BSP\LED;..\BSP\sys;..\Middleware\FreeRTOS\include;..\Task\include;..\BSP\USART;..\BSP\NetWork;..\BSP\AHT20;..\BSP\Airquality;..\BSP\LM2904;..\BSP\PM2.5;..\BSP\OLED;..\BSP\Motor;..\BSP\SG90;..\BSP\GY906;..\BSP\Relay;..\BSP\Buzzer;..\BSP\WUHUA</IncludePath>
+              <IncludePath>..\Libraries\STM32F2xx_HAL_Driver\Inc;..\Libraries\CMSIS\Device\ST\STM32F2xx\Include;..\Libraries\CMSIS\Include;..\App;..\BSP\LED;..\BSP\sys;..\Middleware\FreeRTOS\include;..\Task\include;..\BSP\USART;..\BSP\NetWork;..\BSP\AHT20;..\BSP\Airquality;..\BSP\LM2904;..\BSP\PM2.5;..\BSP\OLED;..\BSP\Motor;..\BSP\SG90;..\BSP\GY906;..\BSP\Relay;..\BSP\Buzzer;..\BSP\WUHUA;..\BSP\DRV8833;..\BSP\MAX30102</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -432,6 +432,11 @@
               <FileType>1</FileType>
               <FilePath>..\Task\app_mqttSend_task.c</FilePath>
             </File>
+            <File>
+              <FileName>app_max30102_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Task\app_max30102_task.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -503,11 +508,6 @@
               <FilePath>..\BSP\OLED\oledfont.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_motor_driver.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\BSP\Motor\bsp_motor_driver.c</FilePath>
-            </File>
-            <File>
               <FileName>bsp_sg90_driver.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\BSP\SG90\bsp_sg90_driver.c</FilePath>
@@ -531,6 +531,16 @@
               <FileName>bsp_wuhua_driver.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\BSP\WUHUA\bsp_wuhua_driver.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_drv8833_driver.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\BSP\DRV8833\bsp_drv8833_driver.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_max30102_driver.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\BSP\MAX30102\bsp_max30102_driver.c</FilePath>
             </File>
           </Files>
         </Group>

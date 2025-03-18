@@ -54,6 +54,7 @@
 
 /* Co-routine definitions. */
 #define configSUPPORT_DYNAMIC_ALLOCATION 1 
+#define configUSE_MUTEXES 1
 #define configUSE_COUNTING_SEMAPHORES 1
 
 #define configCHECK_FOR_STACK_OVERFLOW 2 // 启用堆栈溢出检测（方法 2）
@@ -64,6 +65,7 @@
 #define configPRIO_BITS          4
 #define configLIBRARY_LOWEST_INTERRUPT_PRIORITY   15
 #define configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY 5
+
 
 /* Set the following definitions to 1 to include the API function, or zero
 to exclude the API function. */

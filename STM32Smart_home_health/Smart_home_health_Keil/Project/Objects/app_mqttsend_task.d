@@ -89,3 +89,5 @@
 .\objects\app_mqttsend_task.o: ..\Task\include\app_air_task.h
 .\objects\app_mqttsend_task.o: ..\Task\include\app_lm2904_task.h
 .\objects\app_mqttsend_task.o: ..\Task\include\app_gy906_task.h
+.\objects\app_mqttsend_task.o: ..\Task\include\app_max30102_task.h
+.\objects\app_mqttsend_task.o: ..\App\freertos_demo.h

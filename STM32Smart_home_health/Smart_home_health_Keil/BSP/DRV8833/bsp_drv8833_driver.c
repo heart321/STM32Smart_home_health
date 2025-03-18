@@ -1,26 +1,31 @@
-#include "bsp_motor_driver.h"
+#include "bsp_drv8833_driver.h"
 
-#include <stdio.h>
-
-
-#define TIM4_PRESCALER  (5 - 1)
+// 预分频器4
+#define TIM4_PRESCALER  (5 - 1) 
+// 自动重装值 99
 #define TIM4_PERIOD     (100 - 1)
 
 // 定时器4句柄
 TIM_HandleTypeDef htim4;
 
-void motor_init(void)
+
+/*
+ * @brief drv8833 电机初始化
+ * @param None
+ * @retval None
+*/
+void drv8833_motor_init(void)
 {
-	//1.开启时钟
+    //1.开启时钟
 	if(__HAL_RCC_GPIOB_IS_CLK_DISABLED())
 	{
 		__HAL_RCC_GPIOB_CLK_ENABLE();
 	}
-	
 	if(__HAL_RCC_TIM4_IS_CLK_DISABLED())
 	{
 		__HAL_RCC_TIM4_CLK_ENABLE();
 	}
+	
 	
 	
 	GPIO_InitTypeDef GPIO_InitStruct = {0};
@@ -65,21 +70,50 @@ void motor_init(void)
 	HAL_TIM_PWM_ConfigChannel(&htim4, &sConfigOC, TIM_CHANNEL_3);
 	HAL_TIM_PWM_ConfigChannel(&htim4, &sConfigOC, TIM_CHANNEL_4);
 	
-	// 启动定时器4通道3的PWM输出
-	if(HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_3) == HAL_OK)
-	{
-		//printf("channel_3 start!\n");
-	}
-	// 启动定时器4通道4的PWM输出
-//	if(HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_4)== HAL_OK)
-//	{
-//		printf("channel_4 start!\n");
-//		printf("%u \n",sConfigOC.Pulse);
-//	}
 	
-	//HAL_GPIO_WritePin(GPIOB,GPIO_PIN_9,GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(GPIOB,GPIO_PIN_8,GPIO_PIN_RESET);
 	
 }
 
+/*
+ * @brief 设置drv8833 电机方向
+ * @param   direction = forword 正转
+ *          direction = reversal 反转
+ * @retval None
+*/
+void drv8833_motor_direction(motor_direction_t direction)
+{
+    if(direction == forword)
+    {
+        HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_4);
+        HAL_GPIO_WritePin(GPIOB,GPIO_PIN_9,GPIO_PIN_RESET);
+    }
+    else if(direction == reversal)
+    {
+        HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_3);
+        HAL_GPIO_WritePin(GPIOB,GPIO_PIN_8,GPIO_PIN_RESET);
+    }
+}
+
+
+/*
+ * @brief 设置电机速度
+ * @param speed 速度值
+ * @retval None
+*/
+void drv8833_motor_speed(uint32_t speed)
+{
+    __HAL_TIM_SET_COMPARE(&htim4,TIM_CHANNEL_4,speed);
+	__HAL_TIM_SET_COMPARE(&htim4,TIM_CHANNEL_3,speed);
+}
+
+/*
+ * @brief 电机停止
+ * @param None
+ * @retval None
+*/
+void drv8833_motot_stop(void)
+{
+    HAL_TIM_PWM_Stop(&htim4, TIM_CHANNEL_4);
+	HAL_TIM_PWM_Stop(&htim4, TIM_CHANNEL_3);
+}
 

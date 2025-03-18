@@ -78,3 +78,6 @@
 .\objects\app_mqttrev_task.o: ..\Libraries\STM32F2xx_HAL_Driver\Inc\stm32f2xx_hal_hcd.h
 .\objects\app_mqttrev_task.o: ..\Libraries\STM32F2xx_HAL_Driver\Inc\stm32f2xx_hal_mmc.h
 .\objects\app_mqttrev_task.o: ..\BSP\SG90\bsp_sg90_driver.h
+.\objects\app_mqttrev_task.o: ..\BSP\Relay\bsp_relay_driver.h
+.\objects\app_mqttrev_task.o: ..\BSP\WUHUA\bsp_wuhua_driver.h
+.\objects\app_mqttrev_task.o: ..\BSP\DRV8833\bsp_drv8833_driver.h

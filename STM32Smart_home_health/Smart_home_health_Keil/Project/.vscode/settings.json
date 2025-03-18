@@ -26,6 +26,9 @@
         "bsp_relay_driver.h": "c",
         "bsp_buzzer_driver.h": "c",
         "bsp_wuhua_driver.h": "c",
-        "app_revdata_task.h": "c"
+        "app_revdata_task.h": "c",
+        "app_max30102_task.h": "c",
+        "bsp_max30102_driver.h": "c",
+        "freertos_demo.h": "c"
     }
 }

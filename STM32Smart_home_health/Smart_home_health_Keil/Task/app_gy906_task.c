@@ -18,6 +18,7 @@
 #include "queue.h"
 
 /****************Task Include*************************/
+#include "freertos_demo.h"
 #include "app_gy906_task.h"
 
 /****************BSP Include*************************/
@@ -25,10 +26,10 @@
 #include "bsp_usart_driver.h"
 
 /****************Semaphore Init*************************/
-extern SemaphoreHandle_t xGy906ReadySemaphore;
+
 
 /****************Queue Init*************************/
-extern QueueHandle_t xTemperatureDataQueue;
+extern QueueHandle_t xSensorDataQueue;
 
 /*
  * @brief   测量体温的任务
@@ -37,22 +38,28 @@ extern QueueHandle_t xTemperatureDataQueue;
  */
 void gy906_task(void *pvParameters)
 {
-    /*测量的温度变量*/
-    temperatureData_t temperatureData;
-
-    /*等待wifi连接成功 发送体温数据 */
+    SensorData_t data = {
+        .type = PEOPLE_TEMP
+    };
+    uint8_t gy_time = 0;
 
     while (1)
     {
+        gy_time++;
+        data.people_temp = readObjectTemp();
 
-        temperatureData.people_temp = readObjectTemp();
-        temperatureData.room_temp = 0.0;
-
-        if (NULL != xTemperatureDataQueue)
+        if (3 < gy_time && NULL != xSensorDataQueue)
         {
-            xQueueSend(xTemperatureDataQueue, &temperatureData.people_temp, pdMS_TO_TICKS(100));
+			if(34 < data.people_temp && 40 > data.people_temp)
+			{
+				if(pdTRUE == xQueueSend(xSensorDataQueue, &data.people_temp, portMAX_DELAY))
+				{
+					gy_time = 0;
+				}
+			}
+			printf("%.2f\n",data.people_temp);
         }
 
-        vTaskDelay(pdMS_TO_TICKS(3000));
+        vTaskDelay(pdMS_TO_TICKS(500));
     }
 }

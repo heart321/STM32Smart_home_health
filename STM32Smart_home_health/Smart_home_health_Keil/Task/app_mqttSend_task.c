@@ -34,16 +34,13 @@
 #include "app_air_task.h"
 #include "app_lm2904_task.h"
 #include "app_gy906_task.h"
-
+#include "app_max30102_task.h"
+#include "freertos_demo.h"
 
 /****************Semaphore Init*************************/
 
 /****************Queue Init*************************/
-extern QueueHandle_t xWeatherDataQueue;
-extern QueueHandle_t xAirDataQueue;
-extern QueueHandle_t xDbDataQueue;
-extern QueueHandle_t xTemperatureDataQueue;
-
+extern QueueHandle_t xSensorDataQueue;
 
 ESP8266_StatusTypeDef_t esp8266_status = ESP8266_ERROR;
 
@@ -55,85 +52,52 @@ ESP8266_StatusTypeDef_t esp8266_status = ESP8266_ERROR;
 void mqtt_send_task(void *pvParameters) {
     char PUB_BUF[512];
     const char devPubTopic[] = {"smart_home/publish"};
-    weatherData_t receiveData_aht20 = {0.0f, 0.0f};
-    airData_t receiveData_air = {0.0f, 0.0f, 0.0f, 0};
-    dbData_t receiveData_db = {0.0f};
-    temperatureData_t temperatureData = {0.0f,0.0f};
+
+    SensorData_t rev_data;
 
     while (1) {
-        /* 1. 接收 AHT20 数据 */
-        if (xQueueReceive(xWeatherDataQueue, &receiveData_aht20, pdMS_TO_TICKS(500)) == pdTRUE) {
-#if DEBUG
-//            DEBUG_LOG("wifi_task 温度：%.2fC 湿度：%.2f%%\n",
-//                      receiveData_aht20.temperature, receiveData_aht20.humidity);
-#endif
-        }
-
-        /* 2. 接收空气质量数据 */
-        if (xQueueReceive(xAirDataQueue, &receiveData_air, pdMS_TO_TICKS(500)) == pdTRUE) {
-#if DEBUG
-//		DEBUG_LOG("wifi_task TVOC:%.2f CO2:%.2f HCHO:%.2f pm2.5:%d ug/m3\n",
-//				  receiveData_air.TVOC, receiveData_air.CO2, receiveData_air.HCHO, receiveData_air.PM25);
-#endif
-        }
-
-        /* 3. 接收分贝数据 */
-        if (xQueueReceive(xDbDataQueue, &receiveData_db, pdMS_TO_TICKS(500)) == pdTRUE) {
-#if DEBUG
-//            DEBUG_LOG("wifi_task 分贝值:%.2f\n", receiveData_db.db_value);
-#endif
-        }
-
-        /*4. 接收体温数据 */
-        if(xQueueReceive(xTemperatureDataQueue,&temperatureData,pdMS_TO_TICKS(500) == pdTRUE))
+        if(pdTRUE == xQueueReceive(xSensorDataQueue,&rev_data,pdMS_TO_TICKS(1000)))
         {
- #if DEBUG
-//         DEBUG_LOG("wifi_task 体温:%.2f\n",temperatureData.people_temp);
- #endif
-        }
-
-
-        /* . 打包并发布数据 */
-        int len = snprintf(PUB_BUF, sizeof(PUB_BUF),
-                           "{\"Temp\":\"%.2f\",\"Humi\":\"%.2f\",\"TVOC\":\"%.2f\",\"CO2\":\"%.1f\",\"HCHO\":\"%.3f\",\"PM25\":\"%d\",\"DB\":\"%.2f\",\"people_temp\":\"%.2f\"}",
-                           receiveData_aht20.temperature, receiveData_aht20.humidity,
-                           receiveData_air.TVOC, receiveData_air.CO2, receiveData_air.HCHO,
-                           receiveData_air.PM25, receiveData_db.db_value,
-                           temperatureData.people_temp);
-        if (len >= sizeof(PUB_BUF)) {
-#if DEBUG
-            DEBUG_LOG("PUB_BUF 溢出!\n");
-#endif
-            continue;
-        }
-
-        if (esp8266_status == ESP8266_OK) {
-            Cloud_Status_t public_status = Cloud_Publish(devPubTopic, PUB_BUF);
-            if (public_status == Cloud_Ok) {
-#if DEBUG
-                DEBUG_LOG("数据上传成功 \n");
-#endif
-            } else {
-#if DEBUG
-                DEBUG_LOG("数据上传失败 \n");
-#endif
-                esp8266_status = ESP8266_ERROR;
+            // 进入临界区
+            taskENTER_CRITICAL();
+            switch (rev_data.type)
+            {
+            case TEMP_AND_HUMI:
+                sprintf(PUB_BUF,"{\"Temp\":\"%.2f\",\"Humi\":\"%.2f\"}",
+                                    rev_data.temperature,rev_data.humidity);
+                Cloud_Publish(devPubTopic,PUB_BUF);
+                break;
+            case AIR:
+                sprintf(PUB_BUF,"{\"TVOC\":\"%.2f\",\"CO2\":\"%.1f\",\"HCHO\":\"%.3f\",\"PM25\":\"%d\"}",
+                                    rev_data.TVOC,rev_data.CO2,rev_data.HCHO,rev_data.PM25);
+                Cloud_Publish(devPubTopic,PUB_BUF);
+                break;
+			case DB:
+				sprintf(PUB_BUF,"{\"DB\":\"%.2f\"}",rev_data.db_value);
+				Cloud_Publish(devPubTopic,PUB_BUF);
+				break;
+			case PEOPLE_TEMP:
+				sprintf(PUB_BUF,"{\"people_temp\":\"%.2f\"}",rev_data.people_temp);
+				Cloud_Publish(devPubTopic,PUB_BUF);
+				break;
+			case MAX30102:
+                sprintf(PUB_BUF,"{\"HR\":\"%.d\",\"SpO2\":\"%.d\"}",
+                                    rev_data.dis_hr,rev_data.dis_spo2);
+                Cloud_Publish(devPubTopic,PUB_BUF);
+                break;
+            default:
+                break;
             }
-        } else {
-#if DEBUG
-            DEBUG_LOG("连接断开，跳过发布 \n");
-			
-#endif
+			taskEXIT_CRITICAL();
         }
 
-
-        ESP8266_Clear();
+        //ESP8266_Clear();
 //		char task_buffer[256];
 //		vTaskList(task_buffer);
 //		DEBUG_LOG("任务状态:\n%s\n", task_buffer);
 //		DEBUG_LOG("堆剩余: %u\n", xPortGetFreeHeapSize());
 //		DEBUG_LOG("wifi_connect 堆栈剩余: %lu\n", uxTaskGetStackHighWaterMark(NULL));
-        vTaskDelay(pdMS_TO_TICKS(3000));
+        vTaskDelay(pdMS_TO_TICKS(10));
     }
 }
 

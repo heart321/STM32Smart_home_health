@@ -13,6 +13,7 @@
 #include "app_lm2904_task.h"
 #include "app_gy906_task.h"
 #include "app_mqttRev_task.h"
+#include "app_max30102_task.h"
 
 /****************BSP_Include***********************/
 #include "bsp_usart_driver.h"
@@ -22,31 +23,21 @@
 #include "bsp_oled_driver.h"
 #include "bsp_led_driver.h"
 #include "bsp_pm2.5_driver.h"
-#include "bsp_motor_driver.h"
 #include "bsp_sg90_driver.h"
 #include "bsp_led_driver.h"
 #include "bsp_relay_driver.h"
 #include "bsp_buzzer_driver.h"
 #include "bsp_wuhua_driver.h"
 #include "bsp_esp8266_driver.h"
-
-
+#include "bsp_drv8833_driver.h"
+#include "bsp_max30102_driver.h"
 
 /****************Semaphore_Init*********************/
 
 
 /****************Queue_Init*********************/
-/*aht20 发送数据队列*/
-QueueHandle_t xWeatherDataQueue = NULL;
-
-/*空气质量 发送数据队列 */
-QueueHandle_t xAirDataQueue = NULL;
-
-/*lm2904 分贝数据发送队列*/
-QueueHandle_t xDbDataQueue = NULL;
-
-/*gy906 体温数据发送队列*/
-QueueHandle_t xTemperatureDataQueue = NULL;
+/*传感器发送数据队列*/
+QueueHandle_t xSensorDataQueue = NULL;
 
 
 /****************Task_Init**************************/
@@ -80,10 +71,17 @@ TaskHandle_t lm2904_task_handle = NULL;
 #define GY906_TASK_PRIORITY 24
 TaskHandle_t gy906_task_handle = NULL;
 
+
 /*接收数据 task*/
 #define MQTT_REV_TASK_DEPTH 256
 #define MQTT_REV_TASK_PRIORITY 26
 TaskHandle_t mqtt_rev_task_handle = NULL;
+
+
+/*心率血氧采集 task*/
+#define MAX30102_TASK_DEPTH 256
+#define MAX30102_TASK_PRIORITY 24
+TaskHandle_t max30102_task_handle = NULL;
 
 void start_task(void *pvParameters);
 
@@ -121,7 +119,7 @@ void start_task(void *pvParameters)
 	Airquality_usart4_init();
 	pm25_usart6_init();
 	lm2904_init();
-	motor_init();
+	drv8833_motor_init();
 	sg90_init();
 	aht20_init();
 	OLED_Init();
@@ -129,6 +127,11 @@ void start_task(void *pvParameters)
 	relay_init();
 	buzzer_init();
 	atomizer_init();
+	MAX30102_Init();
+	
+	
+	/*电机和速度*/
+	drv8833_motor_speed(50);
 	
 	OLED_Clear();
 	/*OLED显示初始化*/
@@ -152,16 +155,8 @@ void start_task(void *pvParameters)
 	taskENTER_CRITICAL();
 	/*创建消息队列*/
 	/*1. ath20发送数据消息队列*/
-	xWeatherDataQueue = xQueueCreate(10,sizeof(weatherData_t));
+	xSensorDataQueue = xQueueCreate(10,sizeof(SensorData_t));
 	
-    /*2. air发送数据消息队列 */
-    xAirDataQueue = xQueueCreate(10,sizeof(airData_t));
-
-    /*3. lm2904发送数据消息队列*/
-    xDbDataQueue = xQueueCreate(10,sizeof(dbData_t));
-
-    /*4. gy906发送数据消息队列*/
-    xTemperatureDataQueue = xQueueCreate(5,sizeof(temperatureData_t));
 
     /*创建其他任务*/
     /*1. wifi connectt*/
@@ -218,6 +213,16 @@ void start_task(void *pvParameters)
         (UBaseType_t)MQTT_REV_TASK_PRIORITY,
         (TaskHandle_t *)mqtt_rev_task_handle);
 
+		
+    /*7. max30102 task*/
+	xTaskCreate(
+        (TaskFunction_t)max30102_task,
+        (char *)"max30102_task",
+        (configSTACK_DEPTH_TYPE)MAX30102_TASK_DEPTH,
+        (void *)NULL,
+        (UBaseType_t)MAX30102_TASK_PRIORITY,
+        (TaskHandle_t *)max30102_task_handle);
+		
 	taskEXIT_CRITICAL();
 		
 

@@ -206,8 +206,9 @@ void Cloud_RevPro(unsigned char *cmd)
 				{
 					/*处理json数据*/
 					revData_Json(json);
+					cJSON_Delete(json);
 				}
-				cJSON_Delete(json);
+				//cJSON_Delete(json);
 			}
 		
 		break;

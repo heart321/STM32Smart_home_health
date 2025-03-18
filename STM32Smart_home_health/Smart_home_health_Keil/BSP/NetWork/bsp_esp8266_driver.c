@@ -27,9 +27,6 @@ unsigned char esp8266_rx_buffer[ESP8266_RX_BUFFER_SIZE];
 unsigned short esp8266_cnt = 0, esp8266_cntPre = 0;
 
 
-
-
-
 /*
  * @brief   清空ESP8266接收缓冲区
  * @param   None
@@ -50,14 +47,14 @@ void ESP8266_Clear(void)
  */
 ESP8266_StatusTypeDef_t ESP8266_WaitReceive(void)
 {
-    uint32_t timeout = HAL_GetTick() + (uint32_t)200;
+    uint32_t timeout = xTaskGetTickCount() + (uint32_t)500;
     while (esp8266_cnt == esp8266_cntPre)
     {
-        if (HAL_GetTick() > timeout)
+        if (xTaskGetTickCount() > timeout)
         {
             return ESP8266_TIMEOUT;
         }
-        HAL_Delay(10);
+        vTaskDelay(pdMS_TO_TICKS(10));
     }
     esp8266_cntPre = esp8266_cnt;
     return ESP8266_OK;
@@ -87,7 +84,7 @@ ESP8266_StatusTypeDef_t ESP8266_SendCmd(char *cmd, char *res, uint32_t waittime)
                 return ESP8266_OK;
             }
         }
-        HAL_Delay(10);
+        vTaskDelay(pdMS_TO_TICKS(10));
     }
     return ESP8266_TIMEOUT;
 }
@@ -97,21 +94,36 @@ ESP8266_StatusTypeDef_t ESP8266_SendCmd(char *cmd, char *res, uint32_t waittime)
  * @param   None
  * @retval  ESP8266状态
  */
+
+
 ESP8266_StatusTypeDef_t ESP8266_Connect(void)
 {
     ESP8266_Clear();
    
+    DEBUG_LOG("AT+CIPSTATUS\n");
+
+    if(ESP8266_SendCmd("AT+CIPSTATUS\r\n", "STATUS:2", 200) == ESP8266_OK)
+    {
+
+        DEBUG_LOG("wifi 已经连接 直接连接服务器 \n");
+		if(ESP8266_SendCmd(ESP8266_TCP, "OK", 200) == ESP8266_OK)
+		{
+			DEBUG_LOG("服务器连接成功\n");
+			return ESP8266_OK;
+		}
+    } 
+	
     // 发送AT指令，等待返回OK，如果返回错误，则发送AT failed，并返回ESP8266_ERROR
 #if DEBUG
      DEBUG_LOG("AT\n");
 #endif
-    while(ESP8266_SendCmd("AT\r\n", "OK", 1000) != ESP8266_OK)
+    while(ESP8266_SendCmd("AT\r\n", "OK", 200) != ESP8266_OK)
     {
 #if DEBUG
         DEBUG_LOG("AT ERROR!\n");
 		DEBUG_LOG("rx_buffer:%s \n",esp8266_rx_buffer);
 #endif
-        HAL_Delay(1000);
+        HAL_Delay(200);
         return ESP8266_ERROR;
     }  
     DEBUG_LOG("AT OK\n");
@@ -119,13 +131,13 @@ ESP8266_StatusTypeDef_t ESP8266_Connect(void)
 #if DEBUG
     DEBUG_LOG("AT+CWMODE=1\n");
 #endif
-    while(ESP8266_SendCmd("AT+CWMODE=1\r\n", "OK", 1000) != ESP8266_OK)
+    while(ESP8266_SendCmd("AT+CWMODE=1\r\n", "OK", 200) != ESP8266_OK)
     {
 #if DEBUG
         DEBUG_LOG("AT+CWMODE=1 ERROR\n");
 		DEBUG_LOG("rx_buffer:%s \n",esp8266_rx_buffer);
 #endif
-        HAL_Delay(1000);
+        HAL_Delay(200);
         return ESP8266_ERROR;
     }
     
@@ -134,14 +146,14 @@ ESP8266_StatusTypeDef_t ESP8266_Connect(void)
 #if DEBUG
     DEBUG_LOG("ESP8266_WIFI\n");
 #endif
-    while(ESP8266_SendCmd(ESP8266_WIFI, "OK", 5000) != ESP8266_OK)
+    while(ESP8266_SendCmd(ESP8266_WIFI, "OK", 200) != ESP8266_OK)
     {
 #if DEBUG
 		
         DEBUG_LOG("ESP8266_WIFI ERROR\n");
 		DEBUG_LOG("rx_buffer:%s \n",esp8266_rx_buffer);
 #endif
-        HAL_Delay(1000);
+        HAL_Delay(200);
         return ESP8266_ERROR;
     }
 
@@ -149,12 +161,12 @@ ESP8266_StatusTypeDef_t ESP8266_Connect(void)
 #if DEBUG
     DEBUG_LOG("ESP8266_TCP\n");
 #endif
-    while(ESP8266_SendCmd(ESP8266_TCP, "OK", 5000) != ESP8266_OK)
+    while(ESP8266_SendCmd(ESP8266_TCP, "OK", 200) != ESP8266_OK)
     {
 #if DEBUG
         DEBUG_LOG("ESP8266_TCP ERROR\n");
 #endif
-        HAL_Delay(1000);
+        HAL_Delay(200);
         return ESP8266_ERROR;
     }
 
@@ -178,7 +190,7 @@ ESP8266_StatusTypeDef_t ESP8266_SendData(char *data, uint16_t len)
 	char cmd[32] = {0};
 	sprintf(cmd,"AT+CIPSEND=%d\r\n",len);
     ESP8266_Clear();
-    uint32_t timeout = HAL_GetTick() + (uint32_t)1000;
+    uint32_t timeout = xTaskGetTickCount() + (uint32_t)500;
     ESP8266_StatusTypeDef_t status = ESP8266_ERROR;
     while (HAL_GetTick() < timeout)
     {
@@ -189,7 +201,7 @@ ESP8266_StatusTypeDef_t ESP8266_SendData(char *data, uint16_t len)
             status = ESP8266_OK;
             break;
         }
-        HAL_Delay(10);
+        vTaskDelay(pdMS_TO_TICKS(10));
     }
     ESP8266_Clear(); // 确保每次发送后清理缓冲区
     if (status == ESP8266_OK)

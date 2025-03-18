@@ -1,9 +1,9 @@
 .\objects\sys.o: ..\BSP\sys\sys.c
 .\objects\sys.o: ..\BSP\sys\sys.h
+.\objects\sys.o: D:\Keil_ARM\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\sys.o: ..\Libraries\CMSIS\Device\ST\STM32F2xx\Include\stm32f2xx.h
 .\objects\sys.o: ..\Libraries\CMSIS\Device\ST\STM32F2xx\Include\stm32f205xx.h
 .\objects\sys.o: ..\Libraries\CMSIS\Include\core_cm3.h
-.\objects\sys.o: D:\Keil_ARM\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\sys.o: ..\Libraries\CMSIS\Include\cmsis_version.h
 .\objects\sys.o: ..\Libraries\CMSIS\Include\cmsis_compiler.h
 .\objects\sys.o: ..\Libraries\CMSIS\Include\cmsis_armcc.h

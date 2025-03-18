@@ -7,7 +7,7 @@
 
 /*WIFI 名称 密码 
 云服务器的IP Port*/
-#define ESP8266_WIFI    "AT+CWJAP=\"xiaoxi\",\"123456789\"\r\n"
+#define ESP8266_WIFI    "AT+CWJAP=\"xiaoxi\",\"12345678\"\r\n"
 #define ESP8266_TCP     "AT+CIPSTART=\"TCP\",\"47.109.187.11\",1883\r\n" 
 
 
