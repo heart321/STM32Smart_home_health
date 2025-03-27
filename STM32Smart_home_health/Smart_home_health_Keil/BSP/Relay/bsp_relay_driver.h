@@ -9,7 +9,6 @@ typedef struct
 	uint32_t pin;
 }Relay_t;
 
-void relay_init(void);
 
 void relay_on(Relay_t relay);
 

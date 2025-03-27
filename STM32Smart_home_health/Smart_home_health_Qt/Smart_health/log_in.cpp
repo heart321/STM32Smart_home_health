@@ -3,6 +3,7 @@
 #include "sign_in.h"
 #include "widget.h"
 
+
 QString g_username; // **全局变量 用户名 username
 
 log_in::log_in(QWidget *parent)
@@ -114,7 +115,7 @@ void log_in::on_pushButton_login_clicked()
             {
                 qDebug() << "登录成功！" <<Qt::endl;
                 g_username = username;
-                static QPointer<Widget> w;
+                static QPointer<Widget>w;
                 if (w.isNull()) {
                     w = new Widget;
                     w->setAttribute(Qt::WA_DeleteOnClose);
@@ -128,7 +129,7 @@ void log_in::on_pushButton_login_clicked()
                 QMessageBox::warning(this, tr("登录失败"), tr("密码错误"), QMessageBox::Ok);
                 // 清空输入框
                 ui->lineEdit_password->clear();
-                ui->lineEdit_password->clearFocus();  // **清除焦点，防止回车连续触发**
+                ui->lineEdit_password->clearFocus();
                 // 登录失败时隐藏键盘
                 if (keyboardWindow && keyboardWindow->isVisible()) {
                     keyboardWindow->hide();
@@ -143,12 +144,11 @@ void log_in::on_pushButton_login_clicked()
             ui->lineEdit_user->clear();
             ui->lineEdit_password->clear();
             ui->lineEdit_user->clearFocus();
-            ui->lineEdit_password->clearFocus();  // **同样清除焦点**
+            ui->lineEdit_password->clearFocus();
             // 登录失败时隐藏键盘
             if (keyboardWindow && keyboardWindow->isVisible()) {
                 keyboardWindow->hide();
             }
-
         }
     }
 }

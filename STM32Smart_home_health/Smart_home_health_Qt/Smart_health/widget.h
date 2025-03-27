@@ -7,8 +7,6 @@
 
 //#include "qtmaterialflatbutton.h"
 
-
-#include "health_record.h"
 #include "health_home.h"
 #include "health_report.h"
 #include "health_user.h"
@@ -35,7 +33,6 @@ private:
     Ui::Widget *ui;
     /*创建各界面的窗口*/
     health_home homeWid;
-    health_record recordWid;
     health_report reportWid;
     health_user userWid;
 

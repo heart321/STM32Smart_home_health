@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "cloud.h": "c",
+        "mqttkit.h": "c",
+        "app_max30102_task.h": "c",
+        "main.h": "c",
+        "cmsis_os.h": "c",
+        "app_air_task.h": "c",
+        "stm32f2xx_hal.h": "c",
+        "bsp_iwdog_driver.h": "c"
+    }
+}

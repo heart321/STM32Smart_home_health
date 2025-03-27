@@ -1,0 +1,12 @@
+smart_home\list.o: ../Middlewares/Third_Party/FreeRTOS/Source/list.c
+smart_home\list.o: D:\Keil_ARM\ARM\ARMCC\Bin\..\include\stdlib.h
+smart_home\list.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
+smart_home\list.o: D:\Keil_ARM\ARM\ARMCC\Bin\..\include\stddef.h
+smart_home\list.o: D:\Keil_ARM\ARM\ARMCC\Bin\..\include\stdint.h
+smart_home\list.o: ../Core/Inc/FreeRTOSConfig.h
+smart_home\list.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h
+smart_home\list.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h
+smart_home\list.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/deprecated_definitions.h
+smart_home\list.o: ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3/portmacro.h
+smart_home\list.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h
+smart_home\list.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h

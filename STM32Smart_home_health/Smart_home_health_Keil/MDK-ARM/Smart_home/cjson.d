@@ -1,0 +1,9 @@
+smart_home\cjson.o: ..\Middlewares\MQTT\cJSON.c
+smart_home\cjson.o: D:\Keil_ARM\ARM\ARMCC\Bin\..\include\string.h
+smart_home\cjson.o: D:\Keil_ARM\ARM\ARMCC\Bin\..\include\stdio.h
+smart_home\cjson.o: D:\Keil_ARM\ARM\ARMCC\Bin\..\include\math.h
+smart_home\cjson.o: D:\Keil_ARM\ARM\ARMCC\Bin\..\include\stdlib.h
+smart_home\cjson.o: D:\Keil_ARM\ARM\ARMCC\Bin\..\include\float.h
+smart_home\cjson.o: D:\Keil_ARM\ARM\ARMCC\Bin\..\include\limits.h
+smart_home\cjson.o: D:\Keil_ARM\ARM\ARMCC\Bin\..\include\ctype.h
+smart_home\cjson.o: ..\Middlewares\MQTT\cJSON.h

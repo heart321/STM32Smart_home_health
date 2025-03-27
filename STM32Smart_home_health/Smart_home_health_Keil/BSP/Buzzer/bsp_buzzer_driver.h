@@ -3,7 +3,6 @@
 
 #include "stm32f2xx_hal.h"
 
-void buzzer_init(void);
 void buzzer_on(void);
 void buzzer_off(void);
 

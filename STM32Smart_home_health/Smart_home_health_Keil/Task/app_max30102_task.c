@@ -16,15 +16,14 @@
 #include "task.h"
 #include "semphr.h"
 #include "queue.h"
-
+#include "main.h"
 /****************Task Include*************************/
-#include "freertos_demo.h"
+
 #include "app_max30102_task.h"
 
 /****************BSP Include*************************/
 #include "bsp_max30102_driver.h"
 #include "bsp_usart_driver.h"
-
 /****************Semaphore Init*************************/
 
 /****************Queue Init*************************/
@@ -34,9 +33,9 @@ extern QueueHandle_t xSensorDataQueue;
 #define MAX_BRIGHTNESS 255
 #define INTERRUPT_REG 0X00
 
-uint32_t aun_ir_buffer[500];
+static uint32_t aun_ir_buffer[500];
 int32_t n_ir_buffer_length;
-uint32_t aun_red_buffer[500];
+static uint32_t aun_red_buffer[500];
 int32_t n_sp02;
 int8_t ch_spo2_valid;
 int32_t n_heart_rate;
@@ -49,7 +48,6 @@ float f_temp;
 uint8_t temp[6];
 uint8_t finger_detected = 0; // 标记是否有手指
 
-
 /*
  * @brief   采集心率血氧数据
  * @param   *pvParameters 任务创建时传递的参数
@@ -57,11 +55,10 @@ uint8_t finger_detected = 0; // 标记是否有手指
  */
 void max30102_task(void *pvParameters)
 {
-
+    MAX30102_Init();
     SensorData_t data = {
-        .type = MAX30102
-    };
-    uint8_t max30102_time = 0;
+        .type = MAX30102};
+   
 
     un_min = 0x3FFFF;
     un_max = 0;
@@ -70,7 +67,8 @@ void max30102_task(void *pvParameters)
 
     for (i = 0; i < n_ir_buffer_length; i++)
     {
-        while (MAX30102_INT == 1);
+        while (MAX30102_INT == 1)
+            ;
         max30102_FIFO_ReadBytes(REG_FIFO_DATA, temp);
         aun_red_buffer[i] = (long)((long)((long)temp[0] & 0x03) << 16) | (long)temp[1] << 8 | (long)temp[2];
         aun_ir_buffer[i] = (long)((long)((long)temp[3] & 0x03) << 16) | (long)temp[4] << 8 | (long)temp[5];
@@ -84,11 +82,10 @@ void max30102_task(void *pvParameters)
 
     maxim_heart_rate_and_oxygen_saturation(aun_ir_buffer, n_ir_buffer_length, aun_red_buffer, &n_sp02, &ch_spo2_valid, &n_heart_rate, &ch_hr_valid);
 
-    
     while (1)
     {
-        max30102_time++;
-
+        //printf("maxtask………… \n");
+				taskENTER_CRITICAL();
         for (i = 100; i < 500; i++)
         {
             aun_red_buffer[i - 100] = aun_red_buffer[i];
@@ -104,15 +101,16 @@ void max30102_task(void *pvParameters)
         for (i = 400; i < 500; i++)
         {
             un_prev_data = aun_red_buffer[i - 1];
-            while (MAX30102_INT == 1);
+            while (MAX30102_INT == 1)
+                ;
             max30102_FIFO_ReadBytes(REG_FIFO_DATA, temp);
             aun_red_buffer[i] = (long)((long)((long)temp[0] & 0x03) << 16) | (long)temp[1] << 8 | (long)temp[2];
             aun_ir_buffer[i] = (long)((long)((long)temp[3] & 0x03) << 16) | (long)temp[4] << 8 | (long)temp[5];
 
-
-            // 判断信号幅度是否足够（动态阈值）
+            // 判断信号幅度是否足够
             uint32_t signal_range = un_max - un_min;
-            if (signal_range > 10000 && aun_red_buffer[i] > 50000 && aun_ir_buffer[i] > 50000)
+
+            if (signal_range > 10000 || aun_red_buffer[i] > 50000 || aun_ir_buffer[i] > 50000)
             {
                 finger_detected = 1;
             }
@@ -120,9 +118,12 @@ void max30102_task(void *pvParameters)
             {
                 finger_detected = 0;
                 MAX30102_Clear_FIFO();
-                data.dis_hr = 0;
-                data.dis_spo2 = 0;
-                //printf("无手指检测\r\n");
+                data.sensor_values.max30102.heart_rate = 0;
+                data.sensor_values.max30102.spo2 = 0;
+                // printf("signal_range:%d\n", signal_range);
+                // printf("aun_red_buffer:%d\n", aun_red_buffer[i]);
+                // printf("aun_ir_buffer:%d\n", aun_ir_buffer[i]);
+                // printf("无手指检测\r\n");
                 break; // 如果检测到无手指，跳出采集循环
             }
 
@@ -152,29 +153,31 @@ void max30102_task(void *pvParameters)
 
             if (ch_hr_valid == 1 && n_heart_rate < 120)
             {
-                data.dis_hr = n_heart_rate - 15;
-                data.dis_spo2 = n_sp02;
+                data.sensor_values.max30102.heart_rate = n_heart_rate - 30;
+                data.sensor_values.max30102.spo2 = n_sp02;
             }
         }
         else
         {
-            data.dis_hr = 0;
-            data.dis_spo2 = 0;
+            data.sensor_values.max30102.heart_rate = 0;
+            data.sensor_values.max30102.spo2 = 0;
         }
-        
 
         // 使用消息队列发送数据
-        if(5 < max30102_time &&  NULL != xSensorDataQueue)
+        // 每秒发送一次有效数据
+        if (NULL != xSensorDataQueue && (data.sensor_values.max30102.heart_rate> 0 || data.sensor_values.max30102.spo2 > 0)) 
         {
-			if(0 != data.dis_hr && 0 != data.dis_spo2)
-			{
-				if(pdTRUE == xQueueSend(xSensorDataQueue,&data,500))
-				{
-					max30102_time = 0;
-				}
-			}
+            {
+                if (pdTRUE == xQueueSend(xSensorDataQueue, &data, pdMS_TO_TICKS(500)))
+                {
+                    data.sensor_values.max30102.heart_rate = 0;
+                    data.sensor_values.max30102.spo2 = 0;
+
+                   
+                }
+            }
         }
-        
-        vTaskDelay(pdMS_TO_TICKS(100));
+				taskEXIT_CRITICAL();
+        vTaskDelay(pdMS_TO_TICKS(1000));
     }
 }

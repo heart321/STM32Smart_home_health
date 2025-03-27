@@ -9,11 +9,13 @@ typedef struct
 	uint32_t pin;
 }Led_t;
 
-/**
-  * @brief  Initialize LED GPIO
-  * @retval None
-  */
-void led_init(void);
+void led_on(Led_t led);
+
+void led_off(Led_t led);
+
+
+void led_toggle(Led_t led);
+
 
 
 

@@ -161,21 +161,40 @@ QLabel {
        <widget class="QLabel" name="label_heartRate">
         <property name="font">
          <font>
-          <pointsize>22</pointsize>
+          <family>阿里妈妈东方大楷</family>
+          <pointsize>18</pointsize>
          </font>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(255, 255, 255);</string>
+         <string notr="true">	background-color: rgb(255, 255, 255);
+    color: rgb(72,61,139);  /* 字体颜色 */</string>
         </property>
         <property name="text">
-         <string>显示心率：</string>
+         <string>0</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_33">
+        <property name="font">
+         <font>
+          <family>阿里妈妈东方大楷</family>
+          <pointsize>26</pointsize>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">	background-color: rgb(255, 255, 255);
+    color: rgb(72,61,139);  /* 字体颜色 */</string>
+        </property>
+        <property name="text">
+         <string>BPM</string>
         </property>
        </widget>
       </item>
      </layout>
     </item>
     <item row="1" column="0">
-     <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0">
+     <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0">
       <property name="spacing">
        <number>0</number>
       </property>
@@ -220,8 +239,8 @@ QLabel {
        <widget class="QLabel" name="label_bloodOxygen">
         <property name="font">
          <font>
-          <family>宋体</family>
-          <pointsize>22</pointsize>
+          <family>阿里妈妈东方大楷</family>
+          <pointsize>18</pointsize>
           <bold>false</bold>
           <kerning>true</kerning>
          </font>
@@ -230,16 +249,34 @@ QLabel {
          <bool>false</bool>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(255, 255, 255);</string>
+         <string notr="true">	background-color: rgb(255, 255, 255);
+    color: rgb(72,61,139);  /* 字体颜色 */</string>
         </property>
         <property name="text">
-         <string>血氧浓度</string>
+         <string>0</string>
         </property>
         <property name="textFormat">
          <enum>Qt::AutoText</enum>
         </property>
         <property name="scaledContents">
          <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_32">
+        <property name="font">
+         <font>
+          <family>阿里妈妈东方大楷</family>
+          <pointsize>26</pointsize>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">	background-color: rgb(255, 255, 255);
+    color: rgb(72,61,139);  /* 字体颜色 */</string>
+        </property>
+        <property name="text">
+         <string>%</string>
         </property>
        </widget>
       </item>
@@ -302,7 +339,8 @@ QLabel {
        <widget class="QLabel" name="label_28">
         <property name="font">
          <font>
-          <pointsize>22</pointsize>
+          <family>阿里妈妈东方大楷</family>
+          <pointsize>26</pointsize>
          </font>
         </property>
         <property name="styleSheet">
@@ -344,9 +382,9 @@ QLabel {
     <property name="geometry">
      <rect>
       <x>80</x>
-      <y>70</y>
-      <width>71</width>
-      <height>31</height>
+      <y>61</y>
+      <width>61</width>
+      <height>51</height>
      </rect>
     </property>
     <property name="font">
@@ -366,10 +404,10 @@ QLabel {
    <widget class="QLabel" name="label_HCHO">
     <property name="geometry">
      <rect>
-      <x>330</x>
-      <y>90</y>
+      <x>331</x>
+      <y>81</y>
       <width>81</width>
-      <height>31</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="font">
@@ -389,10 +427,10 @@ QLabel {
    <widget class="QLabel" name="label_CO2">
     <property name="geometry">
      <rect>
-      <x>80</x>
-      <y>130</y>
+      <x>81</x>
+      <y>121</y>
       <width>71</width>
-      <height>31</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="font">
@@ -412,10 +450,10 @@ QLabel {
    <widget class="QLabel" name="label_PM25">
     <property name="geometry">
      <rect>
-      <x>330</x>
-      <y>170</y>
-      <width>81</width>
-      <height>31</height>
+      <x>331</x>
+      <y>161</y>
+      <width>91</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="font">
@@ -435,10 +473,10 @@ QLabel {
    <widget class="QLabel" name="label_temp">
     <property name="geometry">
      <rect>
-      <x>80</x>
-      <y>190</y>
-      <width>71</width>
-      <height>31</height>
+      <x>81</x>
+      <y>181</y>
+      <width>81</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="font">
@@ -458,10 +496,10 @@ QLabel {
    <widget class="QLabel" name="label_humi">
     <property name="geometry">
      <rect>
-      <x>330</x>
-      <y>240</y>
-      <width>71</width>
-      <height>31</height>
+      <x>331</x>
+      <y>231</y>
+      <width>91</width>
+      <height>51</height>
      </rect>
     </property>
     <property name="font">
@@ -481,10 +519,10 @@ QLabel {
    <widget class="QLabel" name="label_db">
     <property name="geometry">
      <rect>
-      <x>80</x>
-      <y>260</y>
-      <width>71</width>
-      <height>31</height>
+      <x>81</x>
+      <y>251</y>
+      <width>81</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="font">
@@ -574,7 +612,7 @@ QLabel {
    <widget class="QLabel" name="label_5">
     <property name="geometry">
      <rect>
-      <x>12</x>
+      <x>13</x>
       <y>65</y>
       <width>61</width>
       <height>41</height>
@@ -815,7 +853,7 @@ QLabel {
     <property name="geometry">
      <rect>
       <x>260</x>
-      <y>230</y>
+      <y>240</y>
       <width>61</width>
       <height>41</height>
      </rect>
@@ -855,7 +893,7 @@ QLabel {
     <property name="geometry">
      <rect>
       <x>420</x>
-      <y>80</y>
+      <y>70</y>
       <width>94</width>
       <height>45</height>
      </rect>
@@ -878,9 +916,9 @@ QLabel {
     <property name="geometry">
      <rect>
       <x>430</x>
-      <y>230</y>
+      <y>240</y>
       <width>74</width>
-      <height>41</height>
+      <height>43</height>
      </rect>
     </property>
     <property name="font">
@@ -901,7 +939,7 @@ QLabel {
     <property name="geometry">
      <rect>
       <x>420</x>
-      <y>160</y>
+      <y>150</y>
       <width>94</width>
       <height>45</height>
      </rect>
@@ -923,10 +961,10 @@ QLabel {
    <widget class="QLabel" name="label_27">
     <property name="geometry">
      <rect>
-      <x>160</x>
-      <y>250</y>
-      <width>47</width>
-      <height>43</height>
+      <x>159</x>
+      <y>251</y>
+      <width>71</width>
+      <height>39</height>
      </rect>
     </property>
     <property name="font">
@@ -946,8 +984,8 @@ QLabel {
    <widget class="QLabel" name="label_23">
     <property name="geometry">
      <rect>
-      <x>160</x>
-      <y>120</y>
+      <x>156</x>
+      <y>121</y>
       <width>74</width>
       <height>43</height>
      </rect>
@@ -969,8 +1007,8 @@ QLabel {
    <widget class="QLabel" name="label_25">
     <property name="geometry">
      <rect>
-      <x>160</x>
-      <y>180</y>
+      <x>159</x>
+      <y>181</y>
       <width>37</width>
       <height>45</height>
      </rect>
@@ -992,8 +1030,8 @@ QLabel {
    <widget class="QLabel" name="label_21">
     <property name="geometry">
      <rect>
-      <x>160</x>
-      <y>60</y>
+      <x>138</x>
+      <y>61</y>
       <width>94</width>
       <height>45</height>
      </rect>

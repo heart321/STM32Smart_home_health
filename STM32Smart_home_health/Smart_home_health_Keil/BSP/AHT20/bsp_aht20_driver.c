@@ -11,13 +11,12 @@
  */
 
 #include "bsp_aht20_driver.h"
-#include "bsp_usart_driver.h"
+#include "i2c.h"
 
 
 #define AHT20_ADDRESS 0x70
 
-/*iic 1句柄*/
-I2C_HandleTypeDef hi2c1;
+
 
 /*
  * @brief   AHT20初始化
@@ -27,37 +26,6 @@ I2C_HandleTypeDef hi2c1;
 void aht20_init(void)
 {
 
-	// 1.开启时钟
-	if(__HAL_RCC_GPIOB_IS_CLK_DISABLED())
-	{
-		__HAL_RCC_GPIOB_CLK_ENABLE();
-	}
-	__HAL_RCC_I2C1_CLK_ENABLE();
-	
-	
-	// 2.配置GPIO
-	GPIO_InitTypeDef GPIO_InitStruct = {0};
-	GPIO_InitStruct.Pin = GPIO_PIN_6 | GPIO_PIN_7;
-	GPIO_InitStruct.Mode = GPIO_MODE_AF_OD;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-	GPIO_InitStruct.Alternate = GPIO_AF4_I2C1;
-	HAL_GPIO_Init(GPIOB,&GPIO_InitStruct);
-	
-	
-	// 3.配置iic
-	hi2c1.Instance = I2C1;
-	hi2c1.Init.ClockSpeed = 100000;
-	hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
-	hi2c1.Init.OwnAddress1 = 0;
-	hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
-	hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
-	hi2c1.Init.OwnAddress2 = 0;
-	hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
-	hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
-	if (HAL_I2C_Init(&hi2c1) != HAL_OK) {
-        while (1);
-    }
 
     // 测试AHT20是否响应
     HAL_Delay(100); // 上电等待

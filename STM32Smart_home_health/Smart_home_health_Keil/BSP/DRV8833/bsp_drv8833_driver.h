@@ -11,10 +11,6 @@ typedef enum
 }motor_direction_t;
 
 
-
-/*drv8833 电机初始化 */
-void drv8833_motor_init(void);
-
 /*drv8833 电机方向 */
 void drv8833_motor_direction(motor_direction_t direction);
 

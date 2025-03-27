@@ -359,7 +359,6 @@ void health_report::baidu_AudioOut_Send(QString text)
             audioLoop.exec(); // 等待音频播放完成
 
             // 播放完成进行录音
-
             // 清理资源
             audioOutput->stop();
             delete audioOutput;
@@ -380,5 +379,11 @@ void health_report::on_pushButton_stopChat_clicked()
 {
     shouldStopChat = true;
     ui->pushButton_AiChat->setText("开始聊天");
+}
+
+/*生成AI建议报告*/
+void health_report::on_pushButton_AiReport_clicked()
+{
+
 }
 

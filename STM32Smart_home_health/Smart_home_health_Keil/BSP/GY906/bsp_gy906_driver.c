@@ -1,12 +1,13 @@
 #include "bsp_gy906_driver.h"
 #include "bsp_usart_driver.h"
+#include "i2c.h"
 
 #define MLX90614_ADDR		 0x5A  // 设备地址
 #define MLX90614_TA          0x06  // 环境温度
 #define MLX90614_TOBJ1       0x07  // 物体温度
 
 
-extern I2C_HandleTypeDef hi2c1;
+
 
 
 /**

@@ -408,7 +408,7 @@ QComboBox QAbstractItemView {
    </property>
    <property name="font">
     <font>
-     <family>华文行楷</family>
+     <family>阿里妈妈东方大楷</family>
      <pointsize>40</pointsize>
      <bold>false</bold>
     </font>

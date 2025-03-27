@@ -105,7 +105,7 @@
      <x>690</x>
      <y>10</y>
      <width>331</width>
-     <height>151</height>
+     <height>152</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -113,7 +113,7 @@
      <widget class="QLabel" name="label_title">
       <property name="font">
        <font>
-        <family>华文行楷</family>
+        <family>阿里妈妈东方大楷</family>
         <pointsize>28</pointsize>
         <italic>false</italic>
         <bold>false</bold>
@@ -137,7 +137,7 @@
      <widget class="QLabel" name="label_title2">
       <property name="font">
        <font>
-        <family>华文行楷</family>
+        <family>阿里妈妈东方大楷</family>
         <pointsize>28</pointsize>
        </font>
       </property>
@@ -156,7 +156,7 @@
      <widget class="QLabel" name="label_title3">
       <property name="font">
        <font>
-        <family>华文行楷</family>
+        <family>阿里妈妈东方大楷</family>
         <pointsize>28</pointsize>
        </font>
       </property>

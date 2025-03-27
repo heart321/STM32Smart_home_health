@@ -87,6 +87,8 @@ private slots:
 
     void on_pushButton_stopChat_clicked();
 
+    void on_pushButton_AiReport_clicked();
+
 private:
     Ui::health_report *ui;
 

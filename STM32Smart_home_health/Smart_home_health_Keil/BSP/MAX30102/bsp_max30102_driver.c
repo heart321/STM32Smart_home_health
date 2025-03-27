@@ -1,49 +1,5 @@
 #include "bsp_max30102_driver.h"
-
-// 硬件 I2C 句柄
-I2C_HandleTypeDef hi2c2;
-
-// 初始化硬件 I2C2
-void MAX30102_IIC_Init(void)
-{
-    GPIO_InitTypeDef GPIO_InitStruct = {0};
-
-    // 使能 GPIOB 时钟
-    if (__HAL_RCC_GPIOB_IS_CLK_DISABLED())
-    {
-        __HAL_RCC_GPIOB_CLK_ENABLE();
-    }
-
-    // 使能 I2C2 时钟
-    __HAL_RCC_I2C2_CLK_ENABLE();
-
-    // 配置 I2C2 的 SCL (PB10) 和 SDA (PB11) 引脚
-    GPIO_InitStruct.Pin = MAX30102_IIC_SCL_PIN | MAX30102_IIC_SDA_PIN;
-    GPIO_InitStruct.Mode = GPIO_MODE_AF_OD;           // 开漏输出，I2C 需要开漏模式
-    GPIO_InitStruct.Pull = GPIO_PULLUP;               // 上拉
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;     // 高速
-    GPIO_InitStruct.Alternate = GPIO_AF4_I2C2;        // I2C2 的复用功能 (AF4)
-    HAL_GPIO_Init(MAX30102_IIC_PORT, &GPIO_InitStruct);
-
-    // 配置 I2C2 参数
-    hi2c2.Instance = I2C2;
-    hi2c2.Init.ClockSpeed = 100000;                   
-    hi2c2.Init.DutyCycle = I2C_DUTYCYCLE_2;
-    hi2c2.Init.OwnAddress1 = 0;
-    hi2c2.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
-    hi2c2.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
-    hi2c2.Init.OwnAddress2 = 0;
-    hi2c2.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
-    hi2c2.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
-
-    // 初始化 I2C2
-    if (HAL_I2C_Init(&hi2c2) != HAL_OK)
-    {
-        // 初始化失败处理
-        while (1);
-    }
-}
-
+#include "i2c.h"
 // 硬件 I2C 写一个字节到指定寄存器
 void MAX30102_IIC_Write_One_Byte(uint8_t daddr, uint8_t addr, uint8_t data)
 {
@@ -119,18 +75,18 @@ void max30102_FIFO_ReadBytes(uint8_t Register_Address, uint8_t* Data)
 
 void MAX30102_Init(void)
 {
-    GPIO_InitTypeDef GPIO_InitStructure;
+//    GPIO_InitTypeDef GPIO_InitStructure;
 
-    if (__HAL_RCC_GPIOB_IS_CLK_DISABLED())
-    {
-        __HAL_RCC_GPIOB_CLK_ENABLE();
-    }
-    GPIO_InitStructure.Pin = MAX30102_INT_PIN;
-    GPIO_InitStructure.Mode = GPIO_MODE_INPUT;
-    GPIO_InitStructure.Pull = GPIO_PULLUP;
-    HAL_GPIO_Init(MAX30102_INT_PORT, &GPIO_InitStructure);
+//    if (__HAL_RCC_GPIOB_IS_CLK_DISABLED())
+//    {
+//        __HAL_RCC_GPIOB_CLK_ENABLE();
+//    }
+//    GPIO_InitStructure.Pin = MAX30102_INT_PIN;
+//    GPIO_InitStructure.Mode = GPIO_MODE_INPUT;
+//    GPIO_InitStructure.Pull = GPIO_PULLUP;
+//    HAL_GPIO_Init(MAX30102_INT_PORT, &GPIO_InitStructure);
 
-    MAX30102_IIC_Init();
+    //MAX30102_IIC_Init();
     MAX30102_Reset();
 
     max30102_Bus_Write(REG_INTR_ENABLE_1, 0xc0);  // INTR setting

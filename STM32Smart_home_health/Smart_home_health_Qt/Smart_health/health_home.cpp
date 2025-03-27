@@ -173,6 +173,15 @@ void health_home::MQTT_RevData_Success(const QByteArray &message)
         {
             ui->label_peopleTemp->setText(rec);
         }
+        if((rec = my_mqtt.get_mqttValue(jsonDocument,"HR")) != "")
+        {
+            ui->label_heartRate->setText(rec);
+        }
+        if((rec = my_mqtt.get_mqttValue(jsonDocument,"SpO2")) != "")
+        {
+            ui->label_bloodOxygen->setText(rec);
+        }
+
     }
     qDebug() << "message:" << message << Qt::endl;
 

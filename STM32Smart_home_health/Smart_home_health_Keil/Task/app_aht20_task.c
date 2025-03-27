@@ -16,20 +16,20 @@
 #include "task.h"
 #include "semphr.h"
 #include "queue.h"
+#include "main.h"
 
 /****************Task Include*************************/
 #include "app_aht20_task.h"
-#include "freertos_demo.h"
 
 /****************BSP Include*************************/
 #include "bsp_aht20_driver.h"
 #include "bsp_usart_driver.h"
+#include "bsp_oled_driver.h"
 
 /****************Semaphore Init*************************/
 
 /****************Queue Init*************************/
 extern QueueHandle_t xSensorDataQueue;
-
 
 /*
  * @brief   测量环境温湿度数据
@@ -40,27 +40,27 @@ void aht20_task(void *pvParameters)
 {
 	// 定义传感器类型
 	SensorData_t data = {
-		.type = TEMP_AND_HUMI
-	};
+		.type = TEMP_AND_HUMI};
 
 	uint8_t aht20_time = 0;
 	while (1)
 	{
+		//printf("ath20task………… \n");
 		aht20_time++;
-		
-		if (aht20_time > 10 && NULL != xSensorDataQueue)
+
+		if (aht20_time > 21 && NULL != xSensorDataQueue)
 		{
-			aht20_read(&data.temperature, &data.humidity);
-			if(0 != data.humidity && 0 != data.temperature)
+			aht20_read(&data.sensor_values.aht20.temperature, &data.sensor_values.aht20.humidity);
+			if (0 != data.sensor_values.aht20.humidity && 0 != data.sensor_values.aht20.temperature)
 			{
-				if(pdTRUE ==xQueueSend(xSensorDataQueue, &data, portMAX_DELAY))
+				if (pdTRUE == xQueueSend(xSensorDataQueue, &data, pdMS_TO_TICKS(500)))
 				{
+					OLED_ShowNum(74, 2, (int)data.sensor_values.aht20.temperature, 2, 12, 0);
+					OLED_ShowNum(108, 2, (int)data.sensor_values.aht20.humidity, 2, 12, 0);
 					aht20_time = 0;
 				}
-				
 			}
 		}
-		//			 printf("温度：%.2fC 湿度：%.2f%%\r\n",
 		//			 	weatherData.temperature,weatherData.humidity);
 
 		vTaskDelay(pdMS_TO_TICKS(1000));

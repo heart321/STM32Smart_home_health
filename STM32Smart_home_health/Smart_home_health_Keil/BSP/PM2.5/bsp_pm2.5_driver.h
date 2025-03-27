@@ -3,8 +3,7 @@
 
 #include "stm32f2xx.h"
 
-
-void pm25_usart6_init(void);
 void pm25_rev_data(uint8_t* data,uint16_t len);
+void pm25_rev_data_stop(void);
 
 #endif

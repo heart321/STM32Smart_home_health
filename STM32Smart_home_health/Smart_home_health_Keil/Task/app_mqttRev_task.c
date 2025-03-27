@@ -16,7 +16,7 @@
 #include "task.h"
 #include "semphr.h"
 #include "queue.h"
-
+#include "main.h"
 /****************Task Include*************************/
 #include "app_mqttRev_task.h"
 
@@ -26,20 +26,20 @@
 #include "bsp_relay_driver.h"
 #include "bsp_wuhua_driver.h"
 #include "bsp_drv8833_driver.h"
+#include "bsp_usart_driver.h"
+#include "cJSON.h"
 
 /****************Semaphore Init*************************/
 
 /****************Queue Init*************************/
 
-
 /****************BSP Init*************************/
-Relay_t Window = 
-{
-	.port = GPIOC,
-	.pin = GPIO_PIN_1
+Relay_t Window =
+    {
+        .port = GPIOC,
+        .pin = GPIO_PIN_1
 
 };
-
 
 /*
  * @brief   接收MQTT返回的数据并进行处理
@@ -52,23 +52,28 @@ void mqtt_rev_task(void *pvParameters)
 
     while (1)
     {
-        ptrIPD = ESP8266_GetIPD(200); 
+        //printf("rev task………… \n");
+        ptrIPD = ESP8266_GetIPD(200);
         if (ptrIPD != NULL)
         {
             Cloud_RevPro(ptrIPD);
             ESP8266_Clear(); // 处理完后清空缓冲区
         }
-        // 无数据时安静等待，避免频繁轮询
-        vTaskDelay(pdMS_TO_TICKS(200)); // 每500ms检查一次
+        vTaskDelay(pdMS_TO_TICKS(500));
     }
 }
 
 void revData_Json(cJSON *json)
 {
+    if (!json) {
+        DEBUG_LOG("JSON指针无效\n");
+        return;
+    }
+
     cJSON *json_value;
     /*sg90*/
     json_value = cJSON_GetObjectItem(json, "Door");
-    if (json_value->valueint == 1)
+    if (json_value && json_value->valueint == 1)
     {
         sg90_set_angle(180);
     }
@@ -76,19 +81,19 @@ void revData_Json(cJSON *json)
     {
         sg90_set_angle(0);
     }
-	/*fenshang*/
+    /*fenshang*/
     json_value = cJSON_GetObjectItem(json, "Fenshang");
-    if (json_value->valueint == 1)
+    if (json_value && json_value->valueint == 1)
     {
-        drv8833_motor_direction(forword);
+        drv8833_motor_direction(reversal);
     }
     else
     {
         drv8833_motot_stop();
     }
-	/*Window*/
+    /*Window*/
     json_value = cJSON_GetObjectItem(json, "Window");
-    if (json_value->valueint == 1)
+    if (json_value && json_value->valueint == 1)
     {
         relay_on(Window);
     }
@@ -96,9 +101,9 @@ void revData_Json(cJSON *json)
     {
         relay_off(Window);
     }
-	/*Wuhua*/
+    /*Wuhua*/
     json_value = cJSON_GetObjectItem(json, "Wuhua");
-    if (json_value->valueint == 1)
+    if (json_value && json_value->valueint == 1)
     {
         atomizer_on();
     }
@@ -106,5 +111,4 @@ void revData_Json(cJSON *json)
     {
         atomizer_off();
     }
-	
 }
