@@ -18,13 +18,89 @@ health_home::health_home(QWidget *parent)
     connect(&Client,SIGNAL(messageReceived(const QByteArray,const QMqttTopicName)),this,
             SLOT(MQTT_RevData_Success(const QByteArray)));//接收消息成功
 
-
+    setupChart();
 
 }
 
 health_home::~health_home()
 {
     delete ui;
+}
+
+// 初始化折线图
+// 初始化折线图
+void health_home::setupChart()
+{
+    // 创建心率和血氧的折线图系列
+    hrSeries = new QLineSeries();
+    hrSeries->setName("心率 (BPM)");
+    hrSeries->setPen(QPen(Qt::blue, 2)); // 心率折线为蓝色，粗细为2
+
+    spo2Series = new QLineSeries();
+    spo2Series->setName("血氧 (%)");
+    spo2Series->setPen(QPen(Qt::yellow, 2)); // 血氧折线为黄色，粗细为2
+
+    // 创建图表并添加系列
+    chart = new QChart();
+    chart->addSeries(hrSeries);
+    chart->addSeries(spo2Series);
+    chart->setTitle(""); // 无标题
+
+    // 设置背景颜色为白色
+    chart->setBackgroundBrush(QBrush(QColor(255, 255, 255)));
+
+    // 设置X轴（时间轴）
+    QDateTimeAxis *axisX = new QDateTimeAxis();
+    axisX->setLabelsVisible(false); // 隐藏标签
+    axisX->setTickCount(10); // 设置10个刻度
+    axisX->setGridLineColor(Qt::black); // 刻度线颜色为黑色
+    axisX->setGridLinePen(QPen(Qt::black, 0.5)); // 设置刻度线粗细为0.5
+    chart->addAxis(axisX, Qt::AlignBottom);
+    hrSeries->attachAxis(axisX);
+    spo2Series->attachAxis(axisX);
+
+    // 设置左侧Y轴（心率）
+    QValueAxis *hrAxisY = new QValueAxis();
+    hrAxisY->setRange(50, 150); // 心率范围 50-150
+    // hrAxisY->setLabelsVisible(false); // 取消隐藏标签
+    hrAxisY->setTickCount(5); // 设置5个刻度
+    hrAxisY->setGridLineColor(Qt::black); // 刻度线颜色为黑色
+    hrAxisY->setGridLinePen(QPen(Qt::black, 0.5)); // 设置刻度线粗细为0.5
+    chart->addAxis(hrAxisY, Qt::AlignLeft);
+    hrSeries->attachAxis(hrAxisY);
+
+    // 设置右侧Y轴（血氧）
+    QValueAxis *spo2AxisY = new QValueAxis();
+    spo2AxisY->setRange(90, 100); // 血氧范围 90-100
+    // spo2AxisY->setLabelsVisible(false); // 取消隐藏标签
+    spo2AxisY->setTickCount(5); // 设置5个刻度
+    spo2AxisY->setGridLineColor(Qt::black); // 刻度线颜色为黑色
+    spo2AxisY->setGridLinePen(QPen(Qt::black, 0.5)); // 设置刻度线粗细为0.5
+    chart->addAxis(spo2AxisY, Qt::AlignRight);
+    spo2Series->attachAxis(spo2AxisY);
+
+    // 创建 QChartView 并添加到 frame_4
+    QChartView *chartView = new QChartView(chart, ui->frame_4);
+    chartView->setRenderHint(QPainter::Antialiasing);
+    chartView->setFixedSize(381, 241); // 设置折线图尺寸与 frame_4 一致
+
+    // 设置边框和圆角
+    chartView->setStyleSheet(
+        "QChartView {"
+        "border: 1px solid rgb(200, 200, 200);"
+        "border-radius: 10px;"
+        "}"
+        );
+
+    // 为 frame_4 设置布局并添加 chartView
+    QVBoxLayout *layout = new QVBoxLayout(ui->frame_4);
+    layout->setContentsMargins(0, 0, 0, 0); // 移除边距
+    layout->addWidget(chartView);
+    ui->frame_4->setLayout(layout);
+
+    // 显示图例
+    chart->legend()->setVisible(true);
+    chart->legend()->setAlignment(Qt::AlignBottom); // 图例显示在底部
 }
 
 /*查询数据库中的信息*/
@@ -132,59 +208,94 @@ void health_home::time_reflash()
 
 }
 
-/*接收消息*/
+/* 接收消息 */
 void health_home::MQTT_RevData_Success(const QByteArray &message)
 {
-    QString rec;
+    static int dataPointCount = 0; // 记录数据点数量
+    QString hrRec, spo2Rec,rec;
     QJsonParseError parseError;
-    QJsonDocument jsonDocument = QJsonDocument::fromJson(message,&parseError);
+    QJsonDocument jsonDocument = QJsonDocument::fromJson(message, &parseError);
 
-    if(parseError.error == QJsonParseError::NoError)
+    if (parseError.error == QJsonParseError::NoError)
     {
-        if((rec = my_mqtt.get_mqttValue(jsonDocument,"Temp")) != "")
+        if ((hrRec = my_mqtt.get_mqttValue(jsonDocument, "HR")) != "")
+        {
+            ui->label_heartRate->setText(hrRec);
+        }
+        if ((spo2Rec = my_mqtt.get_mqttValue(jsonDocument, "SpO2")) != "")
+        {
+            ui->label_bloodOxygen->setText(spo2Rec);
+        }
+
+        // 如果同时接收到心率和血氧数据，则添加一个数据点
+        if (!hrRec.isEmpty() && !spo2Rec.isEmpty())
+        {
+            qint64 currentTime = QDateTime::currentMSecsSinceEpoch();
+            hrSeries->append(currentTime, hrRec.toInt());
+            spo2Series->append(currentTime, spo2Rec.toDouble());
+            dataPointCount++; // 增加数据点计数
+
+            // 动态调整X轴范围，始终显示最近的数据
+            QDateTimeAxis *axisX = qobject_cast<QDateTimeAxis*>(chart->axisX());
+            if (axisX)
+            {
+                if (dataPointCount == 1)
+                {
+                    // 第一个数据点，设置X轴范围从当前时间开始
+                    axisX->setRange(QDateTime::fromMSecsSinceEpoch(currentTime), QDateTime::fromMSecsSinceEpoch(currentTime + 60000));
+                }
+                else
+                {
+                    // 后续数据点，保持X轴的起始时间不变，更新结束时间
+                    QDateTime startTime = axisX->min();
+                    axisX->setRange(startTime, QDateTime::fromMSecsSinceEpoch(currentTime));
+                }
+            }
+
+            // 当数据点达到10个时，清除折线图并重置计数
+            if (dataPointCount >= 10)
+            {
+                hrSeries->clear();
+                spo2Series->clear();
+                dataPointCount = 0; // 重置计数
+            }
+        }
+
+        // 更新其他标签
+        if ((rec = my_mqtt.get_mqttValue(jsonDocument, "Temp")) != "")
         {
             ui->label_temp->setText(rec);
         }
-        if((rec = my_mqtt.get_mqttValue(jsonDocument,"Humi")) != "")
+        if ((rec = my_mqtt.get_mqttValue(jsonDocument, "Humi")) != "")
         {
             ui->label_humi->setText(rec);
         }
-        if((rec = my_mqtt.get_mqttValue(jsonDocument,"TVOC")) != "")
+        if ((rec = my_mqtt.get_mqttValue(jsonDocument, "TVOC")) != "")
         {
             ui->label_TVOC->setText(rec);
         }
-        if((rec = my_mqtt.get_mqttValue(jsonDocument,"CO2")) != "")
+        if ((rec = my_mqtt.get_mqttValue(jsonDocument, "CO2")) != "")
         {
             ui->label_CO2->setText(rec);
         }
-        if((rec = my_mqtt.get_mqttValue(jsonDocument,"HCHO")) != "")
+        if ((rec = my_mqtt.get_mqttValue(jsonDocument, "HCHO")) != "")
         {
             ui->label_HCHO->setText(rec);
         }
-        if((rec = my_mqtt.get_mqttValue(jsonDocument,"PM25")) != "")
+        if ((rec = my_mqtt.get_mqttValue(jsonDocument, "PM25")) != "")
         {
             ui->label_PM25->setText(rec);
         }
-        if((rec = my_mqtt.get_mqttValue(jsonDocument,"DB")) != "")
+        if ((rec = my_mqtt.get_mqttValue(jsonDocument, "DB")) != "")
         {
             ui->label_db->setText(rec);
         }
-        if((rec = my_mqtt.get_mqttValue(jsonDocument,"people_temp")) != "")
+        if ((rec = my_mqtt.get_mqttValue(jsonDocument, "people_temp")) != "")
         {
             ui->label_peopleTemp->setText(rec);
         }
-        if((rec = my_mqtt.get_mqttValue(jsonDocument,"HR")) != "")
-        {
-            ui->label_heartRate->setText(rec);
-        }
-        if((rec = my_mqtt.get_mqttValue(jsonDocument,"SpO2")) != "")
-        {
-            ui->label_bloodOxygen->setText(rec);
-        }
-
     }
     qDebug() << "message:" << message << Qt::endl;
-
 }
 
 
@@ -252,4 +363,6 @@ void health_home::on_checkBox_fenshang_toggled(bool checked)
         qDebug() << "消息发送成功:" << str << Qt::endl;
     }
 }
+
+
 

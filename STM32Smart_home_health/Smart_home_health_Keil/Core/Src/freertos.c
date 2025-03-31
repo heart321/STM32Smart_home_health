@@ -82,17 +82,17 @@ TaskHandle_t aht20_task_handle = NULL;
 #define AIR_TASK_PRIORITY 24
 TaskHandle_t air_task_handle = NULL;
 
-/*lm2904 鍣０ task*/
+/*lm2904  task*/
 #define LM2904_TASK_DEPTH 256
 #define LM2904_TASK_PRIORITY 24
 TaskHandle_t lm2904_task_handle = NULL;
 
-/*gy906 浣撴俯 task*/
+/*gy906 task*/
 #define GY906_TASK_DEPTH 256
 #define GY906_TASK_PRIORITY 24
 TaskHandle_t gy906_task_handle = NULL;
 
-/*鎺ユ敹鏁版嵁 task*/
+/*MQTT REV task*/
 #define MQTT_REV_TASK_DEPTH 512
 #define MQTT_REV_TASK_PRIORITY 24
 TaskHandle_t mqtt_rev_task_handle = NULL;
@@ -106,16 +106,15 @@ TaskHandle_t max30102_task_handle = NULL;
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-SemaphoreHandle_t xAirQualitySemaphore; // 绌烘皵璐ㄩ噺鏁版嵁淇″彿Semaphore
-SemaphoreHandle_t xPM25Semaphore;       // PM2.5鏁版嵁Semaphore
-/*浼犳劅鍣ㄥ彂閫佹暟鎹槦Queue*/
+SemaphoreHandle_t xAirQualitySemaphore;
+SemaphoreHandle_t xPM25Semaphore;       
+
 QueueHandle_t xSensorDataQueue = NULL;
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
 
-QueueHandle_t xMedQueue;  // 鍖荤枟鏁版嵁闃熷垪
 /* USER CODE END Variables */
 /* Definitions for defaultTask */
 osThreadId_t defaultTaskHandle;
@@ -144,7 +143,7 @@ void vApplicationStackOverflowHook(xTaskHandle xTask, signed char *pcTaskName)
   configCHECK_FOR_STACK_OVERFLOW is defined to 1 or 2. This hook function is
   called if a stack overflow is detected. */
 	  printf("Stack overflow in task: %s\n", pcTaskName);
-		while (1); // 淇濈暀姝诲惊鐜互渚胯皟锟??
+		while (1); 
 }
 /* USER CODE END 4 */
 
@@ -203,12 +202,12 @@ void StartDefaultTask(void *argument)
   /* USER CODE BEGIN StartDefaultTask */
 
   /* Infinite loop */
-  /*鍒涘缓娑堟伅闃熷垪 */
+	/*创建数据发送的消息队列 */
   xSensorDataQueue = xQueueCreate(20, sizeof(SensorData_t));
-  /*鍒涘缓淇″彿*/
+  /*创建信号量*/
   xAirQualitySemaphore = xSemaphoreCreateBinary();
   xPM25Semaphore = xSemaphoreCreateBinary();
-  /*鍒涘缓鍏朵粬浠诲姟*/
+  /*创建任务*/
   /*1. mqttsend*/
   xTaskCreate(
       (TaskFunction_t)mqtt_send_task,
@@ -274,7 +273,7 @@ void StartDefaultTask(void *argument)
 
   vTaskDelay(pdMS_TO_TICKS(100));
 
-  vTaskDelete(NULL); // 鍒犻櫎浠诲姟
+  vTaskDelete(NULL);
 }
   /* USER CODE END StartDefaultTask */
 

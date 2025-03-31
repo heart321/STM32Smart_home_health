@@ -1,4 +1,4 @@
-QT       += core gui network sql multimedia mqtt
+QT       += core gui network sql multimedia mqtt charts
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 

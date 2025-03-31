@@ -83,10 +83,11 @@ public slots:
     void on_autoStopAudio(void);
 
 private slots:
+    /*开始对话按钮*/
     void on_pushButton_AiChat_clicked();
-
+    /*停止对话按钮*/
     void on_pushButton_stopChat_clicked();
-
+    /*健康建议按钮*/
     void on_pushButton_AiReport_clicked();
 
 private:

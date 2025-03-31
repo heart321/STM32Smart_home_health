@@ -45,7 +45,6 @@ void aht20_task(void *pvParameters)
 	uint8_t aht20_time = 0;
 	while (1)
 	{
-		//printf("ath20task………… \n");
 		aht20_time++;
 
 		if (aht20_time > 21 && NULL != xSensorDataQueue)
@@ -61,7 +60,6 @@ void aht20_task(void *pvParameters)
 				}
 			}
 		}
-		//			 	weatherData.temperature,weatherData.humidity);
 
 		vTaskDelay(pdMS_TO_TICKS(1000));
 	}
