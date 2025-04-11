@@ -58,67 +58,61 @@ void health_report::baidu_http_get_token()
 
 void health_report::http_finished(QNetworkReply *Reply)
 {
-    /*获取状态码*/
     int state = Reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
-
-    /*读取所有返回的数据*/
     QByteArray Reply_data = Reply->readAll();
 
-    /*200 成功*/
-    if(state == 200)
+    if (state == 200)
     {
-        // 获取响应信息
         QByteArray byteArray = QString(Reply_data).toUtf8();
-        QJsonDocument jsonDocument = QJsonDocument::fromJson(byteArray); // 转为JSON格式
+        QJsonDocument jsonDocument = QJsonDocument::fromJson(byteArray);
 
-        if(jsonDocument.isObject() == true)
+        if (jsonDocument.isObject())
         {
             QJsonObject jsonObject = jsonDocument.object();
-            // 找到token
-            if(jsonObject.find("access_token") != jsonObject.end())
+
+            if (jsonObject.find("access_token") != jsonObject.end())
             {
-                // 语音识别Audio_access的token
-                if(Reply->manager() == baidu_Audio)
+                if (Reply->manager() == baidu_Audio)
                 {
                     Audio_access_token = jsonDocument["access_token"].toString();
                     qDebug() << "Audio_access_token:" << Audio_access_token << Qt::endl;
-
                 }
-                // Chat的token
-                if(Reply->manager() == baidu_Chat)
+                if (Reply->manager() == baidu_Chat)
                 {
                     Chat_access_token = jsonDocument["access_token"].toString();
                     qDebug() << "Chat_access_token:" << Chat_access_token << Qt::endl;
                 }
-
             }
-            if(jsonObject.find("result") != jsonObject.end())
+            if (jsonObject.find("result") != jsonObject.end())
             {
-                if(Reply->manager() == baidu_Audio)
+                if (Reply->manager() == baidu_Audio)
                 {
                     QJsonArray jsonArray = jsonDocument["result"].toArray();
                     QString result_Audio = jsonArray[0].toString();
-
-                    //ui->textEdit_Audio->append(result_Audio);
-                    qDebug() << "reslut_Audio" << result_Audio << Qt::endl;
-
-                    // 发送Chat POST
+                    qDebug() << "result_Audio" << result_Audio << Qt::endl;
                     result_Audio = result_Audio.trimmed();
-                    baidu_Chat_Send(result_Audio);
-
+                    baidu_Chat_Send(result_Audio); // 默认是聊天请求
                 }
-                if(Reply->manager() == baidu_Chat)
+                if (Reply->manager() == baidu_Chat)
                 {
                     QString result_Chat = jsonObject["result"].toString();
+                    qDebug() << "result_chat" << result_Chat << Qt::endl;
 
-                    qDebug() << "reslut_chat" << result_Chat << Qt::endl;
-                    //ui->textEdit_Chat->append(result_Chat);
-                    ui->textBrowser_AiReport->setText(result_Chat);
-                    // 将Chat得到的文本进行语音合成
-                    baidu_AudioOut_Send(result_Chat);
+                    // 获取请求类型
+                    RequestType type = Reply->request().attribute(QNetworkRequest::User).value<RequestType>();
 
+                    if (type == ChatRequest)
+                    {
+                        // 普通聊天结果显示在textBrowser_AiChat
+                        ui->textBrowser_AiChat->setText(result_Chat);
+                        baidu_AudioOut_Send(result_Chat);
+                    }
+                    else if (type == HealthReportRequest)
+                    {
+                        // 健康报告结果显示在textBrowser_AiReport
+                        ui->textBrowser_AiReport->setText(result_Chat);
+                    }
                 }
-
             }
         }
     }
@@ -143,7 +137,6 @@ void health_report::on_pushButton_AiChat_clicked()
         Audio_Format.setCodec("audio/wav");
         Audio_Format.setByteOrder(QAudioFormat::LittleEndian);
         Audio_Format.setSampleType(QAudioFormat::UnSignedInt);
-
 
 
         //选择默认设备为输入源
@@ -197,10 +190,34 @@ void health_report::on_autoStopAudio()
         destinationFile.close();  // **确保文件关闭**
     }
 
+
     ui->pushButton_AiChat->setText("开始聊天");
 
-    // **上传音频文件进行识别**
-    baidu_Audio_Send();
+    // 转换音频格式
+    QString filePath = File_PATH;  // 原始文件路径
+
+    // 构建参数列表
+    QStringList arguments;
+    arguments << "-i" << filePath          // 输入文件
+              << "-ar" << "16000"          // 采样率 16kHz
+              << "-ac" << "1"              // 单声道
+              << "-acodec" << "pcm_s16le"  // 音频编码
+              << "-f" << "wav"             // 输出格式
+              << filePath                  // 输出文件（覆盖原文件）
+              << "-y";                     // 自动覆盖
+
+    QProcess process;
+    process.start("D:\\All_Project\\Graduation_project\\STM32Smart_home_health\\Smart_home_health_Qt\\Smart_health\\ffmpeg\\bin\\ffmpeg.exe", arguments);    // 使用新的 start 方法
+    if (process.waitForFinished(-1)) {
+        // 转换成功后上传
+        baidu_Audio_Send();  // 使用原地址上传，因为已经被替换
+        qDebug() << "Audio conversion Success!!" << Qt::endl;
+    } else {
+        // 处理转换失败的情况
+        qDebug() << "Audio conversion failed:" << process.errorString();
+    }
+    // 上传音频文件进行识别
+    //baidu_Audio_Send();
 }
 
 
@@ -248,35 +265,30 @@ void health_report::baidu_Audio_Send()
 }
 
 /*将识别完成的文字发送给Chat*/
-void health_report::baidu_Chat_Send(QString result)
+void health_report::baidu_Chat_Send(QString result, RequestType type)
 {
     // Chat POST url
     QString Chat_Post_url = QString(Chat_post_url).arg(Chat_access_token);
 
-    //组装JSON
+    // 组装JSON
     QJsonObject json;
-
-    //创建一个QJSonArray用来存放message
     QJsonArray messageArray;
-    // 添加对象
     QJsonObject messageObject;
-    messageObject.insert("role",QJsonValue("user"));
-    messageObject.insert("content",QJsonValue(result));
-
-    //将该对象添加到数组中
+    messageObject.insert("role", QJsonValue("user"));
+    messageObject.insert("content", QJsonValue(result));
     messageArray.append(messageObject);
+    json.insert("messages", messageArray);
 
-    //将message数组放入JsonObject
-    json.insert("messages",messageArray);
-    //json.insert("stream",true);
-
-    //设置头部
+    // 设置头部
     QNetworkRequest Request(Chat_Post_url);
-    Request.setHeader(QNetworkRequest::ContentTypeHeader,"application/json");
+    Request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+    // 将请求类型存入请求属性，用于返回时区分
+    Request.setAttribute(QNetworkRequest::User, QVariant::fromValue(type));
 
     QString send_json = QJsonDocument(json).toJson();
-    QByteArray jsonByte = send_json.toUtf8(); // 转为UTF-8
-    baidu_Chat->post(Request,jsonByte);
+    QByteArray jsonByte = send_json.toUtf8();
+    baidu_Chat->post(Request, jsonByte);
 }
 
 void health_report::baidu_AudioOut_Send(QString text)
@@ -384,6 +396,8 @@ void health_report::on_pushButton_stopChat_clicked()
 /*生成AI建议报告*/
 void health_report::on_pushButton_AiReport_clicked()
 {
-
+    // 假设这是你的健康数据（实际数据应从传感器或其他模块获取）
+    QString healthData = "心率: 75 bpm, 血氧: 98%, 体温: 36.5°C, 室内PM2.5: 30 μg/m³ 请给出三条建议";
+    baidu_Chat_Send(healthData, HealthReportRequest); // 发送健康数据，标记为健康报告请求
 }
 

@@ -33,6 +33,8 @@
 #include <QBuffer>
 #include <QTimer>
 
+#include <QProcess>
+
 
 //百度语音获取token_url psot_url AppID APIkey Secret_Key
 #define Audio_token_url "https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=%1&client_secret=%2"
@@ -63,6 +65,12 @@ public:
     explicit health_report(QWidget *parent = nullptr);
     ~health_report();
 
+
+    // 请求类型枚举
+    enum RequestType {
+        ChatRequest,      // 普通聊天请求
+        HealthReportRequest // 健康报告请求
+    };
     /*获取百度chat 和 语音识别的 token*/
     void baidu_http_get_token(void);
 
@@ -74,7 +82,7 @@ public slots:
     void baidu_Audio_Send(void);
 
     /*将语音识别完成的文字发送给Chat*/
-    void baidu_Chat_Send(QString result);
+    void baidu_Chat_Send(QString result,RequestType type = ChatRequest);
 
     /*将百度Chat的回答上传 进行语音合成*/
     void baidu_AudioOut_Send(QString text);
@@ -111,5 +119,7 @@ private:
     // 结束聊天的标志变量
     bool shouldStopChat = false;
 };
+
+Q_DECLARE_METATYPE(health_report::RequestType)
 
 #endif // HEALTH_REPORT_H

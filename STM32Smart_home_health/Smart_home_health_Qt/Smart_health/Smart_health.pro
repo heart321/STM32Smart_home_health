@@ -8,6 +8,27 @@ CONFIG += c++17
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+
+# Default rules for deployment.
+qnx: target.path = /tmp/$${TARGET}/bin
+else: unix:!android: target.path = /opt/$${TARGET}/bin
+!isEmpty(target.path): INSTALLS += target
+
+win32 {
+    message("Window Platform Of FFMpeg")
+    INCLUDEPATH += $$PWD/ffmpeg/include
+    DEPENDPATH += $$PWD/ffmpeg/include
+
+    LIBS += -L$$PWD/ffmpeg/lib/     			\
+                              -lavcodec         \
+                              -lavdevice        \
+                              -lavformat        \
+                              -lavfilter        \
+                              -lavutil          \
+                              -lswresample      \
+                              -lswscale
+}
+
 #加入开源库组件
 LIBS += $$PWD/libs/libcomponents.a
 INCLUDEPATH += \
