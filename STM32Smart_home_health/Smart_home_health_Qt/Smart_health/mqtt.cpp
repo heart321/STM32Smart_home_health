@@ -24,7 +24,7 @@ void mqtt::mqtt_connect()
     if(Client.state() == QMqttClient::Disconnected)
     {
         /*服务器IP*/
-        Client.setHostname("47.109.187.11");
+        Client.setHostname("47.109.94.140");
         /*端口号*/
         Client.setPort(1883);
         /*设置用户名*/

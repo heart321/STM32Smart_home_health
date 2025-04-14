@@ -279,37 +279,11 @@
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QLabel" name="label_18">
-    <property name="geometry">
-     <rect>
-      <x>130</x>
-      <y>70</y>
-      <width>71</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>阿里妈妈东方大楷</family>
-      <pointsize>15</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">QLabel{
-	background-color: rgb(255, 255, 255);
-    color: rgb(72,61,139);  /* 字体颜色 */
-    
-}</string>
-    </property>
-    <property name="text">
-     <string>麦克风:</string>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_21">
     <property name="geometry">
      <rect>
-      <x>150</x>
-      <y>10</y>
+      <x>160</x>
+      <y>30</y>
       <width>221</width>
       <height>51</height>
      </rect>

@@ -22,7 +22,7 @@ bool mysql::mysql_init()
 {
     globalDb = QSqlDatabase::addDatabase("QMYSQL");
     //数据库的地址
-    globalDb.setHostName("47.109.187.11");
+    globalDb.setHostName("47.109.94.140");
     globalDb.setUserName("xchen");
     globalDb.setDatabaseName("Smart_health");
     globalDb.setPassword("3321");

@@ -33,7 +33,7 @@ private:
     Ui::Widget *ui;
     /*创建各界面的窗口*/
     health_home homeWid;
-    health_report reportWid;
+    health_report *reportWid;
     health_user userWid;
 
     /*按钮组*/

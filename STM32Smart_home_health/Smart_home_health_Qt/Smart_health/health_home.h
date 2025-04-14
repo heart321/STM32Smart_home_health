@@ -37,13 +37,23 @@ public:
     void getSysTime(void);//获取系统时间
 
 
+    // Getter 方法，用于访问 MQTT 数据
+    QString getHeartRate() const { return heartRate; }
+    QString getBloodOxygen() const { return bloodOxygen; }
+    QString getTemperature() const { return temperature; }
+    QString getHumidity() const { return humidity; }
+    QString getTVOC() const { return tvoc; }
+    QString getCO2() const { return co2; }
+    QString getHCHO() const { return hcho; }
+    QString getPM25() const { return pm25; }
+    QString getNoise() const { return noise; }
+    QString getPeopleTemp() const { return peopleTemp; }
 
 private slots:
     void time_reflash(void);//时间刷新
 
     /*接收消息*/
     void MQTT_RevData_Success(const QByteArray &message);
-
     /*雾化器按钮*/
     void on_checkBox_wuhua_toggled(bool checked);
     /*继电器按钮*/
@@ -69,6 +79,17 @@ private:
     QLineSeries *spo2Series;
     const int maxPoints = 60; // 最大显示60个数据点（例如60秒的数据）
 
+    // 存储 MQTT 接收的数据
+    QString heartRate;
+    QString bloodOxygen;
+    QString temperature;
+    QString humidity;
+    QString tvoc;
+    QString co2;
+    QString hcho;
+    QString pm25;
+    QString noise;
+    QString peopleTemp;
 
 };
 

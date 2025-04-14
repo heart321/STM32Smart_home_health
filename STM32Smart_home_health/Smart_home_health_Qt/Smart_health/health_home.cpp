@@ -212,7 +212,7 @@ void health_home::time_reflash()
 void health_home::MQTT_RevData_Success(const QByteArray &message)
 {
     static int dataPointCount = 0; // 记录数据点数量
-    QString hrRec, spo2Rec,rec;
+    QString hrRec, spo2Rec, rec;
     QJsonParseError parseError;
     QJsonDocument jsonDocument = QJsonDocument::fromJson(message, &parseError);
 
@@ -220,10 +220,12 @@ void health_home::MQTT_RevData_Success(const QByteArray &message)
     {
         if ((hrRec = my_mqtt.get_mqttValue(jsonDocument, "HR")) != "")
         {
+            heartRate = hrRec; // 存储心率
             ui->label_heartRate->setText(hrRec);
         }
         if ((spo2Rec = my_mqtt.get_mqttValue(jsonDocument, "SpO2")) != "")
         {
+            bloodOxygen = spo2Rec; // 存储血氧
             ui->label_bloodOxygen->setText(spo2Rec);
         }
 
@@ -235,24 +237,25 @@ void health_home::MQTT_RevData_Success(const QByteArray &message)
             spo2Series->append(currentTime, spo2Rec.toDouble());
             dataPointCount++; // 增加数据点计数
 
-            // 动态调整X轴范围，始终显示最近的数据
+            // 动态调整 X 轴范围，始终显示最近的数据
             QDateTimeAxis *axisX = qobject_cast<QDateTimeAxis*>(chart->axisX());
             if (axisX)
             {
                 if (dataPointCount == 1)
                 {
-                    // 第一个数据点，设置X轴范围从当前时间开始
-                    axisX->setRange(QDateTime::fromMSecsSinceEpoch(currentTime), QDateTime::fromMSecsSinceEpoch(currentTime + 60000));
+                    // 第一个数据点，设置 X 轴范围从当前时间开始
+                    axisX->setRange(QDateTime::fromMSecsSinceEpoch(currentTime),
+                                    QDateTime::fromMSecsSinceEpoch(currentTime + 60000));
                 }
                 else
                 {
-                    // 后续数据点，保持X轴的起始时间不变，更新结束时间
+                    // 后续数据点，保持 X 轴的起始时间不变，更新结束时间
                     QDateTime startTime = axisX->min();
                     axisX->setRange(startTime, QDateTime::fromMSecsSinceEpoch(currentTime));
                 }
             }
 
-            // 当数据点达到10个时，清除折线图并重置计数
+            // 当数据点达到 10 个时，清除折线图并重置计数
             if (dataPointCount >= 10)
             {
                 hrSeries->clear();
@@ -261,37 +264,45 @@ void health_home::MQTT_RevData_Success(const QByteArray &message)
             }
         }
 
-        // 更新其他标签
+        // 更新其他标签并存储数据
         if ((rec = my_mqtt.get_mqttValue(jsonDocument, "Temp")) != "")
         {
+            temperature = rec; // 存储温度
             ui->label_temp->setText(rec);
         }
         if ((rec = my_mqtt.get_mqttValue(jsonDocument, "Humi")) != "")
         {
+            humidity = rec; // 存储湿度
             ui->label_humi->setText(rec);
         }
         if ((rec = my_mqtt.get_mqttValue(jsonDocument, "TVOC")) != "")
         {
+            tvoc = rec; // 存储 TVOC
             ui->label_TVOC->setText(rec);
         }
         if ((rec = my_mqtt.get_mqttValue(jsonDocument, "CO2")) != "")
         {
+            co2 = rec; // 存储 CO2
             ui->label_CO2->setText(rec);
         }
         if ((rec = my_mqtt.get_mqttValue(jsonDocument, "HCHO")) != "")
         {
+            hcho = rec; // 存储甲醛
             ui->label_HCHO->setText(rec);
         }
         if ((rec = my_mqtt.get_mqttValue(jsonDocument, "PM25")) != "")
         {
+            pm25 = rec; // 存储 PM2.5
             ui->label_PM25->setText(rec);
         }
         if ((rec = my_mqtt.get_mqttValue(jsonDocument, "DB")) != "")
         {
+            noise = rec; // 存储噪声
             ui->label_db->setText(rec);
         }
         if ((rec = my_mqtt.get_mqttValue(jsonDocument, "people_temp")) != "")
         {
+            peopleTemp = rec; // 存储人体温度
             ui->label_peopleTemp->setText(rec);
         }
     }

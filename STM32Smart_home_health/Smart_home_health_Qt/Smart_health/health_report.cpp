@@ -13,9 +13,10 @@
 #include "health_report.h"
 #include "ui_health_report.h"
 
-health_report::health_report(QWidget *parent)
+health_report::health_report(health_home *home, QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::health_report)
+    , home(home)
 {
     ui->setupUi(this);
 
@@ -121,104 +122,236 @@ void health_report::http_finished(QNetworkReply *Reply)
 /* 点击AI 聊天开始录音 */
 void health_report::on_pushButton_AiChat_clicked()
 {
-    shouldStopChat = false;
-
-    if (ui->pushButton_AiChat->text() == QStringLiteral("开始聊天"))
-    {
-        // **确保文件已关闭**
-        if (destinationFile.isOpen()) {
-            destinationFile.close();
-        }
-
-        // **设置录音格式**
-        Audio_Format.setSampleRate(16000);
-        Audio_Format.setChannelCount(1);
-        Audio_Format.setSampleSize(16);
-        Audio_Format.setCodec("audio/wav");
-        Audio_Format.setByteOrder(QAudioFormat::LittleEndian);
-        Audio_Format.setSampleType(QAudioFormat::UnSignedInt);
-
-
-        //选择默认设备为输入源
-        QAudioDeviceInfo info = QAudioDeviceInfo::defaultInputDevice();
-
-        //判断输入的格式是否支持，如果不支持就使用系统支持的默认格式
-        if(!info.isFormatSupported(Audio_Format))
-        {
-            Audio_Format = info.nearestFormat(Audio_Format);
-        }
-
-
-        // **释放旧的 QAudioInput**
+    if (shouldStopChat) {
         if (Audio_in) {
-            delete Audio_in;
-            Audio_in = nullptr;
+            Audio_in->stop();
+            QTimer::singleShot(1000, this, SLOT(on_autoStopAudio()));
+            ui->pushButton_AiChat->setEnabled(false);
         }
+        shouldStopChat = false;
+        ui->pushButton_AiChat->setText("开始聊天");
+        return;
+    }
 
-        // **创建新的 QAudioInput**
-        Audio_in = new QAudioInput(info, Audio_Format, this);
+    QAudioDeviceInfo selectedDevice = QAudioDeviceInfo::defaultInputDevice();
+    if (selectedDevice.isNull()) {
+        qDebug() << "没有可用的音频输入设备！";
+        QMessageBox::critical(this, "错误", "没有检测到麦克风，请检查音频设备！");
+        return;
+    }
 
-        // **打开音频文件**
-        destinationFile.setFileName(File_PATH);
-        if (!destinationFile.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-            qWarning() << "Failed to open audio file";
+  //  qDebug() << "默认音频输入设备:" << selectedDevice.deviceName();
+    QList<QAudioDeviceInfo> devices = QAudioDeviceInfo::availableDevices(QAudio::AudioInput);
+    for (const QAudioDeviceInfo &device : devices) {
+    //    qDebug() << "可用输入设备:" << device.deviceName();
+    }
+
+    Audio_Format.setSampleRate(48000);
+    Audio_Format.setChannelCount(1);
+    Audio_Format.setSampleSize(16);
+    Audio_Format.setCodec("audio/pcm");
+    Audio_Format.setByteOrder(QAudioFormat::LittleEndian);
+    Audio_Format.setSampleType(QAudioFormat::SignedInt);
+
+    if (!selectedDevice.isFormatSupported(Audio_Format)) {
+        qDebug() << "默认设备不支持 48000Hz！尝试其他设备...";
+        selectedDevice = QAudioDeviceInfo();
+        for (const QAudioDeviceInfo &device : devices) {
+            if (device.isFormatSupported(Audio_Format)) {
+                selectedDevice = device;
+                qDebug() << "使用支持的设备:" << device.deviceName();
+                break;
+            }
+        }
+        if (selectedDevice.isNull()) {
+            qDebug() << "没有设备支持 48000Hz！尝试 44100Hz...";
+            Audio_Format.setSampleRate(44100);
+            for (const QAudioDeviceInfo &device : devices) {
+                if (device.isFormatSupported(Audio_Format)) {
+                    selectedDevice = device;
+                    qDebug() << "使用支持的设备 (44100Hz):" << device.deviceName();
+                    break;
+                }
+            }
+        }
+        if (selectedDevice.isNull()) {
+            qDebug() << "没有设备支持音频格式！";
+            QMessageBox::critical(this, "错误", "当前音频格式（48kHz/44.1kHz，16-bit）不受支持！");
             return;
         }
-
-        // **开始录音**
-        Audio_in->start(&destinationFile);
-        ui->pushButton_AiChat->setText("请说话....");
-
-        // **5 秒后自动停止录音**
-        QTimer::singleShot(5000, this, &health_report::on_autoStopAudio);
     }
+
+    // 确保目录存在
+    QDir().mkpath(QFileInfo(File_PATH).absolutePath());
+    destinationFile.setFileName(File_PATH);
+    if (!destinationFile.open(QIODevice::WriteOnly)) {
+        qDebug() << "无法打开音频文件:" << File_PATH << ", 错误:" << destinationFile.errorString();
+        QMessageBox::critical(this, "错误", "无法创建音频文件：" + destinationFile.errorString());
+        return;
+    }
+
+    writeWavHeader(destinationFile, Audio_Format, 0);
+
+    Audio_in = new QAudioInput(selectedDevice, Audio_Format, this);
+    Audio_in->start(&destinationFile);
+    qDebug() << "开始录音，采样率:" << Audio_Format.sampleRate() << "Hz，文件:" << File_PATH;
+    ui->pushButton_AiChat->setText("停止聊天");
+    ui->pushButton_AiChat->setEnabled(true);
+    shouldStopChat = true;
+
+    // 延长到 5 秒
+    QTimer::singleShot(5000, this, SLOT(on_autoStopAudio()));
 }
 
+// 重写wav头文件
+void health_report::writeWavHeader(QFile &file, const QAudioFormat &format, qint64 dataLength)
+{
+    QByteArray header(44, 0);
+    int sampleRate = format.sampleRate();
+    int channels = format.channelCount();
+    int sampleSize = format.sampleSize() / 8;
 
+    // RIFF 头
+    header.replace(0, 4, "RIFF");
+    qint32 riffSize = dataLength + 36;
+    header[4] = static_cast<char>(riffSize & 0xff);
+    header[5] = static_cast<char>((riffSize >> 8) & 0xff);
+    header[6] = static_cast<char>((riffSize >> 16) & 0xff);
+    header[7] = static_cast<char>((riffSize >> 24) & 0xff);
+    header.replace(8, 4, "WAVE");
 
+    // fmt 子块
+    header.replace(12, 4, "fmt ");
+    header[16] = 16; // 子块大小
+    header[20] = 1; // PCM = 1
+    header[22] = static_cast<char>(channels & 0xff);
+    header[23] = static_cast<char>((channels >> 8) & 0xff);
+    header[24] = static_cast<char>(sampleRate & 0xff);
+    header[25] = static_cast<char>((sampleRate >> 8) & 0xff);
+    header[26] = static_cast<char>((sampleRate >> 16) & 0xff);
+    header[27] = static_cast<char>((sampleRate >> 24) & 0xff);
+    int byteRate = sampleRate * channels * sampleSize;
+    header[28] = static_cast<char>(byteRate & 0xff);
+    header[29] = static_cast<char>((byteRate >> 8) & 0xff);
+    header[30] = static_cast<char>((byteRate >> 16) & 0xff);
+    header[31] = static_cast<char>((byteRate >> 24) & 0xff);
+    int blockAlign = channels * sampleSize;
+    header[32] = static_cast<char>(blockAlign & 0xff);
+    header[33] = static_cast<char>((blockAlign >> 8) & 0xff);
+    header[34] = static_cast<char>(sampleSize * 8 & 0xff);
+    header[35] = static_cast<char>((sampleSize * 8 >> 8) & 0xff);
 
-/* 停止录音 */
+    // data 子块
+    header.replace(36, 4, "data");
+    header[40] = static_cast<char>(dataLength & 0xff);
+    header[41] = static_cast<char>((dataLength >> 8) & 0xff);
+    header[42] = static_cast<char>((dataLength >> 16) & 0xff);
+    header[43] = static_cast<char>((dataLength >> 24) & 0xff);
+
+    file.seek(0);
+    file.write(header);
+}
+
 void health_report::on_autoStopAudio()
 {
     if (Audio_in) {
         Audio_in->stop();
-        delete Audio_in;  // **释放音频输入对象**
+        delete Audio_in;
         Audio_in = nullptr;
     }
 
     if (destinationFile.isOpen()) {
-        destinationFile.close();  // **确保文件关闭**
+        destinationFile.flush();
+        qint64 fileSize = destinationFile.size();
+        qint64 dataLength = fileSize > 44 ? fileSize - 44 : 0;
+        if (dataLength > 0) {
+            writeWavHeader(destinationFile, Audio_Format, dataLength);
+        }
+        destinationFile.close();
+        qDebug() << "录音文件已关闭:" << File_PATH;
     }
-
 
     ui->pushButton_AiChat->setText("开始聊天");
 
     // 转换音频格式
-    QString filePath = File_PATH;  // 原始文件路径
+    QString filePath = File_PATH;
 
-    // 构建参数列表
+    // 检查音频文件是否存在
+    QFile audioFile(filePath);
+    if (!audioFile.exists()) {
+        qDebug() << "音频文件不存在:" << filePath;
+        QMessageBox::warning(this, "错误", "录制的音频文件不存在！");
+        return;
+    }
+
+    qint64 fileSize = audioFile.size();
+    qDebug() << "录音文件大小:" << fileSize << "字节";
+    if (fileSize <= 44) {
+        qDebug() << "录音文件为空，可能录音失败！";
+        QMessageBox::warning(this, "错误", "录音文件为空，请检查麦克风！");
+        return;
+    }
+
+
+// 指定 FFmpeg 路径
+#ifdef Q_OS_WIN
+    // Windows 路径
+    QString ffmpegPath = "D://Qt//ffmpeg//bin//ffmpeg.exe";
+#else
+    // Linux（Ubuntu）路径，优先使用系统安装的 ffmpeg
+    QString ffmpegPath = "ffmpeg"; // 使用 PATH 中的 ffmpeg
+    // QString ffmpegPath = "/usr/bin/ffmpeg";
+#endif
+
+    // 检查 FFmpeg 是否存在
+    QFile ffmpegFile(ffmpegPath);
+    if (ffmpegPath != "ffmpeg" && !ffmpegFile.exists()) {
+        qDebug() << "FFmpeg 可执行文件不存在:" << ffmpegPath;
+        QMessageBox::critical(this, "错误", "无法找到 FFmpeg，请确保已安装！");
+        return;
+    }
+
+
+
+    // 构建 FFmpeg 参数
     QStringList arguments;
-    arguments << "-i" << filePath          // 输入文件
-              << "-ar" << "16000"          // 采样率 16kHz
-              << "-ac" << "1"              // 单声道
-              << "-acodec" << "pcm_s16le"  // 音频编码
-              << "-f" << "wav"             // 输出格式
-              << filePath                  // 输出文件（覆盖原文件）
-              << "-y";                     // 自动覆盖
+    arguments << "-y"                  // 覆盖输出文件
+              << "-i" << filePath     // 输入文件
+              << "-ar" << "16000"     // 采样率
+              << "-ac" << "1"         // 单声道
+              << "-acodec" << "pcm_s16le" // 编码
+              << outputFilePath;      // 输出文件
+
 
     QProcess process;
-    process.start("D:\\All_Project\\Graduation_project\\STM32Smart_home_health\\Smart_home_health_Qt\\Smart_health\\ffmpeg\\bin\\ffmpeg.exe", arguments);    // 使用新的 start 方法
-    if (process.waitForFinished(-1)) {
-        // 转换成功后上传
-        baidu_Audio_Send();  // 使用原地址上传，因为已经被替换
-        qDebug() << "Audio conversion Success!!" << Qt::endl;
+    process.setProcessChannelMode(QProcess::MergedChannels);
+    process.start(ffmpegPath, arguments);
+    if (process.waitForFinished(3000)) {
+        QString ffmpegOutput = process.readAll();
+//        qDebug() << "FFmpeg 输出:" << ffmpegOutput;
+        if (process.exitCode() == 0) {
+            QFile outputFile(outputFilePath);
+            qint64 convertedSize = outputFile.size();
+            qDebug() << "Audio conversion Success!!";
+            qDebug() << "转换后文件大小:" << convertedSize << "字节";
+            if (convertedSize <= 44) {
+                qDebug() << "转换后文件为空！";
+                QMessageBox::warning(this, "错误", "音频转换生成了空文件！");
+                return;
+            }
+            QFile::remove(filePath);
+            QFile::rename(outputFilePath, filePath);
+            baidu_Audio_Send();
+        } else {
+            qDebug() << "Audio conversion failed with exit code:" << process.exitCode();
+            QMessageBox::warning(this, "错误", "音频转换失败，退出码：" + QString::number(process.exitCode()));
+        }
     } else {
-        // 处理转换失败的情况
-        qDebug() << "Audio conversion failed:" << process.errorString();
+        qDebug() << "FFmpeg 进程失败:" << process.errorString();
+        QMessageBox::warning(this, "错误", "无法运行 FFmpeg：" + process.errorString());
     }
-    // 上传音频文件进行识别
-    //baidu_Audio_Send();
 }
+
 
 
 
@@ -293,7 +426,7 @@ void health_report::baidu_Chat_Send(QString result, RequestType type)
 
 void health_report::baidu_AudioOut_Send(QString text)
 {
-    if (shouldStopChat) {
+    if (!shouldStopChat) {
         return;  // 如果标志为 true，则不再继续录音
     }
 
@@ -387,6 +520,8 @@ void health_report::baidu_AudioOut_Send(QString text)
 }
 
 
+
+
 void health_report::on_pushButton_stopChat_clicked()
 {
     shouldStopChat = true;
@@ -396,8 +531,12 @@ void health_report::on_pushButton_stopChat_clicked()
 /*生成AI建议报告*/
 void health_report::on_pushButton_AiReport_clicked()
 {
-    // 假设这是你的健康数据（实际数据应从传感器或其他模块获取）
-    QString healthData = "心率: 75 bpm, 血氧: 98%, 体温: 36.5°C, 室内PM2.5: 30 μg/m³ 请给出三条建议";
-    baidu_Chat_Send(healthData, HealthReportRequest); // 发送健康数据，标记为健康报告请求
+    // 从 health_home 获取最新的 MQTT 数据
+    QString healthData = QString("心率: %1 bpm, 血氧: %2%, 体温: %3°C, 室内PM2.5: %4 μg/m³ 请给出三条建议")
+                             .arg(home->getHeartRate())
+                             .arg(home->getBloodOxygen())
+                             .arg(home->getPeopleTemp())
+                             .arg(home->getPM25());
+    baidu_Chat_Send(healthData, HealthReportRequest); // 发送健康数据
 }
 

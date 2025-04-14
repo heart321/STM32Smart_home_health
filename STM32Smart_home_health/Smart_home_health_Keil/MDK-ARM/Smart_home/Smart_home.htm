@@ -3,7 +3,7 @@
 <title>Static Call Graph - [Smart_home\Smart_home.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image Smart_home\Smart_home.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Sat Mar 29 15:13:38 2025
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Sun Apr 13 14:16:20 2025
 <BR><P>
 <H3>Maximum Stack Usage =        816 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -576,10 +576,10 @@ Global Symbols
 <P><STRONG><a name="[7f]"></a>__aeabi_dadd</STRONG> (Thumb, 322 bytes, Stack size 48 bytes, dadd.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = __aeabi_dadd &rArr; _double_epilogue &rArr; _double_round
 </UL>
-<BR>[Calls]<UL><LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_round
-<LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_epilogue
-<LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_lasr
+<BR>[Calls]<UL><LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_lasr
 <LI><a href="#[72]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_llsl
+<LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_round
+<LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_epilogue
 </UL>
 <BR>[Called By]<UL><LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dsub
 <LI><a href="#[187]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;parse_number
@@ -755,9 +755,9 @@ Global Symbols
 <P><STRONG><a name="[81]"></a>_double_epilogue</STRONG> (Thumb, 156 bytes, Stack size 32 bytes, depilogue.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = _double_epilogue &rArr; _double_round
 </UL>
-<BR>[Calls]<UL><LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_round
-<LI><a href="#[71]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_llsr
+<BR>[Calls]<UL><LI><a href="#[71]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_llsr
 <LI><a href="#[72]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_llsl
+<LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_round
 </UL>
 <BR>[Called By]<UL><LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_ui2d
 <LI><a href="#[85]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dmul
@@ -811,8 +811,8 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[92]"></a>_dsqrt</STRONG> (Thumb, 162 bytes, Stack size 32 bytes, dsqrt.o(.text), UNUSED)
-<BR><BR>[Calls]<UL><LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_round
-<LI><a href="#[71]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_llsr
+<BR><BR>[Calls]<UL><LI><a href="#[71]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_llsr
+<LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_round
 </UL>
 <BR>[Called By]<UL><LI><a href="#[18e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sqrt
 </UL>
@@ -1142,12 +1142,12 @@ Global Symbols
 <LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_I2C_Mem_Write
 <LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ESP8266_WaitReceive
 <LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_DMA_Abort
-<LI><a href="#[11a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART_WaitOnFlagUntilTimeout
 <LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2C_WaitOnTXEFlagUntilTimeout
 <LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2C_WaitOnRXNEFlagUntilTimeout
 <LI><a href="#[11b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2C_WaitOnMasterAddressFlagUntilTimeout
 <LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2C_WaitOnFlagUntilTimeout
 <LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2C_WaitOnBTFFlagUntilTimeout
+<LI><a href="#[11a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART_WaitOnFlagUntilTimeout
 </UL>
 
 <P><STRONG><a name="[182]"></a>HAL_I2C_GetError</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, stm32f2xx_hal_i2c.o(i.HAL_I2C_GetError))
@@ -1377,12 +1377,12 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[ed]"></a>HAL_TIM_ConfigClockSource</STRONG> (Thumb, 220 bytes, Stack size 16 bytes, stm32f2xx_hal_tim.o(i.HAL_TIM_ConfigClockSource))
-<BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = HAL_TIM_ConfigClockSource &rArr; TIM_ETR_SetConfig
+<BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = HAL_TIM_ConfigClockSource &rArr; TIM_TI2_ConfigInputStage
 </UL>
-<BR>[Calls]<UL><LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM_ETR_SetConfig
-<LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM_TI2_ConfigInputStage
+<BR>[Calls]<UL><LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM_TI2_ConfigInputStage
 <LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM_TI1_ConfigInputStage
 <LI><a href="#[f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM_ITRx_SetConfig
+<LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM_ETR_SetConfig
 </UL>
 <BR>[Called By]<UL><LI><a href="#[136]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MX_TIM4_Init
 <LI><a href="#[133]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MX_TIM1_Init
@@ -1421,12 +1421,12 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[fb]"></a>HAL_TIM_PWM_ConfigChannel</STRONG> (Thumb, 204 bytes, Stack size 16 bytes, stm32f2xx_hal_tim.o(i.HAL_TIM_PWM_ConfigChannel))
-<BR><BR>[Stack]<UL><LI>Max Depth = 36<LI>Call Chain = HAL_TIM_PWM_ConfigChannel &rArr; TIM_OC2_SetConfig
+<BR><BR>[Stack]<UL><LI>Max Depth = 36<LI>Call Chain = HAL_TIM_PWM_ConfigChannel &rArr; TIM_OC3_SetConfig
 </UL>
-<BR>[Calls]<UL><LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM_OC2_SetConfig
-<LI><a href="#[ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM_OC4_SetConfig
+<BR>[Calls]<UL><LI><a href="#[ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM_OC4_SetConfig
 <LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM_OC3_SetConfig
 <LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM_OC1_SetConfig
+<LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM_OC2_SetConfig
 </UL>
 <BR>[Called By]<UL><LI><a href="#[136]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MX_TIM4_Init
 <LI><a href="#[133]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MX_TIM1_Init
@@ -2204,9 +2204,9 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[77]"></a>__aeabi_errno_addr</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, errno.o(i.__aeabi_errno_addr))
-<BR><BR>[Called By]<UL><LI><a href="#[76]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;atoi
-<LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_strtoul
+<BR><BR>[Called By]<UL><LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_strtoul
 <LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strtol
+<LI><a href="#[76]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;atoi
 </UL>
 
 <P><STRONG><a name="[1e1]"></a>__rt_errno_addr</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, errno.o(i.__aeabi_errno_addr), UNUSED)
@@ -2652,6 +2652,7 @@ Global Symbols
 <LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_i2d
 <LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dadd
 <LI><a href="#[15a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_cdrcmple
+<LI><a href="#[18d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__set_errno
 <LI><a href="#[18e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sqrt
 <LI><a href="#[152]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__kernel_poly
 <LI><a href="#[18f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__ARM_fpclassify
@@ -2663,7 +2664,6 @@ Global Symbols
 <LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_ddiv
 <LI><a href="#[157]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__ARM_scalbn
 <LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_drsub
-<LI><a href="#[18d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__set_errno
 </UL>
 <BR>[Called By]<UL><LI><a href="#[187]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;parse_number
 </UL>
@@ -2736,8 +2736,8 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[18e]"></a>sqrt</STRONG> (Thumb, 76 bytes, Stack size 24 bytes, sqrt.o(i.sqrt), UNUSED)
-<BR><BR>[Calls]<UL><LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_dsqrt
-<LI><a href="#[18d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__set_errno
+<BR><BR>[Calls]<UL><LI><a href="#[18d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__set_errno
+<LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_dsqrt
 </UL>
 <BR>[Called By]<UL><LI><a href="#[188]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pow
 </UL>
@@ -3720,11 +3720,11 @@ Local Symbols
 </UL>
 
 <P><STRONG><a name="[150]"></a>_printf_core</STRONG> (Thumb, 1744 bytes, Stack size 136 bytes, printfa.o(i._printf_core), UNUSED)
-<BR><BR>[Calls]<UL><LI><a href="#[15b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_pre_padding
+<BR><BR>[Calls]<UL><LI><a href="#[15d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uidivmod
+<LI><a href="#[15b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_pre_padding
 <LI><a href="#[15c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_post_padding
 <LI><a href="#[159]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_fp_digits
 <LI><a href="#[70]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uldivmod
-<LI><a href="#[15d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uidivmod
 </UL>
 <BR>[Called By]<UL><LI><a href="#[151]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__0sprintf
 <LI><a href="#[14f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__0printf

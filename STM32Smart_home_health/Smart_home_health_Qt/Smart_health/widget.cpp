@@ -5,12 +5,14 @@
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::Widget)
+    , reportWid(new health_report(&homeWid, this)) // 初始化 reportWid
 {
     ui->setupUi(this);
 
+
     /*添加有顺序*/
     ui->stackedWidget->addWidget(&homeWid);   //1
-    ui->stackedWidget->addWidget(&reportWid); //2
+    ui->stackedWidget->addWidget(reportWid); //2
     ui->stackedWidget->addWidget(&userWid);   //3
 
     /*向按钮组添加按钮和 stackedWidget的索引 一一对应*/
@@ -28,9 +30,6 @@ Widget::Widget(QWidget *parent)
 
     /*设置无边框窗口*/
     this->setWindowFlags(Qt::FramelessWindowHint);
-
-
-
 
 }
 Widget::~Widget()

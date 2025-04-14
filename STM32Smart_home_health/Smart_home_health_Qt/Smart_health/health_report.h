@@ -21,6 +21,7 @@
 #include <QAudioDeviceInfo>
 #include <QAudioInput>
 #include <QAudioOutput>
+#include <QStandardPaths>
 
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -32,9 +33,11 @@
 #include <QUrlQuery>
 #include <QBuffer>
 #include <QTimer>
+#include <QString>
 
 #include <QProcess>
 
+#include "health_home.h"
 
 //百度语音获取token_url psot_url AppID APIkey Secret_Key
 #define Audio_token_url "https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=%1&client_secret=%2"
@@ -50,8 +53,6 @@
 #define Chat_API_Key "SJmTWOwHO9iFS17FnLz91knb"
 #define Chat_Secret_key "UWaaYoPx8RvUovhaENZWB0Y7fbZ76nYh"
 
-/*录音文件地址*/
-#define File_PATH "D:\\All_Project\\Graduation_project\\STM32Smart_home_health\\Smart_home_health_Qt\\Smart_health\\Audio\\audio_file.wav"
 
 namespace Ui {
 class health_report;
@@ -62,7 +63,7 @@ class health_report : public QWidget
     Q_OBJECT
 
 public:
-    explicit health_report(QWidget *parent = nullptr);
+    explicit health_report(health_home *home,QWidget *parent = nullptr);
     ~health_report();
 
 
@@ -73,6 +74,8 @@ public:
     };
     /*获取百度chat 和 语音识别的 token*/
     void baidu_http_get_token(void);
+
+    void writeWavHeader(QFile &file, const QAudioFormat &format, qint64 dataLength);
 
 public slots:
     /*请求结束 返回结果解析*/
@@ -90,7 +93,6 @@ public slots:
     /*暂停录音*/
     void on_autoStopAudio(void);
 
-private slots:
     /*开始对话按钮*/
     void on_pushButton_AiChat_clicked();
     /*停止对话按钮*/
@@ -118,6 +120,13 @@ private:
 
     // 结束聊天的标志变量
     bool shouldStopChat = false;
+
+    /*home界面*/
+    health_home *home;
+
+    /*输出文件地址*/
+    QString File_PATH = "/home/xchen/Desktop/Qt_Project/Smart_health/Audio/audio_file.wav";
+    QString outputFilePath = File_PATH + ".converted.wav";
 };
 
 Q_DECLARE_METATYPE(health_report::RequestType)
